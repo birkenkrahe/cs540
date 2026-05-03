@@ -1,0 +1,180 @@
+#+TITLE: CS540 – Principles of Artificial Intelligence
+#+AUTHOR: Marcus Birkenkrahe
+#+DATE: Summer Term - Catholic Polytechnic University (Graduate Program)
+#+OPTIONS: toc:nil num:nil ^:nil: 
+#+STARTUP: overview hideblocks indent entitiespretty: 
+* Course Details
+
+- Begin and end: May 20 to August 26, 2026
+- Instructor: Marcus Birkenkrahe, PhD
+- Date and time: Wednesday, 6-7:15 pm PDT (class meeting)
+- Asynchronous: 75 min (DataCamp platform)
+  
+* Course Description
+
+Principles of Artificial Intelligence provides a practical and
+conceptual grounding in modern machine learning and AI systems. The
+course emphasizes modeling, implementation, and evaluation of
+algorithms that operate on real-world data and produce actionable
+outputs. Students will engage with supervised, unsupervised, and deep
+learning methods, culminating in an introduction to reinforcement
+learning.
+
+The course integrates:
+- Conceptual understanding (from Géron)
+- Hands-on implementation (DataCamp + coding)
+- Critical evaluation of models and assumptions
+
+* Learning Objectives
+
+By the end of the course, students will be able to:
+
+1. Explain core machine learning paradigms (supervised, unsupervised,
+   reinforcement learning)
+2. Implement regression and classification models
+3. Evaluate model performance using appropriate metrics
+4. Apply tree-based and ensemble methods
+5. Perform clustering and dimensionality reduction
+6. Build and train neural networks and CNNs
+7. Describe and implement basic reinforcement learning methods
+8. Analyze limitations, assumptions, and failure modes of AI systems
+
+* Prerequisites
+
+Students are expected to have:
+
+- Basic programming skills (functions, loops, data structures)
+- Introductory algebra
+- Familiarity with arrays
+
+If these are missing, students must complete preparatory material
+before Week 1.
+
+* Course Materials
+
+- Aurélien Géron, /Hands-On Machine Learning/ with scikit-learn and
+  PyTorch (2026)
+- DataCamp (assigned lessons weekly)
+- Instructor-provided notes and exercises
+
+* Course Structure
+
+Each week consists of:
+- Conceptual lecture (theory, assumptions, limitations)
+- Guided coding (in-class or demonstration)
+- DataCamp lesson (hands-on reinforcement)
+- Practice problem or mini-task
+
+* Grading
+
+- Weekly exercises / participation: 25%
+- Midterm project (model + analysis): 25%
+- Final project (end-to-end ML workflow): 25%
+- Quizzes / checks: 25%
+
+* Weekly Topics
+
+| Week | Topic                               |
+|------+-------------------------------------|
+|    1 | What is Machine Learning            |
+|    2 | Classification (kNN)                |
+|    3 | Linear Regression (simple)          |
+|    4 | Linear Regression (multiple + eval) |
+|    5 | Logistic Regression                 |
+|    6 | Model Evaluation / Cross-validation |
+|    7 | Decision Trees                      |
+|    8 | Random Forests / Ensembles          |
+|    9 | Clustering (k-means)                |
+|   10 | Dimensionality Reduction (PCA)      |
+|   11 | Neural Networks (basics)            |
+|   12 | Training Neural Networks            |
+|   13 | Convolutional Neural Networks (CNN) |
+|   14 | Reinforcement Learning (concepts)   |
+|   15 | Reinforcement Learning (Q-learning) |
+
+* DataCamp Alignment
+
+| Week | DataCamp Course                            | Prerequisites         | Builds On                 |
+|------+--------------------------------------------+-----------------------+---------------------------|
+|    1 | Introduction to Machine Learning in Python | -                     | —                         |
+|    2 | Supervised Learning with scikit-learn      | Week 1                | ML workflow               |
+|    3 | Introduction to Linear Regression          | Week 1, basic algebra | Modeling                  |
+|    4 | Introduction to Linear Regression          | Week 3                | Regression                |
+|    5 | Supervised Learning with scikit-learn      | Weeks 2–3             | Classification/regression |
+|    6 | Supervised Learning with scikit-learn      | Weeks 2–5             | All supervised models     |
+|    7 | Machine Learning with Tree-Based Models    | Weeks 2, 6            | Classification            |
+|    8 | Machine Learning with Tree-Based Models    | Week 7                | Trees                     |
+|    9 | Unsupervised Learning in Python            | Week 1                | New paradigm              |
+|   10 | Unsupervised Learning in Python            | Week 9                | Unsupervised              |
+|   11 | Introduction to Deep Learning with PyTorch | Weeks 3, 5            | Linear + logistic models  |
+|   12 | Deep Learning with PyTorch                 | Week 11               | Neural nets               |
+|   13 | Deep Learning for Images with PyTorch      | Week 11               | Neural nets               |
+|   14 | Reinforcement Learning with Gymnasium      | Week 1                | ML framing                |
+|   15 | Reinforcement Learning with Gymnasium      | Week 14               | RL basics                 |
+
+* Verification and Correctness Checks
+
+Students will be expected to:
+- Reproduce model results on small datasets
+- Compare models using evaluation metrics
+- Identify overfitting/underfitting
+- Explain model behavior qualitatively
+
+* AI Usage Guidelines
+
+The use of AI tools (including ChatGPT, Copilot, DataCamp assistants, and similar systems) is permitted but regulated. The goal is to use AI as a *tool for learning and productivity*, not as a substitute for understanding.
+
+** Permitted Uses
+Students may use AI tools to:
+- Clarify concepts encountered in lectures or readings
+- Debug code after attempting a solution independently
+- Generate alternative explanations or examples
+- Explore extensions or variations of assigned problems
+
+** Restricted Uses
+Students may *not*:
+- Submit AI-generated code or text as their own without modification
+  and understanding
+- Use AI to bypass problem-solving (e.g., directly generating full
+  solutions)
+- Rely on AI outputs without verification
+
+** Required Practices
+When using AI tools, students must:
+1. Be able to explain any code or solution they submit
+2. Verify outputs independently (e.g., by testing or reasoning)
+3. Treat AI outputs as *hypotheses*, not authoritative answers
+
+** Transparency Requirement
+For major assignments and projects:
+- Students must include a brief note describing any AI assistance used
+- Example:
+  #+begin_quote
+  Used ChatGPT to clarify how cross-validation works and to debug a
+  shape mismatch error. All code was written and verified
+  independently.
+  #+end_quote
+
+** Evaluation Policy
+- Understanding takes precedence over correctness
+- Students may be asked to explain or reproduce their work
+- Inability to explain submitted work may result in reduced credit
+
+** Rationale
+AI tools are powerful but imperfect:
+- They may produce incorrect or misleading outputs
+- They do not replace conceptual understanding
+- Effective use requires critical evaluation
+
+The course treats AI as:
+- A *tool* for exploration and productivity
+- A *subject* of critical analysis  
+
+* CPU policies
+
+For policy matters and procedures, especially concerning attendance,
+grading tables, withdrawals etc. please consult the Catholic
+Polytechnic University's [[https://drive.google.com/file/d/1Vgd1G0fp73GnZ3Y0ffCkQycfw6dW22bA/view?usp=sharing][CATALOG OF COURSES (2025-2026)]].
+     
+  
+  
