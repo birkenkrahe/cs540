@@ -1,0 +1,871 @@
+#+TITLE:Getting Started with Colab (and Python)
+#+AUTHOR:Marcus Birkenkrahe
+#+SUBTITLE:CS 540 - Principles of AI - Catholic Polytechnic U, summer 2026
+#+STARTUP: overview hideblocks indent
+#+OPTIONS: toc:nil num:nil ^:nil
+#+PROPERTY: header-args:python :session *Python* :results output :exports both :noweb yes
+#+STARTUP: overview hideblocks indent entitiespretty:
+#+OPTIONS: toc:nil num:nil ^:nil:
+* Objectives
+
+Let's make a simple plot with Python in Colab and learn a few things
+about Python along the way.
+
+1) Import ~pandas~ library for data frame manipulation.
+2) Download the ~Iris~ dataset from Kaggle.
+3) Load dataset into a ~pandas~ ~DataFrame~.
+4) Include exception handling with ~try~ ~except~.
+5) Explore the dataset
+6) Create a simple plot
+7) Summarize and check your understanding
+
+Along the way, you're also going to pick up:
+- Create text cells with markdown language.
+- Create and run code cells.
+- Use the terminal (aka shell).
+- Understand Colab controls and settings.
+- Use Gemini AI in Colab.
+
+* 1. Import ~pandas~ library
+
+- Import ~pandas~ library for data frame manipulation.
+
+- If ~pandas~ is not available, you must first install it using the ~pip~
+  Python package manager:
+  #+begin_src bash :results output :exports both
+    pip install pandas
+  #+end_src
+
+  #+RESULTS:
+  : Defaulting to user installation because normal site-packages is not writeable
+  : Requirement already satisfied: pandas in /home/aletheia/.local/lib/python3.10/site-packages (2.2.3)
+  : Requirement already satisfied: pytz>=2020.1 in /usr/lib/python3/dist-packages (from pandas) (2022.1)
+  : Requirement already satisfied: python-dateutil>=2.8.2 in /home/aletheia/.local/lib/python3.10/site-packages (from pandas) (2.9.0.post0)
+  : Requirement already satisfied: numpy>=1.22.4 in /home/aletheia/.local/lib/python3.10/site-packages (from pandas) (2.0.0)
+  : Requirement already satisfied: tzdata>=2022.7 in /home/aletheia/.local/lib/python3.10/site-packages (from pandas) (2024.2)
+  : Requirement already satisfied: six>=1.5 in /usr/lib/python3/dist-packages (from python-dateutil>=2.8.2->pandas) (1.16.0)
+
+- In Colab, you can run shell (~bash(1)~) commands in iPython code cells
+  by putting a ~!~ in front of the command:
+  #+begin_example sh
+  !pip install pandas
+  #+end_example
+
+- Alternatively, you can also run this command (without the ~!~)
+  directly on the shell by opening the ~Terminal~ at the bottom:
+  #+begin_src bash :results output :exports both
+    which pip
+    pip install pandas
+    exit
+  #+end_src
+
+  #+RESULTS:
+  : /usr/bin/pip
+
+- But where does ~pip~ get the package from? Open *Gemini* and ask it:
+  #+begin_quote
+  Where does `pip` get the Python package from?
+  #+end_quote
+
+- Answer (likely slightly different in your case):
+  #+begin_quote
+  When you use pip install pandas, pip typically retrieves the pandas
+  package from the Python Package Index (PyPI), which is the official
+  third-party software repository for Python. It then installs the
+  package and its dependencies into your Python environment.
+  #+end_quote
+
+- The AI will answer no-code questions in the console. This is a
+  useful addition to the notebook, so continue:
+  #+begin_quote
+  Can you put that answer straight into my notebook in a text cell,
+  please.
+  #+end_quote
+
+- The explanation should now appear at the end of your notebook. To
+  keep it there, you have to ~Accept~ it. You may have to move the block
+  around to be in the right place.
+
+- Create another browser tab and open ~pypi.org~, then ~search~ for
+  ~pandas~, and you get to this page: https://pypi.org/project/pandas/
+  #+attr_html: :width 400px :float nil:
+  [[../img/pypi.png]]
+
+- We can now ~import~ the ~pandas~ library into the current Python
+  session.
+  #+begin_src python :results none :exports both :session *Python* :python python3
+    import pandas as pd
+  #+end_src
+
+- There is an existing ~iPython~ session running in the background. When
+  it was started, a namespace was created, which is populated with
+  user-defined objects like loaded libraries or variables[fn:1].
+
+- To check that the library is loaded and available in the current
+  session:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    import sys
+    print('pandas' in sys.modules)
+  #+end_src
+
+  #+RESULTS:
+  : True
+
+- In this command, Python looks for the string ~pandas~ in the ~keys~ of
+  the dictionary. If it is found (because it was loaded), then a
+  Boolean value, ~True~, is returned.
+
+- Detailed explanation:
+  #+begin_quote
+  ~sys.modules~ is a dictionary that tracks all modules ever loaded
+  during the current Python session. It maps its *keys* - module names,
+  e.g. ~'pandas'~ (~str~) - to its *values*, the module objects -
+  e.g. ~<module 'pandas' from '...'>~
+
+  When you write ='pandas' in sys.modules=:
+  1. Python sees ~sys.modules~ is a dict-like object.
+  2. It calls ~sys.modules.__contains__('pandas').~
+  3. Since ~sys.modules~ is a ~dict~, ~__contains__~ checks the keys for
+     ='pandas'=.
+  4. Returns ~True~ if pandas was imported earlier in the session, ~False~
+     otherwise.
+  #+end_quote
+
+- You can also check what names ~pandas~ put into your namespace (analog
+  to ~data()~ in R):
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(dir(pd))
+  #+end_src
+
+  #+RESULTS:
+  : ['ArrowDtype', 'BooleanDtype', 'Categorical', 'CategoricalDtype', 'CategoricalIndex', 'DataFrame', 'DateOffset', 'DatetimeIndex', 'DatetimeTZDtype', 'ExcelFile', 'ExcelWriter', 'Flags', 'Float32Dtype', 'Float64Dtype', 'Grouper', 'HDFStore', 'Index', 'IndexSlice', 'Int16Dtype', 'Int32Dtype', 'Int64Dtype', 'Int8Dtype', 'Interval', 'IntervalDtype', 'IntervalIndex', 'MultiIndex', 'NA', 'NaT', 'NamedAgg', 'Period', 'PeriodDtype', 'PeriodIndex', 'RangeIndex', 'Series', 'SparseDtype', 'StringDtype', 'Timedelta', 'TimedeltaIndex', 'Timestamp', 'UInt16Dtype', 'UInt32Dtype', 'UInt64Dtype', 'UInt8Dtype', '__all__', '__builtins__', '__cached__', '__doc__', '__docformat__', '__file__', '__git_version__', '__loader__', '__name__', '__package__', '__path__', '__spec__', '__version__', '_built_with_meson', '_config', '_is_numpy_dev', '_libs', '_pandas_datetime_CAPI', '_pandas_parser_CAPI', '_testing', '_typing', '_version_meson', 'annotations', 'api', 'array', 'arrays', 'bdate_range', 'compat', 'concat', 'core', 'crosstab', 'cut', 'date_range', 'describe_option', 'errors', 'eval', 'factorize', 'from_dummies', 'get_dummies', 'get_option', 'infer_freq', 'interval_range', 'io', 'isna', 'isnull', 'json_normalize', 'lreshape', 'melt', 'merge', 'merge_asof', 'merge_ordered', 'notna', 'notnull', 'offsets', 'option_context', 'options', 'pandas', 'period_range', 'pivot', 'pivot_table', 'plotting', 'qcut', 'read_clipboard', 'read_csv', 'read_excel', 'read_feather', 'read_fwf', 'read_gbq', 'read_hdf', 'read_html', 'read_json', 'read_orc', 'read_parquet', 'read_pickle', 'read_sas', 'read_spss', 'read_sql', 'read_sql_query', 'read_sql_table', 'read_stata', 'read_table', 'read_xml', 'reset_option', 'set_eng_float_format', 'set_option', 'show_versions', 'test', 'testing', 'timedelta_range', 'to_datetime', 'to_numeric', 'to_pickle', 'to_timedelta', 'tseries', 'unique', 'util', 'value_counts', 'wide_to_long']
+
+- This is hard to check. You can filter over the printed data with a
+  list comprehension:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(sorted([m for m in sys.modules if 'pandas' in m]))
+  #+end_src
+
+  #+RESULTS:
+  : ['pandas', 'pandas._config', 'pandas._config.config', 'pandas._config.dates', 'pandas._config.display', 'pandas._config.localization', 'pandas._libs', 'pandas._libs.algos', 'pandas._libs.arrays', 'pandas._libs.groupby', 'pandas._libs.hashing', 'pandas._libs.hashtable', 'pandas._libs.index', 'pandas._libs.indexing', 'pandas._libs.internals', 'pandas._libs.interval', 'pandas._libs.join', 'pandas._libs.json', 'pandas._libs.lib', 'pandas._libs.missing', 'pandas._libs.ops', 'pandas._libs.ops_dispatch', 'pandas._libs.pandas_datetime', 'pandas._libs.pandas_parser', 'pandas._libs.parsers', 'pandas._libs.properties', 'pandas._libs.reshape', 'pandas._libs.sparse', 'pandas._libs.testing', 'pandas._libs.tslib', 'pandas._libs.tslibs', 'pandas._libs.tslibs.base', 'pandas._libs.tslibs.ccalendar', 'pandas._libs.tslibs.conversion', 'pandas._libs.tslibs.dtypes', 'pandas._libs.tslibs.fields', 'pandas._libs.tslibs.nattype', 'pandas._libs.tslibs.np_datetime', 'pandas._libs.tslibs.offsets', 'pandas._libs.tslibs.parsing', 'pandas._libs.tslibs.period', 'pandas._libs.tslibs.strptime', 'pandas._libs.tslibs.timedeltas', 'pandas._libs.tslibs.timestamps', 'pandas._libs.tslibs.timezones', 'pandas._libs.tslibs.tzconversion', 'pandas._libs.tslibs.vectorized', 'pandas._libs.window', 'pandas._libs.window.aggregations', 'pandas._libs.window.indexers', 'pandas._libs.writers', 'pandas._testing', 'pandas._testing._io', 'pandas._testing._warnings', 'pandas._testing.asserters', 'pandas._testing.compat', 'pandas._testing.contexts', 'pandas._typing', 'pandas._version_meson', 'pandas.api', 'pandas.api.extensions', 'pandas.api.indexers', 'pandas.api.interchange', 'pandas.api.types', 'pandas.api.typing', 'pandas.arrays', 'pandas.compat', 'pandas.compat._constants', 'pandas.compat._optional', 'pandas.compat.compressors', 'pandas.compat.numpy', 'pandas.compat.numpy.function', 'pandas.compat.pickle_compat', 'pandas.compat.pyarrow', 'pandas.core', 'pandas.core._numba', 'pandas.core._numba.executor', 'pandas.core.accessor', 'pandas.core.algorithms', 'pandas.core.api', 'pandas.core.apply', 'pandas.core.array_algos', 'pandas.core.array_algos.datetimelike_accumulations', 'pandas.core.array_algos.masked_accumulations', 'pandas.core.array_algos.masked_reductions', 'pandas.core.array_algos.putmask', 'pandas.core.array_algos.quantile', 'pandas.core.array_algos.replace', 'pandas.core.array_algos.take', 'pandas.core.array_algos.transforms', 'pandas.core.arraylike', 'pandas.core.arrays', 'pandas.core.arrays._arrow_string_mixins', 'pandas.core.arrays._mixins', 'pandas.core.arrays._ranges', 'pandas.core.arrays._utils', 'pandas.core.arrays.arrow', 'pandas.core.arrays.arrow.accessors', 'pandas.core.arrays.arrow.array', 'pandas.core.arrays.base', 'pandas.core.arrays.boolean', 'pandas.core.arrays.categorical', 'pandas.core.arrays.datetimelike', 'pandas.core.arrays.datetimes', 'pandas.core.arrays.floating', 'pandas.core.arrays.integer', 'pandas.core.arrays.interval', 'pandas.core.arrays.masked', 'pandas.core.arrays.numeric', 'pandas.core.arrays.numpy_', 'pandas.core.arrays.period', 'pandas.core.arrays.sparse', 'pandas.core.arrays.sparse.accessor', 'pandas.core.arrays.sparse.array', 'pandas.core.arrays.string_', 'pandas.core.arrays.string_arrow', 'pandas.core.arrays.timedeltas', 'pandas.core.base', 'pandas.core.common', 'pandas.core.computation', 'pandas.core.computation.align', 'pandas.core.computation.api', 'pandas.core.computation.check', 'pandas.core.computation.common', 'pandas.core.computation.engines', 'pandas.core.computation.eval', 'pandas.core.computation.expr', 'pandas.core.computation.expressions', 'pandas.core.computation.ops', 'pandas.core.computation.parsing', 'pandas.core.computation.pytables', 'pandas.core.computation.scope', 'pandas.core.config_init', 'pandas.core.construction', 'pandas.core.dtypes', 'pandas.core.dtypes.api', 'pandas.core.dtypes.astype', 'pandas.core.dtypes.base', 'pandas.core.dtypes.cast', 'pandas.core.dtypes.common', 'pandas.core.dtypes.concat', 'pandas.core.dtypes.dtypes', 'pandas.core.dtypes.generic', 'pandas.core.dtypes.inference', 'pandas.core.dtypes.missing', 'pandas.core.flags', 'pandas.core.frame', 'pandas.core.generic', 'pandas.core.groupby', 'pandas.core.groupby.base', 'pandas.core.groupby.categorical', 'pandas.core.groupby.generic', 'pandas.core.groupby.groupby', 'pandas.core.groupby.grouper', 'pandas.core.groupby.indexing', 'pandas.core.groupby.numba_', 'pandas.core.groupby.ops', 'pandas.core.indexers', 'pandas.core.indexers.objects', 'pandas.core.indexers.utils', 'pandas.core.indexes', 'pandas.core.indexes.accessors', 'pandas.core.indexes.api', 'pandas.core.indexes.base', 'pandas.core.indexes.category', 'pandas.core.indexes.datetimelike', 'pandas.core.indexes.datetimes', 'pandas.core.indexes.extension', 'pandas.core.indexes.frozen', 'pandas.core.indexes.interval', 'pandas.core.indexes.multi', 'pandas.core.indexes.period', 'pandas.core.indexes.range', 'pandas.core.indexes.timedeltas', 'pandas.core.indexing', 'pandas.core.interchange', 'pandas.core.interchange.dataframe_protocol', 'pandas.core.interchange.from_dataframe', 'pandas.core.interchange.utils', 'pandas.core.internals', 'pandas.core.internals.api', 'pandas.core.internals.array_manager', 'pandas.core.internals.base', 'pandas.core.internals.blocks', 'pandas.core.internals.concat', 'pandas.core.internals.construction', 'pandas.core.internals.managers', 'pandas.core.internals.ops', 'pandas.core.methods', 'pandas.core.methods.describe', 'pandas.core.methods.selectn', 'pandas.core.methods.to_dict', 'pandas.core.missing', 'pandas.core.nanops', 'pandas.core.ops', 'pandas.core.ops.array_ops', 'pandas.core.ops.common', 'pandas.core.ops.dispatch', 'pandas.core.ops.docstrings', 'pandas.core.ops.invalid', 'pandas.core.ops.mask_ops', 'pandas.core.ops.missing', 'pandas.core.resample', 'pandas.core.reshape', 'pandas.core.reshape.api', 'pandas.core.reshape.concat', 'pandas.core.reshape.encoding', 'pandas.core.reshape.melt', 'pandas.core.reshape.merge', 'pandas.core.reshape.pivot', 'pandas.core.reshape.tile', 'pandas.core.reshape.util', 'pandas.core.roperator', 'pandas.core.sample', 'pandas.core.series', 'pandas.core.shared_docs', 'pandas.core.sorting', 'pandas.core.strings', 'pandas.core.strings.accessor', 'pandas.core.strings.base', 'pandas.core.strings.object_array', 'pandas.core.tools', 'pandas.core.tools.datetimes', 'pandas.core.tools.numeric', 'pandas.core.tools.timedeltas', 'pandas.core.tools.times', 'pandas.core.util', 'pandas.core.util.hashing', 'pandas.core.util.numba_', 'pandas.core.window', 'pandas.core.window.common', 'pandas.core.window.doc', 'pandas.core.window.ewm', 'pandas.core.window.expanding', 'pandas.core.window.numba_', 'pandas.core.window.online', 'pandas.core.window.rolling', 'pandas.errors', 'pandas.io', 'pandas.io._util', 'pandas.io.api', 'pandas.io.clipboards', 'pandas.io.common', 'pandas.io.excel', 'pandas.io.excel._base', 'pandas.io.excel._calamine', 'pandas.io.excel._odfreader', 'pandas.io.excel._odswriter', 'pandas.io.excel._openpyxl', 'pandas.io.excel._pyxlsb', 'pandas.io.excel._util', 'pandas.io.excel._xlrd', 'pandas.io.excel._xlsxwriter', 'pandas.io.feather_format', 'pandas.io.formats', 'pandas.io.formats.console', 'pandas.io.formats.format', 'pandas.io.formats.info', 'pandas.io.formats.printing', 'pandas.io.formats.string', 'pandas.io.gbq', 'pandas.io.html', 'pandas.io.json', 'pandas.io.json._json', 'pandas.io.json._normalize', 'pandas.io.json._table_schema', 'pandas.io.orc', 'pandas.io.parquet', 'pandas.io.parsers', 'pandas.io.parsers.arrow_parser_wrapper', 'pandas.io.parsers.base_parser', 'pandas.io.parsers.c_parser_wrapper', 'pandas.io.parsers.python_parser', 'pandas.io.parsers.readers', 'pandas.io.pickle', 'pandas.io.pytables', 'pandas.io.sas', 'pandas.io.sas.sasreader', 'pandas.io.spss', 'pandas.io.sql', 'pandas.io.stata', 'pandas.io.xml', 'pandas.plotting', 'pandas.plotting._core', 'pandas.plotting._matplotlib', 'pandas.plotting._matplotlib.boxplot', 'pandas.plotting._matplotlib.converter', 'pandas.plotting._matplotlib.core', 'pandas.plotting._matplotlib.groupby', 'pandas.plotting._matplotlib.hist', 'pandas.plotting._matplotlib.misc', 'pandas.plotting._matplotlib.style', 'pandas.plotting._matplotlib.timeseries', 'pandas.plotting._matplotlib.tools', 'pandas.plotting._misc', 'pandas.testing', 'pandas.tseries', 'pandas.tseries.api', 'pandas.tseries.frequencies', 'pandas.tseries.offsets', 'pandas.util', 'pandas.util._decorators', 'pandas.util._exceptions', 'pandas.util._print_versions', 'pandas.util._tester', 'pandas.util._validators', 'pandas.util.version']
+
+  This prints a sorted list of all module names in ~sys.modules~ that
+  contain the substring ~'pandas'~. We're going to to some I/O but that
+  submodule, pandas.io, is only loaded once we perform I/O, e.g. when
+  we use ~pd.read_csv~ to read CSV data into a data frame.
+
+* 2. Download CSV data from =kaggle.com= into a ~DataFrame~
+
+- Download the ~Iris~ dataset from Kaggle.
+
+  The ~Iris~ dataset is a classic for introductory machine learning and
+  data science. You can download it directly from a URL - I have
+  saved the long address in a tinyurl:
+  #+begin_src python :results none :exports both :session *Python* :python python3
+    data_url = 'https://tinyurl.com/iris-data-csv' # raw csv data
+  #+end_src
+
+- Load dataset into a ~pandas~ ~DataFrame~.
+
+  The quickest way to load the CSV data from the web into a dataframe
+  is just like in R: =read_csv(data_url)= except that ~read_csv()~ is not
+  built-in but in ~pandas~ (aliased to =pd=), so to find it, you need to
+  run =pd.read_csv(data_url)=.
+
+- This command fetches the data if they exist at the site. In Colab,
+  the data frame is shown in a reduced form, as a smart table.
+  #+begin_example python
+  pd.read_csv(data_url)
+  #+end_example
+
+- Include exception handling with ~try~ ~except~: When interacting with
+  the web, you always want to handle potential exceptions - e.g. data
+  not available or corrupted, because of link or network errors.
+
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    try:
+        df = pd.read_csv(data_url)
+        print("Dataset downloaded and loaded successfully!")
+    except Exception as e:
+        print(f"Error loading dataset: {e}")
+        print("Please check your internet connection or the URL.")
+  #+end_src
+
+  #+RESULTS:
+  : Dataset downloaded and loaded successfully!
+
+- The statement =print(f"Error loading dataset: {e}")= contains a
+  so-called `f-string`, a formatted string that allows you to print
+  variables inside strings.
+
+- ~Exception~ is a class of several different exceptions, errors and
+  warnings that can occur, [[https://docs.python.org/3/library/exceptions.html][see here]] for the full list.
+
+* 3. Explore the data
+
+- This is where the fun begins: You now get to look at the data with
+  the eye of a detective. We already saw what happened when we try to
+  print the entire ~DataFrame~:
+
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(df)
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+       sepal_length  sepal_width  petal_length  petal_width    species
+  0             5.1          3.5           1.4          0.2     setosa
+  1             4.9          3.0           1.4          0.2     setosa
+  2             4.7          3.2           1.3          0.2     setosa
+  3             4.6          3.1           1.5          0.2     setosa
+  4             5.0          3.6           1.4          0.2     setosa
+  ..            ...          ...           ...          ...        ...
+  145           6.7          3.0           5.2          2.3  virginica
+  146           6.3          2.5           5.0          1.9  virginica
+  147           6.5          3.0           5.2          2.0  virginica
+  148           6.2          3.4           5.4          2.3  virginica
+  149           5.9          3.0           5.1          1.8  virginica
+
+  [150 rows x 5 columns]
+  #+end_example
+
+- We are protected against overflow. You can also specify if you want
+  to look at the top or bottom N rows only:
+
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(df.head(3))
+    print(df.tail(3))
+  #+end_src
+
+  #+RESULTS:
+  :    sepal_length  sepal_width  petal_length  petal_width species
+  : 0           5.1          3.5           1.4          0.2  setosa
+  : 1           4.9          3.0           1.4          0.2  setosa
+  : 2           4.7          3.2           1.3          0.2  setosa
+  :      sepal_length  sepal_width  petal_length  petal_width    species
+  : 147           6.5          3.0           5.2          2.0  virginica
+  : 148           6.2          3.4           5.4          2.3  virginica
+  : 149           5.9          3.0           5.1          1.8  virginica
+
+- Notice how the computer knows to apply ~head~ to =df=: The dot operator
+  ~.~ binds the method ~pandas.head()~ to the ~pandas~ object =df=.
+
+- Again, there is a safe way to do this that checks if the ~DataFrame~
+  is actually loaded and available as a local variable in
+  ~locals()~. This is Python's equivalent for ~ls()~.
+
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(locals())
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  {'__name__': '__main__', '__doc__': None, '__package__': None, '__loader__': <class '_frozen_importlib.BuiltinImporter'>, '__spec__': None, '__annotations__': {}, '__builtins__': <module 'builtins' (built-in)>, 'tty': <module 'tty' from '/usr/lib/python3.10/tty.py'>, '__PYTHON_EL_eval': <function __PYTHON_EL_eval at 0x79b0c70f1a20>, '__PYTHON_EL_eval_file': <function __PYTHON_EL_eval_file at 0x79b0c70f1bd0>, 'readline': <module 'readline' from '/usr/lib/python3.10/lib-dynload/readline.cpython-310-x86_64-linux-gnu.so'>, '__org_babel_python_format_value': <function __org_babel_python_format_value at 0x79b0c70f1c60>, '__PYTHON_EL_native_completion_setup': <function __PYTHON_EL_native_completion_setup at 0x79b0c70f1cf0>, 'f': <_io.TextIOWrapper name='/tmp/babel-Dl2Brz/python-mlYXYP' mode='r' encoding='UTF-8'>, 'pd': <module 'pandas' from '/home/aletheia/.local/lib/python3.10/site-packages/pandas/__init__.py'>, 'plt': <module 'matplotlib.pyplot' from '/home/aletheia/.local/lib/python3.10/site-packages/matplotlib/pyplot.py'>, 'sys': <module 'sys' (built-in)>, 'matplotlib': <module 'matplotlib' from '/home/aletheia/.local/lib/python3.10/site-packages/matplotlib/__init__.py'>, 'l': 0      39.1
+  1      39.5
+  2      40.3
+  3       NaN
+  4      36.7
+         ...
+  339     NaN
+  340    46.8
+  341    50.4
+  342    45.2
+  343    49.9
+  Name: bill_length_mm, Length: 344, dtype: float64, 'd': 0      18.7
+  1      17.4
+  2      18.0
+  3       NaN
+  4      19.3
+         ...
+  339     NaN
+  340    14.3
+  341    15.7
+  342    14.8
+  343    16.1
+  Name: bill_depth_mm, Length: 344, dtype: float64, 'sns': <module 'seaborn' from '/home/aletheia/.local/lib/python3.10/site-packages/seaborn/__init__.py'>, 'ast': <module 'ast' from '/usr/lib/python3.10/ast.py'>, '__org_babel_python_tmpfile': <_io.TextIOWrapper name='/tmp/babel-Dl2Brz/python-Rq0FDE' mode='r' encoding='UTF-8'>, '__org_babel_python_ast': <ast.Module object at 0x79affe6bec80>, '__org_babel_python_final': None, 'data_url': 'https://tinyurl.com/iris-data-csv', 's': 'virginica', 'sub':      sepal_length  sepal_width  petal_length  petal_width    species
+  100           6.3          3.3           6.0          2.5  virginica
+  101           5.8          2.7           5.1          1.9  virginica
+  102           7.1          3.0           5.9          2.1  virginica
+  103           6.3          2.9           5.6          1.8  virginica
+  104           6.5          3.0           5.8          2.2  virginica
+  105           7.6          3.0           6.6          2.1  virginica
+  106           4.9          2.5           4.5          1.7  virginica
+  107           7.3          2.9           6.3          1.8  virginica
+  108           6.7          2.5           5.8          1.8  virginica
+  109           7.2          3.6           6.1          2.5  virginica
+  110           6.5          3.2           5.1          2.0  virginica
+  111           6.4          2.7           5.3          1.9  virginica
+  112           6.8          3.0           5.5          2.1  virginica
+  113           5.7          2.5           5.0          2.0  virginica
+  114           5.8          2.8           5.1          2.4  virginica
+  115           6.4          3.2           5.3          2.3  virginica
+  116           6.5          3.0           5.5          1.8  virginica
+  117           7.7          3.8           6.7          2.2  virginica
+  118           7.7          2.6           6.9          2.3  virginica
+  119           6.0          2.2           5.0          1.5  virginica
+  120           6.9          3.2           5.7          2.3  virginica
+  121           5.6          2.8           4.9          2.0  virginica
+  122           7.7          2.8           6.7          2.0  virginica
+  123           6.3          2.7           4.9          1.8  virginica
+  124           6.7          3.3           5.7          2.1  virginica
+  125           7.2          3.2           6.0          1.8  virginica
+  126           6.2          2.8           4.8          1.8  virginica
+  127           6.1          3.0           4.9          1.8  virginica
+  128           6.4          2.8           5.6          2.1  virginica
+  129           7.2          3.0           5.8          1.6  virginica
+  130           7.4          2.8           6.1          1.9  virginica
+  131           7.9          3.8           6.4          2.0  virginica
+  132           6.4          2.8           5.6          2.2  virginica
+  133           6.3          2.8           5.1          1.5  virginica
+  134           6.1          2.6           5.6          1.4  virginica
+  135           7.7          3.0           6.1          2.3  virginica
+  136           6.3          3.4           5.6          2.4  virginica
+  137           6.4          3.1           5.5          1.8  virginica
+  138           6.0          3.0           4.8          1.8  virginica
+  139           6.9          3.1           5.4          2.1  virginica
+  140           6.7          3.1           5.6          2.4  virginica
+  141           6.9          3.1           5.1          2.3  virginica
+  142           5.8          2.7           5.1          1.9  virginica
+  143           6.8          3.2           5.9          2.3  virginica
+  144           6.7          3.3           5.7          2.5  virginica
+  145           6.7          3.0           5.2          2.3  virginica
+  146           6.3          2.5           5.0          1.9  virginica
+  147           6.5          3.0           5.2          2.0  virginica
+  148           6.2          3.4           5.4          2.3  virginica
+  149           5.9          3.0           5.1          1.8  virginica, 'pp':     species     island  bill_length_mm  ...  flipper_length_mm  body_mass_g     sex
+  0    Adelie  Torgersen            39.1  ...              181.0       3750.0    MALE
+  1    Adelie  Torgersen            39.5  ...              186.0       3800.0  FEMALE
+  2    Adelie  Torgersen            40.3  ...              195.0       3250.0  FEMALE
+  3    Adelie  Torgersen             NaN  ...                NaN          NaN     NaN
+  4    Adelie  Torgersen            36.7  ...              193.0       3450.0  FEMALE
+  ..      ...        ...             ...  ...                ...          ...     ...
+  339  Gentoo     Biscoe             NaN  ...                NaN          NaN     NaN
+  340  Gentoo     Biscoe            46.8  ...              215.0       4850.0  FEMALE
+  341  Gentoo     Biscoe            50.4  ...              222.0       5750.0    MALE
+  342  Gentoo     Biscoe            45.2  ...              212.0       5200.0  FEMALE
+  343  Gentoo     Biscoe            49.9  ...              213.0       5400.0    MALE
+
+  [344 rows x 7 columns], 'pp1':     species     island  bill_length_mm  ...  flipper_length_mm  body_mass_g     sex
+  0    Adelie  Torgersen            39.1  ...              181.0       3750.0    MALE
+  1    Adelie  Torgersen            39.5  ...              186.0       3800.0  FEMALE
+  2    Adelie  Torgersen            40.3  ...              195.0       3250.0  FEMALE
+  3    Adelie  Torgersen             NaN  ...                NaN          NaN     NaN
+  4    Adelie  Torgersen            36.7  ...              193.0       3450.0  FEMALE
+  ..      ...        ...             ...  ...                ...          ...     ...
+  339  Gentoo     Biscoe             NaN  ...                NaN          NaN     NaN
+  340  Gentoo     Biscoe            46.8  ...              215.0       4850.0  FEMALE
+  341  Gentoo     Biscoe            50.4  ...              222.0       5750.0    MALE
+  342  Gentoo     Biscoe            45.2  ...              212.0       5200.0  FEMALE
+  343  Gentoo     Biscoe            49.9  ...              213.0       5400.0    MALE
+
+  [344 rows x 7 columns], 'os': <module 'os' from '/usr/lib/python3.10/os.py'>, 'df':      sepal_length  sepal_width  petal_length  petal_width    species
+  0             5.1          3.5           1.4          0.2     setosa
+  1             4.9          3.0           1.4          0.2     setosa
+  2             4.7          3.2           1.3          0.2     setosa
+  3             4.6          3.1           1.5          0.2     setosa
+  4             5.0          3.6           1.4          0.2     setosa
+  ..            ...          ...           ...          ...        ...
+  145           6.7          3.0           5.2          2.3  virginica
+  146           6.3          2.5           5.0          1.9  virginica
+  147           6.5          3.0           5.2          2.0  virginica
+  148           6.2          3.4           5.4          2.3  virginica
+  149           5.9          3.0           5.1          1.8  virginica
+
+  [150 rows x 5 columns], '__warningregistry__': {'version': 5673, ('More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`). Consider using `matplotlib.pyplot.close()`.', <class 'RuntimeWarning'>, 4): True}}
+  #+end_example
+
+- The final command performs the check:
+
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    if 'df' in locals():
+        print(df.head())
+    else:
+        print("DataFrame 'df' not found. Run previous cell to load it?")
+  #+end_src
+
+  #+RESULTS:
+  :    sepal_length  sepal_width  petal_length  petal_width species
+  : 0           5.1          3.5           1.4          0.2  setosa
+  : 1           4.9          3.0           1.4          0.2  setosa
+  : 2           4.7          3.2           1.3          0.2  setosa
+  : 3           4.6          3.1           1.5          0.2  setosa
+  : 4           5.0          3.6           1.4          0.2  setosa
+
+- The error message suggests a common issue in notebooks: When you
+  come back to it after a while, your instance will have been
+  disconnected, and your session has ended. You now must run all cells
+  up to this point to repopulate the session, using the ~Runtime ->
+  Run all~ tab at the top.
+
+- Another useful function is ~pandas.DataFrame.info~ - that's the
+  equivalent of ~str~ in R.
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(df.info())
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  <class 'pandas.core.frame.DataFrame'>
+  RangeIndex: 150 entries, 0 to 149
+  Data columns (total 5 columns):
+   #   Column        Non-Null Count  Dtype
+  ---  ------        --------------  -----
+   0   sepal_length  150 non-null    float64
+   1   sepal_width   150 non-null    float64
+   2   petal_length  150 non-null    float64
+   3   petal_width   150 non-null    float64
+   4   species       150 non-null    object
+  dtypes: float64(4), object(1)
+  memory usage: 6.0+ KB
+  None
+  #+end_example
+
+- Here is a [[https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html][tutorial introduction]] to ~pandas~ data structures.
+
+- Lastly, let's get a glimpse of the statistical properties of the data:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(df.describe())
+  #+end_src
+
+  #+RESULTS:
+  :        sepal_length  sepal_width  petal_length  petal_width
+  : count    150.000000   150.000000    150.000000   150.000000
+  : mean       5.843333     3.057333      3.758000     1.199333
+  : std        0.828066     0.435866      1.765298     0.762238
+  : min        4.300000     2.000000      1.000000     0.100000
+  : 25%        5.100000     2.800000      1.600000     0.300000
+  : 50%        5.800000     3.000000      4.350000     1.300000
+  : 75%        6.400000     3.300000      5.100000     1.800000
+  : max        7.900000     4.400000      6.900000     2.500000
+
+* 4. Plotting with Python
+
+- Making plots, or graphs, is another way of exploring the data. Two
+  popular graphics packages in Python are ~matplotlib~ and ~seaborn~.
+
+- ~matplotlib~ is a low-level plotting library that can draw figures,
+  axes, labels, lines etc.
+
+- We're going to ~import~ a sub-library of ~matplotlib~, ~pyplot~, with the
+  alias =plt=.
+
+- To *practice* what you learnt earlier, check that =plt= is indeed loaded
+  into the Python session namespace.
+
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    import matplotlib.pyplot as plt
+    print('matplotlib' in sys.modules)
+  #+end_src
+
+  #+RESULTS:
+  : True
+
+- A common source of error: The alias ~plt~ is not loaded but it's the
+  name that you need to use to access methods. Aliases like ~plt~ are
+  local variable bindings in your namespace - they do not appear in
+  ~sys.modules~. When you do ~import matplotlib.pyplot as plt~,
+  Python:
+  1. Loads the module ~matplotlib.pyplot~ if not already loaded.
+  2. Stores it in ~sys.modules~ under its true name.
+  3. Binds a reference to that module object to the name ~plt~ in your
+     current namespace
+
+- What also might have happened is that "no module named matplotlib"
+  is found because the library was not installed. To install, use ~pip~
+  on the command line:
+  #+begin_example
+    !pip install matplotlib
+  #+end_example
+
+* 5. Decide what you want to plot
+
+- So far we haven't cared at all what these data are and what they
+  mean. If you don't want to do a web search, this is a perfect entry
+  for AI.
+
+- Open the Gemini console, and ask:
+  #+begin_example
+  What is in the `Iris` dataset, and where does it come from?
+  #+end_example
+
+- Once you got the answer, you can ask Gemini to add it to the
+  notebook. If it does not give you a link to look up more, ask for
+  it. If it gives you a Wikipedia link, ask for another. The best
+  source is the UCI archive (see below):
+  #+begin_quote
+  "The `Iris` dataset is a classic and widely used dataset in machine
+  learning and statistics. It contains 150 samples of iris flowers,
+  with each sample having four features: sepal length, sepal width,
+  petal length, and petal width, all measured in centimeters. Each
+  sample is also labeled with one of three species of iris: Setosa,
+  Versicolor, or Virginica. It's often used for classification tasks
+  to predict the species of an iris flower based on its
+  measurements. The dataset was introduced by the British statistician
+  and biologist Ronald Fisher in 1936.
+
+  For a comprehensive reference, you can find the Iris dataset at the
+  [[https://archive.ics.uci.edu/ml/datasets/iris][UCI Machine Learning Repository]]."
+  #+end_quote
+
+- Now you know! Now the columns of the ~DataFrame~ make sense. Print the
+  ~info()~ again:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(df.info())
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  <class 'pandas.core.frame.DataFrame'>
+  RangeIndex: 150 entries, 0 to 149
+  Data columns (total 5 columns):
+   #   Column        Non-Null Count  Dtype
+  ---  ------        --------------  -----
+   0   sepal_length  150 non-null    float64
+   1   sepal_width   150 non-null    float64
+   2   petal_length  150 non-null    float64
+   3   petal_width   150 non-null    float64
+   4   species       150 non-null    object
+  dtypes: float64(4), object(1)
+  memory usage: 6.0+ KB
+  None
+  #+end_example
+
+- What additional information does this table give us?
+  #+begin_quote
+  1. There are for numeric (0-3) and one categorical feature
+     (=species=).
+  2. The numeric features are represented as floating-point numbers.
+  3. There are no missing values (~NaN~).
+  #+end_quote
+
+- Without this semantic detour, plotting makes no sense because you
+  have to first identify what you want to plot and why, before you
+  decide how. And the plotting functions require decisions on
+  coordinates and other customizations from you.
+
+- What can we plot here?
+  #+begin_quote
+  1. We can create *scatterplots* of the numeric variables (in 2D or 3D)
+     for all =species= to see how they vary by =species=.
+  2. We can create *barplots* of the mean value of each feature per
+     =species= to compare average measurements across groups.
+  3. We can create *boxplots* for each feature against the =species= to
+     show the statistical properties of the distributions.
+  #+end_quote
+
+- In this notebook, we will only demonstrate scatterplots. For a
+  collection of hundreds of charts made with Python using different
+  graphics packages, see [[https://python-graph-gallery.com/][The Python Graph Gallery]]. 
+  
+* 6. Create a simple plot with ~matplotlib~
+
+- First, we create a simple plot that shows the relationship of two
+  features for all =species=, =sepal_length= and =sepal_width=.
+
+    #+begin_src python :file ../img/iris.png :results file graphics output :exports both :session *Python* :python python3
+      plt.scatter(x=df['sepal_length'],
+                  y=df['sepal_width'])
+      plt.savefig("../img/iris.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/iris.png]]
+
+- To access the features, which are stored as vectors in the columns
+  of the ~DataFrame~, we used the subscript or index operator ~[]~ and the
+  names of the features. The plotting function then picks the values
+  from the column one after the next in order of appearance/sampling.
+
+- This plot is easier to understand with some minimal customization,
+  like a ~title()~, and labels for x and y coordinates. Unlike other
+  commands, we cannot just add these to an existing plot but we must
+  clean the graphics and create a new plot.
+
+  #+begin_src python :file ../img/iris2.png :results file graphics output :exports both :session *Python* :python python3
+    plt.clf() # cleans the slate
+    plt.scatter(df['sepal_length'],df['sepal_width'])
+    plt.title("Sepal Width vs. Sepal Length (Iris Dataset)")
+    plt.xlabel("Sepal Length (cm)")
+    plt.ylabel("Sepal Width (cm)")
+    plt.savefig("../img/iris2.png")
+    #+end_src
+
+    #+RESULTS:
+    [[file:../img/iris2.png]]
+
+- There is no grouping here, no colors by species, just a straight
+  plot of all data in the length and width columns. In this way, we
+  are losing information that's actually there.
+
+- Since Python functions can be "chained" (the equivalent of R's
+  pipelining), you can write this much shorter with a ~pandas~ wrapper:
+
+  #+begin_src python :file iris2a.png :results file graphics output :exports both :session *Python* :python python3
+    df.plot.scatter(x='sepal_length',y='sepal_width')
+    plt.savefig("../img/iris2.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:iris2a.png]]
+
+- The ~Iris~ dataset is often used to demonstrate the abilities of
+  machine learning models to cluster the three species. To show them,
+  we need to subset the data (group them) by species and add the
+  species information during the plotting. Python will then
+  automatically assign different colors:
+
+  #+begin_src python :file ../img/iris3.png :results file graphics output :exports both :session *Python* :python python3
+    for s in df['species'].unique():  # iterate over the 3 unique species names
+        sub = df[df['species']==s]    # filter df to rows where species matches s
+        plt.scatter(x=sub['sepal_length'],
+                    y=sub['sepal_width'],
+                    label=s)
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/iris3.png]]
+
+- Let's see how this works in detail:
+
+  1. =df['species'].unique()= returns a list of the three unique species names:
+     #+begin_src python :results output :exports both :session *Python* :python python3 
+       print(df['species'].unique())
+     #+end_src
+
+     #+RESULTS:
+     : ['setosa' 'versicolor' 'virginica']
+
+  2. =df['species']==s= produces a series of Booleans: ~True~ for the
+     current value of =species=, ~False~ otherwise.
+
+     #+begin_src python :results output :exports both :session *Python* :python python3 
+       s = 'setosa'
+       print(df['species']==s)
+     #+end_src
+
+     #+RESULTS:
+     #+begin_example
+     0       True
+     1       True
+     2       True
+     3       True
+     4       True
+            ...  
+     145    False
+     146    False
+     147    False
+     148    False
+     149    False
+     Name: species, Length: 150, dtype: bool
+     #+end_example
+
+  3. =df[...]= uses the Boolean series (or logical flag vector) as a
+     filter and keeps only rows where the value is ~True~: a total of 50
+     rows x 5 columns for each =species=:
+     #+begin_src python :results output :exports both :session *Python* :python python3 
+       sub = df[df['species']==s]
+       print(sub.shape)
+     #+end_src
+
+     #+RESULTS:
+     : (50, 5)
+
+  4. =plt.scatter(x=sub[...], y=sub[...])= then plots each group. The
+     ~label~ parameter assigns a different color to each group automatically.
+
+- The grouping by masking row values using a Boolean index vector (or
+  Series in Python) is worth showing again because it's a common trick:
+
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    s = 'setosa'             
+    mask = df['species']==s  # Step 1: Boolean series (flag vector)
+    sub = df[mask]           # Step 2: Filter rows using mask
+    print(mask.head())       # Show True/False values
+    print(sub.head())        # Show the filtered rows
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  0    True
+  1    True
+  2    True
+  3    True
+  4    True
+  Name: species, dtype: bool
+     sepal_length  sepal_width  petal_length  petal_width species
+  0           5.1          3.5           1.4          0.2  setosa
+  1           4.9          3.0           1.4          0.2  setosa
+  2           4.7          3.2           1.3          0.2  setosa
+  3           4.6          3.1           1.5          0.2  setosa
+  4           5.0          3.6           1.4          0.2  setosa
+  #+end_example
+     
+- When I first wrote this last code, I made an instructive
+  mistake. This command does not work but aborts with a
+  ~KeyError~. What's wrong?
+
+  #+begin_example
+    for s in df['species'].unique():
+        sub = df[df['species'==s]]
+        plt.scatter(x=sub['sepal_length'],
+                    y=sub['sepal_width'],
+                    label=s)
+  #+end_example
+
+- Answer:
+  #+begin_quote
+  =df[df[X]]= looks for a key to a column =X=. But there is no column name
+  ='species'==s= - hence the ~KeyError~. You need to correct this to
+  =df['species']==s= to get a key/column name to be compared with =s=.
+  #+end_quote
+
+- Subsetting rule to remember:
+  #+begin_quote
+  =df['col']= -> select a column
+  =df['col'] ==== =value= -> Boolean Series (aka vector)
+  =df[Boolean_series]= -> row filter (when Boolean is =True=)
+  #+end_quote
+
+- For more information on ~matplotlib~, see [[https://colab.research.google.com/github/ageron/handson-ml3/blob/main/tools_matplotlib.ipynb][Géron's tutorial]].
+
+- As a small challenge, copy the previous plot and add a title and
+  axis labels as before.
+  
+  #+begin_src python :file ../img/iris4.png :results file graphics output :exports both :session *Python* :python python3
+    plt.clf()
+    plt.title("Sepal Width vs. Sepal Length for three species of Iris")
+    plt.xlabel("Sepal Length [cm]")        
+    plt.ylabel("Sepal Width [cm]")
+    for s in df['species'].unique(): 
+        sub = df[df['species']==s]   
+        plt.scatter(x=sub['sepal_length'],
+                    y=sub['sepal_width'],
+                    label=s)
+    plt.savefig("../img/Iris4")
+  #+end_src
+
+- Were you trying to put the title and label definitions inside the
+  loop right after the plt.scatter() call? This would work, too, but
+  it would print them on top of one another three times.
+
+- In Python, the preparation of the figure and the plotting of the
+  data, are interleaved. You will see that even more clearly with the
+  next graphics package, seaborn.
+
+* 7. Create a fancy plot with ~seaborn~
+
+  - The ~seaborn~ library is built on top of ~matplotlib~ and allows
+    automatic grouping of the data by the variable ~species~.
+
+  - First, we load the library, and check if the loading worked by
+    asking if the alias =sns= is available in the current namespace:
+    #+begin_src python :results output :exports both :session *Python* :python python3
+      import seaborn as sns
+      print('sns' in locals())
+    #+end_src
+
+    #+RESULTS:
+    : True
+
+  - Now we create a fancy plot with grouping by =species= in one line of
+    code:
+    #+begin_src python :file ../img/iris5.png :results file graphics output :exports both :session *Python* :python python3
+      sns.scatterplot(data=df,
+                      x='sepal_length',
+                      y='sepal_width',
+                      hue='species')
+    #+end_src
+
+    #+RESULTS:
+    [[file:../img/iris5.png]]
+
+  - The customization is done using ~matplotlib~ functions. We copy the
+    previous code and add title, labels, and, for greater readability,
+    a grid:
+
+    #+begin_src python :file ../img/iris6.png :results file graphics output :exports both :session *Python* :python python3
+      # base plot
+      sns.scatterplot(data=df,
+                      x='sepal_length',
+                      y='sepal_width',
+                      hue='species', 
+                      palette='viridis') 
+      ## customization
+      plt.title('Sepal Length vs. Sepal Width of Iris Species')
+      plt.xlabel('Sepal Length (cm)')
+      plt.ylabel('Sepal Width (cm)')
+      plt.grid(True, # show a grid
+               linestyle='--', # gridline style
+               alpha=0.6) # gridline transparency
+      plt.savefig("../img/iris6.png")
+    #+end_src
+
+    #+RESULTS:
+    [[file:../img/iris6.png]]
+
+* Summary
+
+|    | Command / Concept               | Definition                              |
+|----+---------------------------------+-----------------------------------------|
+|  1 | =import pandas as pd=             | Load pandas library as alias pd         |
+|  2 | =sys.modules=                     | Dict of all currently loaded  modules   |
+|  3 | =any("pandas" in m for m in ...)= | Test whether pandas is loaded           |
+|  4 | =dir(pd)=                         | List names defined by pandas            |
+|  5 | =pd.read_csv(url)=                | Read CSV data from URL into DataFrame   |
+|  6 | =try / except=                    | Handle runtime errors safely            |
+|  7 | =Exception=                       | Base class for runtime errors           |
+|  8 | =f"string {var}"=                 | Formatted string (f-string)             |
+|  9 | =print(df)=                       | Display entire DataFrame =df=             |
+| 10 | =df.head()=                       | Show first rows of DataFrame            |
+| 11 | =locals()=                        | Dict of current local variables         |
+| 12 | ='df' in locals()=                | Check if DataFrame exists               |
+| 13 | =import matplotlib.pyplot as plt= | Load matplotlib plotting interface      |
+| 14 | =plt.scatter(x,y)=                | Draw scatter plot                       |
+| 15 | =plt.xlabel(), plt.ylabel()=      | Label plot axes                         |
+| 16 | =plt.savefig(file)=               | Save plot to file                       |
+| 17 | =plt.show()=                      | Save plot to screen display             |
+| 18 | =df.plot.scatter(...)=            | pandas wraps matplotlib scatter         |
+| 19 | =df['col']=                       | Select column (Series)                  |
+| 20 | =df['col'] == value=               | Boolean mask for rows                   |
+| 21 | =df[mask]=                        | Filter rows using Boolean mask          |
+| 22 | =plt.figure(figsize=(w,h))=       | Create new figure of given size         |
+| 23 | =figsize=                         | Physical plot size, not data scaling    |
+| 24 | =plt.grid(alpha=x)=               | Add grid with transparency              |
+| 25 | =alpha=                           | Transparency (0=clear, 1=opaque)        |
+| 26 | =plt.legend()=                    | Show legend for labeled plot elements   |
+| 27 | =import seaborn as sns=           | Load seaborn plotting library           |
+| 28 | =sns.scatterplot(...)=            | Scatter plot with automatic grouping    |
+| 29 | =hue=='var'                       | Group data by categorical variable      |
+| 30 | =locals()=                        | Dictionary of current namespace entries |
++--------------------------------+-------------------------------------------------+
+
+* Programming Assignment (Home)
+
+Test your understanding of "Getting started with Colab (and Python)"
+by creating a notebook for the Palmer Penguin dataset available for
+you online from: [[https://tinyurl.com/palmer-data-csv][tinyurl.com/palmer-data-csv]].
+
+Tasks:
+1) Create a new Colab notebook.
+2) Load ~pandas~ with the alias =pd=.
+3) Load the dataset into a ~DataFrame~ df with ~pd.read_csv~
+4) Check if the dataset is loaded in the current namespace by checking
+   if =pd= is in ~locals()~.
+5) Display the first few lines of the dataset with ~pd.head()~
+6) Make a simple plot of the =bill_length_mm= vs. =bill_depth_mm=
+   features using ~matplotlib.pyplot~ as =plt=.
+7) Make a fully customized plot of the dataset grouping by =species=
+   using ~seaborn~ as =sns=.
+8) Make sure that the notebook is shared.
+9) Upload the (shareable) URL to your finished notebook to Teams.
+10) Use markdown for headlines and comments (outside of the code
+    blocks), and created a structured notebook, not just a bunch of
+    code.
+
+Let me know if you have any problems!   
+
+* Footnotes
+
+[fn:1]IPython is an enhanced interactive Python shell that replaces
+the standard Python REPL with features designed for scientific
+computing - including integration with Jupyter Notebooks (like Colab).

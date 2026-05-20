@@ -1,0 +1,131 @@
+#+TITLE:Agenda - Principles of AI
+#+AUTHOR:Marcus Birkenkrahe
+#+SUBTITLE:CS 540, Catholic Polytechnic University
+#+STARTUP: overview hideblocks indent entitiespretty:
+* Prayers
+** Opening Prayer (Standard)
+#+attr_html: :width 550px :float nil:
+[[../../img/opening_prayers.png]]
+** Closing Prayer (Aquinas)
+#+attr_html: :width 550px :float nil:
+[[../../img/closing_prayers.png]]
+** Why these prayers?
+
+- *The "Our Father"*, because we learn everything through him.
+- *The "Hail Mary"*, because we need trust and humility to learn.
+- *St. Albert the Great*, because he is the patron saint of scientists,
+  philosophers, and students of the natural sciences.
+- *St. Thomas Aquinas*, because he is the patron saint of Catholic
+  schools, universities, and scholars.
+- *St. Isidore of Seville*, because he is the patron saint of students,
+  scholars, the internet, computer users and encyclopedias.
+- *A student's prayer* is by St. Thomas Aquinas.
+
+* Week 1 - Overview and Getting Started with Python in Colab
+
+- [ ] Opening *prayer*
+- [ ] *Syllabus* walk-through
+- [ ] Course *infrastructure*
+- [ ] Class *workflow*
+- [ ] DataCamp *assignments* and walk-through
+- [ ] Getting started with *Python and Colab*
+- [ ] *Wrap-up*
+- [ ] Closing *prayer*
+
+** Course infrastructure
+
+- MS Teams -> assignments, tests, recordings, chat, grades
+- GitHub -> class materials
+- Colab -> notebooks
+
+** Class workflow
+
+- Each 90-minutes online session will (usually) include:
+  1. An opening *prayer*
+  2. A short *review* of what we did the last session.
+  3. A little *coding* to warm up the engines.
+  4. Lecture with some new *concepts* (or more on some old concepts).
+  5. *Code* along with me!
+  6. Practice the new concepts by solving a *problem*.
+  7. A *wrap-up* to find out what you learnt.
+  8. A closing *prayer*.
+
+** DataCamp assignments & walk-through (coding lessons)
+
+- You will complete one DataCamp lesson per week.
+
+- The lessons are fairly well aligned with the textbook chapters.
+
+- Timeframes are given (e.g. 1-4 hours) but actual time varies.
+
+- When working carefully—running code outside the platform, testing
+  variations, or researching errors—you should expect:~60–90 minutes
+  per lesson.
+
+- To get full value from DataCamp, you are expected to:
+  + Complete all exercises (not skip or guess)
+  + Re-run key examples outside the platform (e.g., Colab or local
+    Python)
+  + Experiment with small modifications
+  + Look up unfamiliar concepts or errors
+
+- DataCamp is used to:
+  + Reinforce syntax and patterns
+  + Provide additional guided practice
+  + Build fluency through repetition
+
+- I will check your understanding through reviews and tests.
+
+** Getting started with Python and Google Colaboratory ("Colab")
+
+You'll learn ML/Python through a "literate programming":
+
+1. Login to a Google account (must have).
+2. Open =colab.research.google.com= in your browser (Chrome best).
+3. Code along with me. Ask as many questions as you can.
+
+The completed script with detailed annotations is available as a PDF
+(=.pdf=) or an Org-mode (=.org=) file to read on GitHub, or as a Colab
+notebook (=.ipynb=) to upload yourself, or to view in Colab.
+
+To open GitHub, go to: [[https://github.com/birkenkrahe/cs540][github.com/birkenkrahe/cs540]]
+
+Géron has three Python tutorials with notebooks, for NumPy,
+Matplotlib, and Pandas: https://homl.info/tutorials-p
+
+** Next Assignments
+
+- *Mandatory:*
+
+  1) Register at DataCamp if you haven't done it yet.
+  2) Complete the course "[[https://app.datacamp.com/learn/courses/understanding-machine-learning][Understanding Machine Learning]]".
+  3) Complete and submit the programming assignment (notebook).
+  4) Complete and submit the first quiz (multiple choice).
+
+*Can you open the assignment now and confirm that you see a "TURN IN"
+button?*
+
+- *Optional:*
+  1) *Read* "The Fundamentals of Machine Learning" (pp. 1-40).
+  2) *Play* through the Colab notebook for this chapter.
+  3) *Check out* "Introduction to Python" at DataCamp.
+     
+- *Note:* There will not be a class on June 3rd (since I'm moving)
+
+- If there's no class meeting, I will record a *code along* lecture that
+  you can watch instead, and/or a home exercise in addition to the
+  DataCamp assignment.
+
+** A note on using AI
+
+- As a general rule, I want you to use AI whenever you can.
+
+- When I don't want you to use AI, it will say so on the assignment.
+
+- However, you need to use it wisely, otherwise it'll cost you time.
+
+- Also, whenever you use AI, you're not learning, just producing.
+
+- I will usually ask you if and how you used AI for your work.
+
+  
