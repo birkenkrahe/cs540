@@ -1,5 +1,5 @@
 # Principles of Artificial Intelligence
-
+![Breughel, Fall of Icarus (1560)](img/bruegel-fall-icarus.jpg)
 
 # What's in this repo?
 
