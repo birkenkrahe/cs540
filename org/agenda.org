@@ -2,6 +2,8 @@
 #+AUTHOR:Marcus Birkenkrahe
 #+SUBTITLE:CS 540, Catholic Polytechnic University
 #+STARTUP: overview hideblocks indent entitiespretty:
+#+attr_html: :width 600px :float nil:
+[[../img/bruegel-fall-icarus.jpg]]
 * Prayers
 ** Opening Prayer (Standard)
 #+attr_html: :width 550px :float nil:
@@ -21,34 +23,22 @@
   scholars, the internet, computer users and encyclopedias.
 - *A student's prayer* is by St. Thomas Aquinas.
 
-* Week 1 - Overview and Getting Started with Python in Colab
+* DONE Week 1 - Overview and Getting Started with Python in Colab
 
-- [ ] Opening *prayer*
-- [ ] *Syllabus* walk-through
-- [ ] Course *infrastructure*
-- [ ] Class *workflow*
-- [ ] DataCamp *assignments* and walk-through
-- [ ] Getting started with *Python and Colab*
-- [ ] *Wrap-up*
-- [ ] Closing *prayer*
+- [X] Opening *prayer*
+- [X] Course *infrastructure*
+- [X] *Syllabus* walk-through
+- [X] Class *workflow*
+- [X] DataCamp *assignments* and walk-through
+- [X] Getting started with *Python and Colab*
+- [X] *Wrap-up* (in your head)
+- [X] Closing *prayer*
 
 ** Course infrastructure
 
 - MS Teams -> assignments, tests, recordings, chat, grades
 - GitHub -> class materials
 - Colab -> notebooks
-
-** Class workflow
-
-- Each 90-minutes online session will (usually) include:
-  1. An opening *prayer*
-  2. A short *review* of what we did the last session.
-  3. A little *coding* to warm up the engines.
-  4. Lecture with some new *concepts* (or more on some old concepts).
-  5. *Code* along with me!
-  6. Practice the new concepts by solving a *problem*.
-  7. A *wrap-up* to find out what you learnt.
-  8. A closing *prayer*.
 
 ** DataCamp assignments & walk-through (coding lessons)
 
@@ -76,6 +66,18 @@
 
 - I will check your understanding through reviews and tests.
 
+** Class workflow
+
+- Each 90-minutes online session will (usually) include:
+  1. An opening *prayer*
+  2. A short *review* of what we did the last session.
+  3. A little *coding* to warm up the engines.
+  4. Lecture with some new *concepts* (or more on some old concepts).
+  5. *Code* along with me!
+  6. Practice the new concepts by solving a *problem*.
+  7. A *wrap-up* to find out what you learnt.
+  8. A closing *prayer*.
+
 ** Getting started with Python and Google Colaboratory ("Colab")
 
 You'll learn ML/Python through a "literate programming":
@@ -97,19 +99,18 @@ Matplotlib, and Pandas: https://homl.info/tutorials-p
 
 - *Mandatory:*
 
-  1) Register at DataCamp if you haven't done it yet.
-  2) Complete the course "[[https://app.datacamp.com/learn/courses/understanding-machine-learning][Understanding Machine Learning]]".
-  3) Complete and submit the programming assignment (notebook).
-  4) Complete and submit the first quiz (multiple choice).
+  1) [X] Register at DataCamp if you haven't done it yet.
+  2) [X] Complete the course "[[https://app.datacamp.com/learn/courses/understanding-machine-learning][Understanding Machine Learning]]".
+  3) [ ] +Complete and submit the programming assignment (notebook).+
+  4) [X] Complete and submit the first quiz (multiple choice).
 
 *Can you open the assignment now and confirm that you see a "TURN IN"
 button?*
 
 - *Optional:*
   1) *Read* "The Fundamentals of Machine Learning" (pp. 1-40).
-  2) *Play* through the Colab notebook for this chapter.
-  3) *Check out* "Introduction to Python" at DataCamp.
-     
+  2) *Check out* "Introduction to Python" at DataCamp.
+
 - *Note:* There will not be a class on June 3rd (since I'm moving)
 
 - If there's no class meeting, I will record a *code along* lecture that
@@ -128,4 +129,253 @@ button?*
 
 - I will usually ask you if and how you used AI for your work.
 
-  
+* Week 2 - Finish Colab Demo / DataCamp Review / AI Encyclical
+#+attr_html: :width 600px :float nil:
+[[../img/leo.png]]
+
+- [ ] Opening *prayer*
+- [ ] *Check-in*: Week 1 assignments — what got done?
+- [ ] *Demo*: Finish Colab + Python (plotting with ~matplotlib~ and ~seaborn~)
+- [ ] *Review*: DataCamp "Understanding Machine Learning" (3 chapters)
+- [ ] *Discussion*: Pope Leo XIV's encyclical "Magnifica Humanitas"
+- [ ] *Wrap-up*: What did you take away from the session?
+- [ ] Closing *prayer*
+
+** Check-in
+
+*Changes*:
+- Channel structure in Teams:
+  1) *Assignment messages*: Weekly messages (and occasional updates)
+  2) *General messages:* Anything at all
+  3) *Sessions:* Link to sessions and recordings
+
+*Mandatory*:
+- Did you complete the DataCamp course "Understanding Machine
+  Learning"? (/6)
+- Did you submit the Week 1 quiz? Any errors or suspicious questions
+  to flag? (/6)
+- Did you find and start reading [[https://www.vatican.va/content/leo-xiv/en/encyclicals/documents/20260515-magnifica-humanitas.html][Pope Leo XIV's /Magnifica Humanitas/]]?
+  It's long, reading the introduction and chapter 3 was enough. (/6)
+
+*Optional:*
+- Did you check out the textbook by Géron? (/6)
+- Did you check out the intro to Python course on DataCamp? (/6)
+
+** Finish: Getting Started with Colab and Python (30 min)
+
+File: [[file:1_colab_python.org]] - Colab: [[https://tinyurl.com/colab-demo-class][tinyurl.com/colab-demo-class]]
+
+- *Plotting with Python:* ~matplotlib~ vs. ~seaborn~, importing ~pyplot~ as
+  =plt=, checking aliases vs. module names in ~sys.modules~
+
+- *Decide what to plot:* using Gemini to understand the Iris dataset
+  semantically before choosing coordinates; what plots make sense
+  (scatter, bar, box) and why we use scatterplots here
+
+- *Simple scatter plot* with ~matplotlib~: ~plt.scatter~, ~plt.title~,
+  ~plt.xlabel/ylabel~; the ~for~ loop over ~df['species'].unique()~ to color
+  points by species
+
+- *Fancy grouped plot* with ~seaborn~: ~sns.scatterplot~ with ~hue='species'~;
+  why seaborn needs less code for the same result
+
+- *Followup assignment*: Palmer penguins - go through the same steps and
+  substitute ~Iris~ with the Palmer penguins dataset (deadline June
+  3rd).
+
+** Review: DataCamp "Understanding Machine Learning" (30 min)
+
+Take 5 minutes per chapter question group and write down as many
+answers as you can. There's also a bonus assignment like this.
+
+Generated by Claude Code based on the DataCamp course transcripts.
+
+*** Chapter 1: What is Machine Learning?
+
+1. You work at a city transportation authority with five years of bus
+   ridership data (time of day, route, weather, local events). Your
+   manager asks for two things: a system that predicts tomorrow's
+   passenger load on each route, and an analysis of which factors most
+   strongly drive ridership spikes on game days. What distinction in
+   ML tasks is your manager describing — and why might the same
+   dataset serve both goals but require different framing?
+
+2. You work at a streaming music company. You have ten million user
+   listening histories but no genre labels — users never categorize
+   what they play. Your product team wants to group users by taste so
+   the app can suggest new artists. Is this a supervised or unsupervised
+   problem? Why can't you just train a genre classifier instead, and
+   what does this reveal about the role of labeled training data?
+
+3. You work at an insurance company building a model to predict whether
+   a customer will file a claim within the next year. A colleague builds
+   the model, evaluates it on the same 200,000 records used for
+   training, and reports 98% accuracy. Why should you be skeptical of
+   this result — and which step of the ML workflow did they skip?
+
+*** Chapter 2: Machine Learning Models
+
+1. You work at a hospital with 50,000 patient records: blood test
+   results, age, BMI, and whether each patient was diagnosed with Type 2
+   diabetes within three years. Your team wants to flag high-risk
+   patients for early intervention. Is this classification or
+   regression? What is the target variable, what are candidate features,
+   and why does the framing matter for choosing a model?
+
+2. You work at a retail chain with two million loyalty-card transactions
+   but no pre-defined customer segments. Marketing wants to launch
+   targeted promotions. You have no labels and no prior knowledge of how
+   many customer types exist. What ML approach do you use, and what
+   challenge will you face in interpreting whatever the algorithm
+   discovers?
+
+3. You work at a bank deploying a fraud detection model. It achieves 97%
+   accuracy on the test set, but your risk team is alarmed — the model
+   is missing the majority of actual fraudulent transactions. Why is
+   accuracy misleading here? Which metric should you optimize instead,
+   and what does a low sensitivity score tell you in practical terms?
+
+*** Chapter 3: Deep Learning
+
+1. You work at a small nonprofit with 3,000 labeled medical intake forms
+   (structured fields: age, symptoms, diagnosis code). Your intern
+   recommends a deep learning model "because it's more powerful." You
+   have a standard laptop and a $200/month cloud GPU budget. What is
+   your recommendation, and which four criteria from the course should
+   guide the decision of when to use deep learning?
+
+2. You work at a manufacturing company and want to automatically detect
+   defects in circuit boards from photos taken on the assembly line. You
+   have 500,000 labeled images (defective / not defective) at 1024×1024
+   resolution in grayscale. How many features does one image produce?
+   Why is a neural network well-suited here, and what do early vs. late
+   hidden layers typically learn to detect?
+
+3. You work at an HR software company. Your résumé-screening model was
+   trained on ten years of historical hiring decisions and consistently
+   downranks female applicants. A civil rights audit flags it for bias.
+   What went wrong at the data quality level — and what does the
+   "garbage in, garbage out" principle mean in this context?
+
+*** Bonus: Spotting patterns in fraud detection
+
+The last exercise on spotting patterns in defaulted loans was too woke
+for my taste (weakly emphasising demographic/racial bias), so I asked
+Claude to make a better one: [[file:~/GitHub/admin/summer26/cs540/html/fraud_detection_explorer.html][Spotting patterns in fraud detection]].
+
+You can download the HTML file and open it in a browser to see the
+app. It's a mockup - no real data are used (all is in the one file):
+[[https://tinyurl.com/fraud-explorer-html][tinyurl.com/fraud-explorer-html]]
+
+** Open discussion: "Magnifica Humanitas" by Pope Leo XIV
+
+Your views:
+-
+-
+-
+-
+-
+-
+
+- My questions:
+
+  1. In [[https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_15051891_rerum-novarum.html][Rerum Novarum (1891)]], Leo XIII argued that the industrial
+     revolution posed a new kind of social challenge that the Church
+     could not ignore. Leo XIV makes the same claim about AI. Is that a
+     convincing comparison — or is AI so different in nature that the
+     parallel breaks down?
+
+  2. The Pope argues that AI can imitate human intelligence but cannot
+     truly understand, feel, or bear moral responsibility — and that
+     this distinction matters enormously for how we use and govern these
+     systems. Do you find that distinction convincing? And does it
+     actually change anything in practice?
+
+  3. When Leo XIII first developed Catholic Social Doctrine, critics
+     told him the Church should focus on saving souls, not on labor
+     conditions and economic justice. He disagreed. Was he right — and
+     if so, how far does that logic extend into the age of AI?
+
+- This encyclical (and the surrounding theological, practical, and
+  political issues) would also be a great topic for a your
+  midterm/final project.
+
+** Next Assignments
+
+- *Mandatory:*
+
+  1) [ ] Complete and submit the *Palmer Penguins* programming
+     assignment (Colab notebook) for
+     [[https://tinyurl.com/palmer-data-csv][tinyurl.com/palmer-data-csv]]. Submit URL to your notebook.
+  2) [ ] Complete *DataCamp*: [[https://www.datacamp.com/courses/supervised-learning-with-scikit-learn][Supervised Learning with scikit-learn]],
+     Chapter 1 ("Classification").
+  3) [ ] Watch "Thinking Machines" (1961) and "Computer Chronicles"
+     (1984), answer guiding questions and be prepared to discuss them.
+  4) [ ] Complete Quiz 2 (covering all chapters of the DataCamp course
+     "Understanding machine learning").
+
+- *Optional:*
+  1) Read Géron Ch. 2 "End-to-End ML Project" (pp. 41–88). We'll cover
+     this in class in detail as a code along session.
+
+- *Note:* There will be *no class meeting on June 3rd*.
+
+** Movie time (week 3)
+
+- [[https://youtu.be/s7Apsqv0CpI?si=FebrJ_5lAU2CX6XQ]["Thinking Machines" (1961)]] is a documentary produced by MIT
+  featuring the best AI scientists of the 1950s (Shannon, Simon,
+  Samuel) trying to explain AI and predict its future.
+
+- The film is 50 minutes long. Watch it and write down for class
+  discussion:
+  1) What is "thinking" here? How does the film define machine
+     intelligence — and do you buy it?
+  2) What aged well, what didn't? Pick one prediction that held up and
+     one that flopped. What explains the difference?
+  3) What's missing? What does the film seem unaware of that you'd
+     consider essential to AI today?
+
+- [[https://youtu.be/_S3m0V_ZF_Q?si=xDry7S12sqo3OjFu][Computer Chronicles - Artificial Intelligence (1984)]] is a 30-min
+  episode in a series ([[https://archive.org/details/computerchronicles][archived here]]) that ran from 1983-2002. At the
+  time, "Expert systems" was the AI that had survived the first "AI
+  winter" (1974-1980), and that led to the second AI winter
+  (1987-2000). Write down your answers for class discussion to these
+  questions:
+  1) What problem did expert systems solve? What made them feel like a
+     breakthrough in 1984 — and what did they actually do well?
+  2) Why did the hype collapse? Based on what you saw, what were the
+     hidden weaknesses of expert systems that the enthusiasts seemed
+     to underestimate?
+  3) Pattern or fluke? This episode sits between two AI winters. Do
+     you see a recurring pattern here — and does it remind you of
+     anything happening in AI today?
+
+
+* Week 3
+
+
+
+** DataCamp recap: Cosine similarity in code
+
+- We'll run the movie recommender code from the DataCamp notes live:
+  [[file:datacamp/understanding-machine-learning.org]]
+
+- Things to notice:
+  + Items are represented as *feature vectors* (binary: action, comedy, …)
+  + Similarity is a *geometric* computation — the angle between vectors
+  + This is already a working ML system: no explicit rules, just data
+
+** Midterm project – first look
+
+- The midterm is an end-to-end ML workflow on a dataset of your
+  choice: load → explore → train → evaluate → present findings.
+
+- Possible directions to consider:
+  1. A dataset from [[https://www.kaggle.com/datasets][Kaggle]] or the [[https://archive.ics.uci.edu/][UCI ML Repository]]
+  2. Something connected to /Magnifica Humanitas/ — a bias or fairness
+     audit, or an analysis of how a specific AI system affects human
+     workers or dignity
+  3. A dataset from your own field or workplace
+
+- *Today*: surface ideas and questions only — we will formalize the
+  brief and scope in a future session.
