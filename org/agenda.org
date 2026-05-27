@@ -163,7 +163,7 @@ button?*
 
 ** Finish: Getting Started with Colab and Python (30 min)
 
-File: [[file:1_colab_python.org]] - Colab: [[https://tinyurl.com/colab-demo-class][tinyurl.com/colab-demo-class]]
+Colab: [[https://tinyurl.com/colab-demo-class][tinyurl.com/colab-demo-class]]
 
 - *Plotting with Python:* ~matplotlib~ vs. ~seaborn~, importing ~pyplot~ as
   =plt=, checking aliases vs. module names in ~sys.modules~
