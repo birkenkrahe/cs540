@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fraud Detection — Pattern Explorer</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f5f5f3;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0e0dc;
+    padding: 2rem 2.5rem;
+  }
+
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+  .subtitle { font-size: 14px; color: #666; margin-bottom: 1.5rem; line-height: 1.5; }
+
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 1.75rem;
+  }
+  .metric {
+    background: #f5f5f3;
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .metric-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+  .metric-value { font-size: 22px; font-weight: 500; }
+  .metric-value.danger { color: #c0392b; }
+
+  .layout { display: flex; gap: 28px; align-items: flex-start; }
+
+  .sidebar { flex: 0 0 190px; }
+  .sidebar-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+  }
+  .radio-group { display: flex; flex-direction: column; gap: 4px; }
+  .radio-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 10px;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.12s;
+    font-size: 14px;
+    color: #1a1a1a;
+    user-select: none;
+  }
+  .radio-item:hover { background: #f0efeb; }
+  .radio-item.active { background: #eeeef8; border-color: #c5c4e8; }
+  .radio-item input { accent-color: #4a48b5; cursor: pointer; }
+
+  .chart-area { flex: 1; min-width: 0; }
+
+  .chart-title { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
+  .chart-desc { font-size: 13px; color: #666; margin-bottom: 12px; line-height: 1.5; }
+
+  .insight {
+    display: none;
+    background: #fff8ed;
+    border: 1px solid #f0c060;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: #7a5000;
+    line-height: 1.55;
+  }
+  .insight.show { display: block; }
+
+  .legend { display: flex; gap: 16px; margin-bottom: 10px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #666; }
+  .legend-swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  #chartWrapper { position: relative; width: 100%; }
+
+  footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e8e8e4;
+    font-size: 12px;
+    color: #aaa;
+    text-align: center;
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 1.25rem; }
+    .layout { flex-direction: column; }
+    .sidebar { flex: none; width: 100%; }
+    .metrics { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Spotting patterns in fraud detection</h1>
+  <p class="subtitle">A model flags credit card transactions as fraudulent or legitimate. Break down the predictions by feature to understand what drives the model — and where false positives might be a problem.</p>
+
+  <div class="metrics">
+    <div class="metric"><div class="metric-label">Total transactions</div><div class="metric-value">10,000</div></div>
+    <div class="metric"><div class="metric-label">Flagged as fraud</div><div class="metric-value danger">832</div></div>
+    <div class="metric"><div class="metric-label">Overall flag rate</div><div class="metric-value">8.3%</div></div>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <div class="sidebar-label">Breakdown options</div>
+      <div class="radio-group" id="radioGroup">
+        <label class="radio-item active"><input type="radio" name="breakdown" value="none" checked> No breakdown</label>
+        <label class="radio-item"><input type="radio" name="breakdown" value="amount"> Transaction amount</label>
+        <label class="radio-item"><input type="radio" name="breakdown" value="merchant"> Merchant category</label>
+        <label class="radio-item"><input type="radio" name="breakdown" value="time"> Time of day</label>
+        <label class="radio-item"><input type="radio" name="breakdown" value="distance"> Distance from home</label>
+        <label class="radio-item"><input type="radio" name="breakdown" value="frequency"> Transaction frequency</label>
+        <label class="radio-item"><input type="radio" name="breakdown" value="device"> Device type</label>
+      </div>
+    </div>
+
+    <div class="chart-area">
+      <div class="insight" id="insight"></div>
+      <div class="chart-title" id="chartTitle">Fraud prediction overview</div>
+      <div class="chart-desc" id="chartDesc">Overall split of flagged vs. legitimate transactions.</div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch" style="background:#3a7fd4;"></span>Legitimate</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:#c0392b;"></span>Flagged as fraud</span>
+      </div>
+      <div id="chartWrapper">
+        <canvas id="fraudChart" role="img" aria-label="Bar chart showing fraud predictions broken down by selected feature"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <footer>Synthetic data for educational use &nbsp;·&nbsp; CS540 / Understanding Machine Learning &nbsp;·&nbsp; Marcus Birkenkrahe</footer>
+</div>
+
+<script>
+const DATA = {
+  none: {
+    labels: ['Legitimate', 'Flagged as fraud'],
+    legit: [9168, 0], fraud: [0, 832],
+    simple: true,
+    desc: 'Overall split of flagged vs. legitimate transactions.',
+    insight: null
+  },
+  amount: {
+    labels: ['< $10', '$10–50', '$50–200', '$200–500', '$500–2000', '> $2000'],
+    legit: [1820, 2950, 2400, 1200, 620, 178],
+    fraud: [18, 55, 142, 198, 265, 154],
+    desc: 'Fraud flag rate rises sharply with transaction amount.',
+    insight: 'Transactions over $500 are flagged at a 30–46% rate vs under 2% for small transactions. High amount is a strong model signal — but also means legitimate large purchases get caught. Check false positive rates for high-value merchants.'
+  },
+  merchant: {
+    labels: ['Grocery', 'Gas station', 'Restaurant', 'Online retail', 'Electronics', 'Travel', 'ATM withdrawal'],
+    legit: [2100, 1400, 1600, 1200, 800, 750, 1318],
+    fraud: [42, 98, 64, 210, 192, 105, 121],
+    desc: 'Fraud rates vary significantly by merchant category.',
+    insight: 'Electronics (19%) and online retail (15%) have the highest flag rates. ATM withdrawals and gas stations are also elevated. Grocery and restaurants are low-risk. Consider whether merchant category alone justifies blocking a transaction.'
+  },
+  time: {
+    labels: ['12am–4am', '4am–8am', '8am–12pm', '12pm–4pm', '4pm–8pm', '8pm–12am'],
+    legit: [420, 680, 2100, 2400, 2200, 1368],
+    fraud: [185, 95, 112, 118, 142, 180],
+    desc: 'Late-night and early-morning transactions are flagged more often.',
+    insight: 'Transactions between midnight and 4am have a 31% flag rate — the highest of any time window. This is a genuine fraud signal, but night-shift workers and travellers in different time zones will generate false positives.'
+  },
+  distance: {
+    labels: ['< 1 mile', '1–10 miles', '10–50 miles', '50–200 miles', '200–500 miles', '> 500 miles'],
+    legit: [3200, 2800, 1600, 980, 420, 168],
+    fraud: [48, 72, 115, 198, 225, 174],
+    desc: "Transactions far from the cardholder's home address are flagged more often.",
+    insight: 'Flag rate climbs from 1.5% within 1 mile to 51% beyond 500 miles. Distance from home is the model\'s strongest single predictor. However, travel and online purchases from foreign vendors are common — high distance alone should not auto-decline a transaction.'
+  },
+  frequency: {
+    labels: ['1st txn today', '2–5 txns', '6–10 txns', '11–20 txns', '> 20 txns'],
+    legit: [3800, 3200, 1400, 580, 188],
+    fraud: [95, 148, 212, 245, 132],
+    desc: 'Multiple transactions in a single day increase the fraud flag rate.',
+    insight: 'Having 11–20 transactions in a day triggers a 30% flag rate. Rapid card usage is a classic fraud indicator — stolen cards are often used in bursts. But heavy shoppers and business accounts will also be flagged frequently.'
+  },
+  device: {
+    labels: ['Chip & PIN', 'Contactless', 'Magstripe', 'Online (3DS)', 'Online (no 3DS)', 'Phone order'],
+    legit: [3200, 2800, 980, 1400, 520, 268],
+    fraud: [48, 62, 245, 105, 288, 84],
+    desc: 'Payment method is a strong indicator of fraud risk.',
+    insight: 'Magstripe (20%) and online without 3D Secure authentication (36%) have the highest flag rates — both are lower-security methods. Chip & PIN and contactless are the safest. This is one of the cleanest signals with low false-positive implications.'
+  }
+};
+
+let chart = null;
+
+function buildChart(key) {
+  const d = DATA[key];
+  const wrapper = document.getElementById('chartWrapper');
+  const insightEl = document.getElementById('insight');
+
+  document.getElementById('chartDesc').textContent = d.desc;
+  document.getElementById('chartTitle').textContent =
+    key === 'none' ? 'Fraud prediction overview' : 'Fraud flags by ' + {
+      amount: 'transaction amount', merchant: 'merchant category',
+      time: 'time of day', distance: 'distance from home',
+      frequency: 'transaction frequency', device: 'device type'
+    }[key];
+
+  if (d.insight) { insightEl.textContent = d.insight; insightEl.classList.add('show'); }
+  else { insightEl.classList.remove('show'); }
+
+  const h = key === 'none' ? 240 : Math.max(240, d.labels.length * 54 + 80);
+  wrapper.style.height = h + 'px';
+
+  if (chart) { chart.destroy(); chart = null; }
+
+  const canvas = document.getElementById('fraudChart');
+
+  if (key === 'none') {
+    chart = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: ['Legitimate', 'Flagged as fraud'],
+        datasets: [{ data: [9168, 832], backgroundColor: ['#3a7fd4', '#c0392b'], borderWidth: 0 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y.toLocaleString() + ' transactions' } } },
+        scales: {
+          x: { grid: { display: false } },
+          y: { beginAtZero: true, ticks: { callback: v => v.toLocaleString() } }
+        }
+      }
+    });
+  } else {
+    chart = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: d.labels,
+        datasets: [
+          { label: 'Legitimate', data: d.legit, backgroundColor: '#3a7fd4', borderWidth: 0 },
+          { label: 'Flagged as fraud', data: d.fraud, backgroundColor: '#c0392b', borderWidth: 0 }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: {
+          callbacks: {
+            label: ctx => ' ' + ctx.parsed.x.toLocaleString() + ' transactions',
+            afterLabel: ctx => {
+              const total = d.legit[ctx.dataIndex] + d.fraud[ctx.dataIndex];
+              return Math.round((ctx.parsed.x / total) * 100) + '% of group';
+            }
+          }
+        }},
+        scales: {
+          x: { beginAtZero: true, ticks: { callback: v => v.toLocaleString() } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+  }
+}
+
+document.getElementById('radioGroup').addEventListener('change', e => {
+  if (e.target.name !== 'breakdown') return;
+  document.querySelectorAll('.radio-item').forEach(el => el.classList.remove('active'));
+  e.target.closest('.radio-item').classList.add('active');
+  buildChart(e.target.value);
+});
+
+buildChart('none');
+</script>
+</body>
+</html>
