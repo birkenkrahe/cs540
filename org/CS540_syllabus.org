@@ -7,8 +7,8 @@
 
 - Begin and end: May 20 to August 26, 2026
 - Instructor: Marcus Birkenkrahe, PhD
-- Date and time: Wednesday, 6-7:15 pm PDT (class meeting)
-- Asynchronous: 75 min (DataCamp platform)
+- Date and time: Wednesday, 5.30-7:00 pm PDT (class meeting)
+- Asynchronous: 90 min (DataCamp platform)
   
 * Course Description
 
@@ -53,7 +53,7 @@ before Week 1.
 * Course Materials
 
 - Aurélien Géron, /Hands-On Machine Learning/ with scikit-learn and
-  PyTorch (2026)
+  PyTorch (2026) - see [[https://github.com/ageron/handson-mlp][GitHub]].
 - DataCamp (assigned lessons weekly)
 - Instructor-provided notes and exercises
 
@@ -72,45 +72,25 @@ Each week consists of:
 - Final project (end-to-end ML workflow): 25%
 - Quizzes / checks: 25%
 
-* Weekly Topics
+* DataCamp / Textbook Alignment
 
-| Week | Topic                               |
-|------+-------------------------------------|
-|    1 | What is Machine Learning            |
-|    2 | Classification (kNN)                |
-|    3 | Linear Regression (simple)          |
-|    4 | Linear Regression (multiple + eval) |
-|    5 | Logistic Regression                 |
-|    6 | Model Evaluation / Cross-validation |
-|    7 | Decision Trees                      |
-|    8 | Random Forests / Ensembles          |
-|    9 | Clustering (k-means)                |
-|   10 | Dimensionality Reduction (PCA)      |
-|   11 | Neural Networks (basics)            |
-|   12 | Training Neural Networks            |
-|   13 | Convolutional Neural Networks (CNN) |
-|   14 | Reinforcement Learning (concepts)   |
-|   15 | Reinforcement Learning (Q-learning) |
-
-* DataCamp Alignment
-
-| Week | DataCamp Course                            | Prerequisites         | Builds On                 |
-|------+--------------------------------------------+-----------------------+---------------------------|
-|    1 | Introduction to Machine Learning in Python | -                     | —                         |
-|    2 | Supervised Learning with scikit-learn      | Week 1                | ML workflow               |
-|    3 | Introduction to Linear Regression          | Week 1, basic algebra | Modeling                  |
-|    4 | Introduction to Linear Regression          | Week 3                | Regression                |
-|    5 | Supervised Learning with scikit-learn      | Weeks 2–3             | Classification/regression |
-|    6 | Supervised Learning with scikit-learn      | Weeks 2–5             | All supervised models     |
-|    7 | Machine Learning with Tree-Based Models    | Weeks 2, 6            | Classification            |
-|    8 | Machine Learning with Tree-Based Models    | Week 7                | Trees                     |
-|    9 | Unsupervised Learning in Python            | Week 1                | New paradigm              |
-|   10 | Unsupervised Learning in Python            | Week 9                | Unsupervised              |
-|   11 | Introduction to Deep Learning with PyTorch | Weeks 3, 5            | Linear + logistic models  |
-|   12 | Deep Learning with PyTorch                 | Week 11               | Neural nets               |
-|   13 | Deep Learning for Images with PyTorch      | Week 11               | Neural nets               |
-|   14 | Reinforcement Learning with Gymnasium      | Week 1                | ML framing                |
-|   15 | Reinforcement Learning with Gymnasium      | Week 14               | RL basics                 |
+| Week | Géron Chapter                 | Topic                         | DataCamp Course                                   | Chapter | Prereq  |
+|------+-------------------------------+-------------------------------+---------------------------------------------------+---------+---------|
+|    1 | 1: The ML Landscape           | What is Machine Learning      | [[https://campus.datacamp.com/courses/understanding-machine-learning/what-is-machine-learning?ex=1][Understanding machine learning (no-code)]]          |       1 | —       |
+|    2 | 2: End-to-End ML Project      | ML Workflow                   | [[https://www.datacamp.com/courses/supervised-learning-with-scikit-learn][Supervised Learning with scikit-learn]]             |       1 | Week 1  |
+|    3 | 3: Classification             | Classification (kNN)          | [[https://www.datacamp.com/courses/supervised-learning-with-scikit-learn][Supervised Learning with scikit-learn]]             |       2 | Week 2  |
+|    4 | 4: Training Models            | Linear + Logistic Regression  | [[https://www.datacamp.com/courses/supervised-learning-with-scikit-learn][Supervised Learning with scikit-learn]]             |       3 | Week 3  |
+|    5 | 4 cont.                       | Model Evaluation / CV         | [[https://www.datacamp.com/courses/supervised-learning-with-scikit-learn][Supervised Learning with scikit-learn]]             |       4 | Week 4  |
+|    6 | 5: Decision Trees             | Decision Trees                | [[https://www.datacamp.com/courses/machine-learning-with-tree-based-models-in-python][Machine Learning with Tree-Based Models in Python]] |       1 | Week 5  |
+|    7 | 6: Ensemble Learning          | Bagging / Random Forests      | [[https://www.datacamp.com/courses/machine-learning-with-tree-based-models-in-python][Machine Learning with Tree-Based Models in Python]] |     2–3 | Week 6  |
+|    8 | 6 cont.                       | Boosting / Model Tuning       | [[https://www.datacamp.com/courses/machine-learning-with-tree-based-models-in-python][Machine Learning with Tree-Based Models in Python]] |     4–5 | Week 7  |
+|    9 | 7: Dimensionality Reduction   | PCA                           | [[https://www.datacamp.com/courses/unsupervised-learning-in-python][Unsupervised Learning in Python]]                   |       3 | Week 5  |
+|   10 | 8: Unsupervised Learning      | Clustering (k-means)          | [[https://www.datacamp.com/courses/unsupervised-learning-in-python][Unsupervised Learning in Python]]                   |         |         |
+|   11 | 9: Intro to ANNs              | Neural Networks (basics)      | [[https://www.datacamp.com/courses/introduction-to-deep-learning-with-pytorch][Introduction to Deep Learning with PyTorch]]        |       1 | Week 5  |
+|   12 | 10: Building NNs with PyTorch | PyTorch Fundamentals          | [[https://www.datacamp.com/courses/introduction-to-deep-learning-with-pytorch][Introduction to Deep Learning with PyTorch]]        |     2–3 | Week 11 |
+|   13 | 11: Training Deep NNs         | Training Neural Networks      | [[https://www.datacamp.com/courses/intermediate-deep-learning-with-pytorch][Intermediate Deep Learning with PyTorch]]           |     1–2 | Week 12 |
+|   14 | 12: Deep Computer Vision      | Convolutional Neural Networks | [[https://www.datacamp.com/courses/deep-learning-for-images-with-pytorch][Deep Learning for Images with PyTorch]]             |     1–2 | Week 13 |
+|   15 | 18: Reinforcement Learning    | RL / Q-learning               | [[https://www.datacamp.com/courses/reinforcement-learning-with-gymnasium-in-python][Reinforcement Learning with Gymnasium in Python]]   |     1–2 | Week 5  |
 
 * Verification and Correctness Checks
 
@@ -122,9 +102,13 @@ Students will be expected to:
 
 * AI Usage Guidelines
 
-The use of AI tools (including ChatGPT, Copilot, DataCamp assistants, and similar systems) is permitted but regulated. The goal is to use AI as a *tool for learning and productivity*, not as a substitute for understanding.
+The use of AI tools (including ChatGPT, Copilot, DataCamp assistants,
+and similar systems) is permitted but regulated. The goal is to use AI
+as a *tool for learning and productivity*, not as a substitute for
+understanding.
 
 ** Permitted Uses
+
 Students may use AI tools to:
 - Clarify concepts encountered in lectures or readings
 - Debug code after attempting a solution independently
@@ -132,6 +116,7 @@ Students may use AI tools to:
 - Explore extensions or variations of assigned problems
 
 ** Restricted Uses
+
 Students may *not*:
 - Submit AI-generated code or text as their own without modification
   and understanding
@@ -140,12 +125,14 @@ Students may *not*:
 - Rely on AI outputs without verification
 
 ** Required Practices
+
 When using AI tools, students must:
 1. Be able to explain any code or solution they submit
 2. Verify outputs independently (e.g., by testing or reasoning)
 3. Treat AI outputs as *hypotheses*, not authoritative answers
 
 ** Transparency Requirement
+
 For major assignments and projects:
 - Students must include a brief note describing any AI assistance used
 - Example:
@@ -156,11 +143,13 @@ For major assignments and projects:
   #+end_quote
 
 ** Evaluation Policy
+
 - Understanding takes precedence over correctness
 - Students may be asked to explain or reproduce their work
 - Inability to explain submitted work may result in reduced credit
 
 ** Rationale
+
 AI tools are powerful but imperfect:
 - They may produce incorrect or misleading outputs
 - They do not replace conceptual understanding
