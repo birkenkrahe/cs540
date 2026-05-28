@@ -11,17 +11,81 @@
 ** Closing Prayer (Aquinas)
 #+attr_html: :width 550px :float nil:
 [[../../img/closing_prayers.png]]
+** Opening Prayer (May 27)
+
+#+begin_verse
+Unless the Lord build the house,
+they labour in vain that build it.
+Unless the Lord keep the city,
+he watcheth in vain that keepeth it."
+— Psalm 126:1,
+
+---
+
+*Our Father, who art in heaven,*
+*hallowed be Thy name,*
+*Thy kingdom come,*
+*Thy will be done*
+*on Earth as it is in heaven.*
+
+Give us this day our daily bread
+and forgive us our trespasses,
+as we forgive those who trespass against us,
+and lead us not into temptation,
+but deliver us from evil.
+
+Amen.
+#+end_verse
+** Closing Prayer (May 27)
+
+#+begin_verse
+"When I was a child, I spoke as a child,
+I understood as a child, I thought as a child.
+But, when I became a man,
+I put away the things of a child.
+
+We see now through a glass in a dark manner;
+but then face to face. Now I know in part;
+but then I shall know even as I am known."
+— 1 Cor 13:11-12
+
+---
+
+*Hail Mary, full of grace,*
+*the Lord is with Thee.*
+*Blessed art Though among women*
+*and blessed is the fruit of Thy womb, Jesus.*
+
+Holy Mary, Mother of God,
+pray for us sinners,
+now and in the our of our death.
+
+Amen.
+#+end_verse
+
 ** Why these prayers?
 
 - *The "Our Father"*, because we learn everything through him.
+
 - *The "Hail Mary"*, because we need trust and humility to learn.
+
 - *St. Albert the Great*, because he is the patron saint of scientists,
   philosophers, and students of the natural sciences.
+
 - *St. Thomas Aquinas*, because he is the patron saint of Catholic
   schools, universities, and scholars.
+
 - *St. Isidore of Seville*, because he is the patron saint of students,
   scholars, the internet, computer users and encyclopedias.
+
 - *A student's prayer* is by St. Thomas Aquinas.
+
+- *Psalm 126* (in Douay-Rheims): Every human project, including the
+  greates technological amibitions of our age, is vanity unless God is
+  its foundation and its end.
+
+- *1 Cor 13:11-12*: All human and artificial intelligence sees only
+  riddles and reflections, but the sould is made for the face of God.
 
 * DONE Week 1 - Overview and Getting Started with Python in Colab
 
@@ -163,7 +227,7 @@ button?*
 
 ** Finish: Getting Started with Colab and Python (30 min)
 
-Colab: [[https://tinyurl.com/colab-demo-class][tinyurl.com/colab-demo-class]]
+File: [[file:1_colab_python.org]] - Colab: [[https://tinyurl.com/colab-demo-class][tinyurl.com/colab-demo-class]]
 
 - *Plotting with Python:* ~matplotlib~ vs. ~seaborn~, importing ~pyplot~ as
   =plt=, checking aliases vs. module names in ~sys.modules~
