@@ -20,73 +20,73 @@ quiz title should be "CS 540 – Week 1 Quiz (May 20)".
 
 What is the primary course infrastructure used for assignments, tests, and recordings after Canvas was discontinued?
 
-- [ ] A) GitHub
-- [ ] B) Google Classroom
-- [X] C) MS Teams
-- [ ] D) DataCamp
+- [ ] GitHub
+- [ ] Google Classroom
+- [X] MS Teams
+- [ ] DataCamp
 
 * Q2: Class Materials
 
 Where are all class materials (lecture files, syllabus) stored and accessible to students?
 
-- [ ] A) MS Teams Files tab
-- [ ] B) Google Drive
-- [X] C) GitHub
-- [ ] D) DataLab
+- [ ] MS Teams Files tab
+- [ ] Google Drive
+- [X] GitHub
+- [ ] DataLab
 
 * Q3: Grading Breakdown
 
 What is the grading breakdown for CS 540?
 
-- [X] A) Weekly exercises 25%, Midterm project 25%, Final project 25%, Weekly quizzes 25%
-- [ ] B) Weekly exercises 50%, Final project 50%
-- [ ] C) Weekly exercises 10%, Midterm 40%, Final exam 50%
-- [ ] D) DataCamp 50%, Projects 50%
+- [X] Weekly exercises 25%, Midterm project 25%, Final project 25%, Weekly quizzes 25%
+- [ ] Weekly exercises 50%, Final project 50%
+- [ ] Weekly exercises 10%, Midterm 40%, Final exam 50%
+- [ ] DataCamp 50%, Projects 50%
 
 * Q4: DataCamp Purpose
 
 What is DataCamp primarily used for in this course?
 
-- [ ] A) Submitting final projects
-- [ ] B) Hosting the course syllabus
-- [X] C) Asynchronous coding practice aligned with weekly topics
-- [ ] D) Graded timed exams
+- [ ] Submitting final projects
+- [ ] Hosting the course syllabus
+- [X] Asynchronous coding practice aligned with weekly topics
+- [ ] Graded timed exams
 
 * Q5: DataCamp Weekly Assignment
 
 How much of a DataCamp course is typically assigned per week (after Week 1)?
 
-- [ ] A) One full course (~4 hours)
-- [X] B) One lesson (~30 minutes, though recommended to spend ~90 minutes on it)
-- [ ] C) Two lessons per week
-- [ ] D) Three lessons per week
+- [ ] One full course (~4 hours)
+- [X] One lesson (~30 minutes, though recommended to spend ~90 minutes on it)
+- [ ] Two lessons per week
+- [ ] Three lessons per week
 
 * Q6: First DataCamp Assignment
 
 What is the first DataCamp course assigned in Week 1, and what type of course is it?
 
-- [ ] A) Introduction to Python — a coding course
-- [X] B) Understanding Machine Learning — a no-code course
-- [ ] C) Introduction to Statistics — a no-code course
-- [ ] D) Machine Learning with scikit-learn — a coding course
+- [ ] Introduction to Python — a coding course
+- [X] Understanding Machine Learning — a no-code course
+- [ ] Introduction to Statistics — a no-code course
+- [ ] Machine Learning with scikit-learn — a coding course
 
 * Q7: Purpose of Weekly Quizzes
 
 How does the professor describe the purpose of weekly quizzes?
 
-- [ ] A) High-stakes timed tests to rank students
-- [X] B) Engagement exercises where students are expected to look things up and get 100%
-- [ ] C) Closed-book memorization checks worth 50% of the grade
-- [ ] D) Optional extra credit activities
+- [ ] High-stakes timed tests to rank students
+- [X] Engagement exercises where students are expected to look things up and get 100%
+- [ ] Closed-book memorization checks worth 50% of the grade
+- [ ] Optional extra credit activities
 
 * Q8: Quiz Timing
 
 Are the weekly quizzes timed?
 
-- [ ] A) Yes, 30 minutes maximum
-- [ ] B) Yes, 1 hour maximum
-- [X] C) No, they are untimed engagement exercises
-- [ ] D) Only the final quiz is timed
+- [ ] Yes, 30 minutes maximum
+- [ ] Yes, 1 hour maximum
+- [X] No, they are untimed engagement exercises
+- [ ] Only the final quiz is timed
 
 * Q9: Importing pandas
 
@@ -95,19 +95,19 @@ In Python, what does the following line do?
 import pandas as pd
 #+END_SRC
 
-- [ ] A) Installs the pandas library from the internet
-- [X] B) Imports the pandas library and gives it the alias "pd"
-- [ ] C) Creates a new pandas DataFrame called pd
-- [ ] D) Checks whether pandas is already installed
+- [ ] Installs the pandas library from the internet
+- [X] Imports the pandas library and gives it the alias "pd"
+- [ ] Creates a new pandas DataFrame called pd
+- [ ] Checks whether pandas is already installed
 
 * Q10: Checking for a Loaded Library
 
 Which command correctly checks whether the pandas library was successfully imported into the local environment?
 
-- [ ] A) print(pandas.installed())
-- [X] B) print('pd' in locals())
-- [ ] C) print(pd.check())
-- [ ] D) import pandas as pd --verify
+- [ ] print(pandas.installed())
+- [X] print('pd' in locals())
+- [ ] print(pd.check())
+- [ ] import pandas as pd --verify
 
 * Q11: Variable Assignment
 
@@ -117,133 +117,133 @@ url = '[csv data URL]'
 #+END_SRC
 What Python concept does this illustrate?
 
-- [ ] A) A function definition
-- [ ] B) A class instantiation
-- [X] C) Variable assignment with a string value
-- [ ] D) A conditional statement
+- [ ] A function definition
+- [ ] A class instantiation
+- [X] Variable assignment with a string value
+- [ ] A conditional statement
 
 * Q12: Loading CSV Data
 
 Which pandas method was used to load the Iris CSV data from a URL into a DataFrame?
 
-- [ ] A) pd.load_csv(url)
-- [ ] B) pd.open_csv(url)
-- [X] C) pd.read_csv(url)
-- [ ] D) pd.import_csv(url)
+- [ ] pd.load_csv(url)
+- [ ] pd.open_csv(url)
+- [X] pd.read_csv(url)
+- [ ] pd.import_csv(url)
 
 * Q13: Dynamic Typing
 
 Python is described as a "dynamically typed" language. What does this mean?
 
-- [ ] A) The code runs faster than statically typed languages
-- [ ] B) You must declare the variable type (e.g., int x) before assigning a value
-- [X] C) You do not need to declare the variable type — Python infers it automatically
-- [ ] D) Variables can only hold one type of value throughout the program
+- [ ] The code runs faster than statically typed languages
+- [ ] You must declare the variable type (e.g., int x) before assigning a value
+- [X] You do not need to declare the variable type — Python infers it automatically
+- [ ] Variables can only hold one type of value throughout the program
 
 * Q14: The Dot Operator
 
 What does the dot operator (.) mean when used in df.head()?
 
-- [ ] A) It accesses a file on disk
-- [X] B) It applies the head() method to the df object
-- [ ] C) It separates two variable names
-- [ ] D) It multiplies df by head
+- [ ] It accesses a file on disk
+- [X] It applies the head() method to the df object
+- [ ] It separates two variable names
+- [ ] It multiplies df by head
 
 * Q15: df.head()
 
 What does df.head() return by default?
 
-- [ ] A) The last 5 rows of the DataFrame
-- [ ] B) A statistical summary of the DataFrame
-- [X] C) The first 5 rows of the DataFrame
-- [ ] D) The column names and data types
+- [ ] The last 5 rows of the DataFrame
+- [ ] A statistical summary of the DataFrame
+- [X] The first 5 rows of the DataFrame
+- [ ] The column names and data types
 
 * Q16: df.info()
 
 Which DataFrame method prints the structure of the data, including column names, data types, and non-null counts?
 
-- [ ] A) df.describe()
-- [ ] B) df.head()
-- [ ] C) df.summary()
-- [X] D) df.info()
+- [ ] df.describe()
+- [ ] df.head()
+- [ ] df.summary()
+- [X] df.info()
 
 * Q17: df.describe()
 
 What does df.describe() return?
 
-- [ ] A) The first and last rows of the DataFrame
-- [ ] B) The column data types and memory usage
-- [X] C) Descriptive statistics: count, mean, std, min, quartiles, and max
-- [ ] D) A list of all missing values in the DataFrame
+- [ ] The first and last rows of the DataFrame
+- [ ] The column data types and memory usage
+- [X] Descriptive statistics: count, mean, std, min, quartiles, and max
+- [ ] A list of all missing values in the DataFrame
 
 * Q18: Iris Dataset Size
 
 The Iris dataset contains 150 flower samples from how many species?
 
-- [ ] A) Two species
-- [X] B) Three species (setosa, versicolor, virginica)
-- [ ] C) Four species
-- [ ] D) Five species
+- [ ] Two species
+- [X] Three species (setosa, versicolor, virginica)
+- [ ] Four species
+- [ ] Five species
 
 * Q19: Iris Dataset Origin
 
 The Iris dataset was introduced by which person, and in what year?
 
-- [ ] A) Charles Darwin, 1859
-- [X] B) Ronald Fisher, 1936
-- [ ] C) Alan Turing, 1950
-- [ ] D) John McCarthy, 1956
+- [ ] Charles Darwin, 1859
+- [X] Ronald Fisher, 1936
+- [ ] Alan Turing, 1950
+- [ ] John McCarthy, 1956
 
 * Q20: Iris Dataset Features
 
 What are the four features (columns) in the Iris dataset?
 
-- [ ] A) Height, weight, color, and species
-- [ ] B) Leaf count, stem length, root depth, and age
-- [X] C) Sepal length, sepal width, petal length, and petal width
-- [ ] D) Petal color, petal count, sepal color, and stem width
+- [ ] Height, weight, color, and species
+- [ ] Leaf count, stem length, root depth, and age
+- [X] Sepal length, sepal width, petal length, and petal width
+- [ ] Petal color, petal count, sepal color, and stem width
 
 * Q21: Iris Dataset in Machine Learning
 
 Why is the Iris dataset commonly used in machine learning?
 
-- [ ] A) It is the largest publicly available dataset
-- [ ] B) It was created using deep learning tools
-- [X] C) Its features can be used to predict or classify the flower species
-- [ ] D) It only contains numerical data with no categorical variables
+- [ ] It is the largest publicly available dataset
+- [ ] It was created using deep learning tools
+- [X] Its features can be used to predict or classify the flower species
+- [ ] It only contains numerical data with no categorical variables
 
 * Q22: Using AI Wisely
 
 In the Colab notebook, Gemini AI was used to answer "What is the Iris dataset?" What was the key lesson the professor emphasized about using AI-generated answers?
 
-- [ ] A) AI answers are always accurate and require no follow-up
-- [ ] B) AI should only be used for creative writing, not factual questions
-- [X] C) You must independently validate AI-generated information before submitting it
-- [ ] D) Gemini should be used instead of coding to complete all assignments
+- [ ] AI answers are always accurate and require no follow-up
+- [ ] AI should only be used for creative writing, not factual questions
+- [X] You must independently validate AI-generated information before submitting it
+- [ ] Gemini should be used instead of coding to complete all assignments
 
 * Q23: Docstrings
 
 The professor explained that a "docstring" appears as a pop-up when you begin typing a function in Colab. What is a docstring?
 
-- [ ] A) A comment in the code that is ignored by Python
-- [X] B) A built-in documentation string that describes a method's arguments and behavior
-- [ ] C) An error message that appears when a function is misused
-- [ ] D) A shortcut key to auto-complete code
+- [ ] A comment in the code that is ignored by Python
+- [X] A built-in documentation string that describes a method's arguments and behavior
+- [ ] An error message that appears when a function is misused
+- [ ] A shortcut key to auto-complete code
 
 * Q24: Learning with DataCamp
 
 What is the main reason the professor recommends running through DataCamp lessons in Colab rather than just clicking through them?
 
-- [ ] A) Colab is faster than the DataCamp interface
-- [ ] B) DataCamp does not support Python 3
-- [X] C) Running the code yourself builds real understanding and muscle memory
-- [ ] D) DataCamp exercises do not count unless verified in Colab
+- [ ] Colab is faster than the DataCamp interface
+- [ ] DataCamp does not support Python 3
+- [X] Running the code yourself builds real understanding and muscle memory
+- [ ] DataCamp exercises do not count unless verified in Colab
 
 * Q25: Class Pedagogy
 
 The professor described the class structure as "concept → exercise → concept → exercise." Which well-known learning method does he compare this to?
 
-- [ ] A) Rote memorization (flashcard drilling)
-- [X] B) Learning a natural language through practice and repetition
-- [ ] C) Problem-based learning with no instruction
-- [ ] D) Lecture-only passive listening
+- [ ] Rote memorization (flashcard drilling)
+- [X] Learning a natural language through practice and repetition
+- [ ] Problem-based learning with no instruction
+- [ ] Lecture-only passive listening
