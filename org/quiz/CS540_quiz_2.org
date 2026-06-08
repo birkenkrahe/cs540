@@ -1,0 +1,327 @@
+#+TITLE: CS 540 – Principles of AI: Week 2 Quiz (May 27)
+#+AUTHOR: Marcus Birkenkrahe
+#+DATE: 2026-05-27
+#+DESCRIPTION: Multiple-choice quiz covering DataCamp "Understanding Machine Learning" (all 3 chapters).
+#+STARTUP: overview hideblocks indent entitiespretty:
+#+OPTIONS: toc:nil num:nil ^:nil: date:nil title:nil author:nil
+* CS 540 – Week 2 Quiz (May 27)
+
+30 questions · 1 point each · Total: 30 points
+
+* Copilot prompt:
+
+Please create a multiple-choice quiz in MS Teams using the questions
+below. Each question has four answer choices. The correct answer is
+marked with ✓ — set that as the correct answer in the quiz, but do not
+display the ✓ to students. Each question is worth 1 point for a total
+of 30 points. Use the question numbers as they appear. The quiz title
+should be "CS 540 – Week 2 Quiz (May 27)".
+
+* Chapter 1: What is Machine Learning?
+
+* Q1: Definition of Machine Learning
+
+Which of the following best captures the definition of machine learning
+used in the DataCamp course?
+
+- [ ] A set of explicit rules programmed step-by-step for each task
+- [X] A set of tools for making inferences and predictions from data
+- [ ] A statistical technique used exclusively for regression problems
+- [ ] A branch of robotics focused on autonomous movement
+
+* Q2: AI and Machine Learning
+
+How does machine learning relate to artificial intelligence (AI)?
+
+- [ ] AI is a subset of machine learning
+- [ ] They are completely separate fields with no overlap
+- [X] Machine learning is the most prevalent subset of AI today
+- [ ] AI refers only to robotics; machine learning refers only to data
+
+* Q3: Prediction vs. Inference
+
+A data team builds two systems from the same traffic dataset: one that
+forecasts tomorrow's highway congestion, and one that identifies which
+factors most strongly cause rush-hour slowdowns. What ML tasks do these
+represent, respectively?
+
+- [ ] Inference, then prediction
+- [X] Prediction, then inference
+- [ ] Both are prediction tasks
+- [ ] Both are inference tasks
+
+* Q4: Labels in Supervised Learning
+
+In a supervised learning dataset for predicting heart disease, what are
+the "labels"?
+
+- [ ] The column headers describing each feature
+- [ ] The rows of patient records
+- [X] The known values of the target variable (e.g., True/False for heart disease)
+- [ ] The features such as age and cholesterol
+
+* Q5: Unsupervised Learning — Key Distinction
+
+Which of the following is the defining characteristic that separates
+unsupervised learning from supervised learning?
+
+- [ ] Unsupervised learning uses more data
+- [ ] Unsupervised learning runs faster than supervised learning
+- [X] Unsupervised learning has no target variable or labels in the training data
+- [ ] Unsupervised learning can only be used for image data
+
+* Q6: Features vs. Target
+
+A hospital dataset has columns: age, cholesterol, blood pressure, and
+"heart disease: yes/no." Which columns are the features?
+
+- [ ] Heart disease: yes/no only
+- [X] Age, cholesterol, and blood pressure
+- [ ] All four columns equally
+- [ ] Whichever column the analyst chooses as the most important
+
+* Q7: Why Split the Dataset
+
+In the ML workflow, why must the dataset be split into training and
+test sets before training begins?
+
+- [ ] To reduce memory usage during model training
+- [ ] To give the model two chances to learn
+- [X] To preserve unseen data for an honest evaluation of how the model generalizes
+- [ ] Because ML algorithms require exactly two input files
+
+* Q8: Model Tuning
+
+After evaluating a model and finding its performance below the
+threshold, what does "tuning" the model mean?
+
+- [ ] Deleting the model and collecting entirely new data
+- [ ] Publishing the model to production and monitoring it
+- [X] Adjusting model options or features and retraining
+- [ ] Replacing the algorithm with a neural network
+
+* Q9: What is an ML Model
+
+Which statement best describes a machine learning model?
+
+- [ ] A spreadsheet that stores training data
+- [ ] A hand-written set of if-then rules
+- [X] A statistical representation of a real-world process, built from data
+- [ ] A Python script that downloads data from the internet
+
+* Q10: Learning Without Explicit Programming
+
+Machine learning is described as powerful because it lets computers
+"learn without being explicitly programmed." What does this mean?
+
+- [ ] The computer writes its own source code automatically
+- [ ] No programming language is needed to build models
+- [X] The model learns patterns from data rather than following hand-coded step-by-step instructions
+- [ ] The model never makes incorrect predictions
+
+* Chapter 2: Machine Learning Models
+
+* Q11: Classification Problems
+
+Which of the following is a classification problem?
+
+- [ ] Predicting tomorrow's high temperature in degrees Celsius
+- [ ] Estimating the sale price of an apartment
+- [X] Predicting whether a skin mole is cancerous or benign
+- [ ] Forecasting quarterly revenue for a company
+
+* Q12: Regression Output
+
+A linear regression model is trained to predict temperature from
+humidity. What does the model produce for a new humidity reading?
+
+- [ ] A category label such as "hot," "mild," or "cold"
+- [X] A continuous numerical value representing the predicted temperature
+- [ ] A probability that the temperature falls in each category
+- [ ] A cluster assignment based on similar humidity readings
+
+* Q13: Support Vector Machine — Kernel
+
+In the college admissions example, switching the SVM kernel from
+"linear" to "polynomial" had what effect?
+
+- [ ] It made the model train faster on large datasets
+- [ ] It allowed the model to handle more than two classes
+- [X] It allowed a curved decision boundary that correctly classified more observations
+- [ ] It converted the classification problem into a regression problem
+
+* Q14: Overfitting
+
+A model scores 99% accuracy on the training set but only 61% on the
+test set. What problem does this describe?
+
+- [ ] Underfitting — the model is too simple to capture patterns
+- [X] Overfitting — the model memorized training data and cannot generalize
+- [ ] Data leakage — test data was accidentally included in training
+- [ ] Class imbalance — one label dominates the training set
+
+* Q15: Limits of Accuracy
+
+A fraud detection model achieves 97% accuracy. The risk team is
+alarmed because it misses most actual fraud cases. Which scenario best
+explains why high accuracy is misleading here?
+
+- [ ] The model was trained on too few examples
+- [X] Fraud is rare, so predicting "not fraud" for every transaction yields high accuracy while catching zero fraud
+- [ ] Accuracy is only reliable above 99%
+- [ ] The model is overfitting the test data
+
+* Q16: Sensitivity
+
+Sensitivity is defined as TP / (TP + FN). In a disease screening
+context, what does a very low sensitivity score indicate?
+
+- [ ] The model is flagging too many healthy patients as sick
+- [ ] The model correctly identifies most healthy patients as healthy
+- [X] The model is missing most actual disease cases (many false negatives)
+- [ ] The model has no false positives at all
+
+* Q17: Clustering Challenge
+
+A team runs K-Means on customer transaction data and gets four
+clusters. What is a fundamental challenge they will face next?
+
+- [ ] K-Means always produces the wrong number of clusters
+- [ ] The clusters cannot be visualized with more than two features
+- [X] The algorithm does not explain what differentiates the clusters — the team must investigate and label them manually
+- [ ] K-Means requires labeled data to validate the clusters
+
+* Q18: Anomaly Detection Use Case
+
+A cybersecurity company wants to identify transactions that behave
+very differently from all others in their dataset — possible breaches
+they have never seen before. Which unsupervised technique is most
+appropriate?
+
+- [ ] Clustering
+- [ ] Association rules
+- [X] Anomaly detection
+- [ ] Linear regression
+
+* Q19: Dimensionality Reduction
+
+Height and shoe size are highly correlated. What justifies removing
+shoe size as a feature during dimensionality reduction?
+
+- [ ] Shoe size is never relevant to any prediction task
+- [X] Correlated features carry redundant information; keeping both adds noise without meaningfully improving the model
+- [ ] Fewer features always produce more accurate models regardless of their correlation
+- [ ] Shoe size cannot be represented as a number
+
+* Q20: Ensemble Methods — Regression
+
+Three models predict delivery times for a package: Model A says 3
+days, Model B says 5 days, Model C says 4 days. How does a regression
+ensemble combine these predictions?
+
+- [ ] It selects the prediction with the highest confidence score
+- [ ] It takes a majority vote and picks 4 days
+- [X] It averages the three predictions: (3 + 5 + 4) / 3 = 4 days
+- [ ] It uses the first model's prediction as the baseline and ignores the others
+
+* Chapter 3: Deep Learning
+
+* Q21: Neural Network — Basic Unit
+
+What is the basic computational unit of a neural network?
+
+- [ ] A weight matrix
+- [ ] A layer of transformations
+- [X] A neuron (also called a node)
+- [ ] A gradient descent step
+
+* Q22: When to Use Deep Learning
+
+Which scenario is the best fit for deep learning over traditional ML?
+
+- [ ] Predicting loan defaults from a 10-column tabular dataset of 500 applicants
+- [ ] Classifying customer feedback as positive/negative using 1,000 labeled survey responses
+- [X] Detecting defects in 2 million product photos taken on an assembly line
+- [ ] Predicting house prices from square footage and neighborhood
+
+* Q23: Hidden Layer Feature Learning
+
+In a face recognition neural network, what do neurons in the earliest
+hidden layers typically learn to detect?
+
+- [ ] The identity of the person in the image
+- [ ] High-level shapes such as faces and heads
+- [X] Low-level features such as edges and color gradients
+- [ ] The pixel coordinates of facial landmarks
+
+* Q24: Color Image Data Size
+
+Compared to a grayscale image of the same resolution, a color RGB
+image requires how much more storage?
+
+- [ ] Twice as much, for two additional color channels
+- [X] Three times as much, one value per channel (R, G, B) per pixel
+- [ ] Four times as much, due to an alpha transparency channel
+- [ ] The same amount — color is stored as metadata, not pixel data
+
+* Q25: Image Feature Count
+
+A grayscale image has a resolution of 512 × 512 pixels. How many
+features will be passed into a neural network processing this image?
+
+- [ ] 512
+- [ ] 1,024
+- [ ] 65,536
+- [X] 262,144
+
+* Q26: Bag of Words
+
+The bag-of-words technique converts text into numerical features by:
+
+- [ ] Translating words into a target language before counting
+- [ ] Generating dense vector embeddings using a neural network
+- [X] Counting how often each word appears in each piece of text
+- [ ] Removing all words shorter than four characters
+
+* Q27: N-grams and Negation
+
+A bag-of-words model counts "great" in the sentence "This book was not
+great." What limitation does this reveal, and how do n-grams address
+it?
+
+- [ ] Bag of words cannot handle words longer than five letters; n-grams remove long words
+- [X] Single-word counts ignore word order and negation; counting two-word sequences ("not great") captures the negative sentiment
+- [ ] Bag of words counts too slowly; n-grams speed up processing
+- [ ] Bag of words requires labeled data; n-grams do not
+
+* Q28: Word Embeddings
+
+Word embeddings improve on bag of words by addressing which key
+limitation?
+
+- [ ] Bag of words cannot process text longer than 500 words
+- [ ] Bag of words requires a GPU to compute
+- [X] Bag of words treats synonyms as unrelated words; word embeddings group similar words into similar feature representations
+- [ ] Bag of words produces too few features for deep learning models
+
+* Q29: Garbage In, Garbage Out
+
+Amazon's résumé-screening model (2014–2017) consistently downranked
+female applicants. What was the root cause according to the course?
+
+- [ ] The model used deep learning, which amplifies existing biases
+- [X] The model was trained on historical hiring data that reflected past gender bias, which it learned as a legitimate pattern
+- [ ] Amazon's engineers deliberately programmed gender preferences into the model
+- [ ] The model had too many features and overfitted to male résumés
+
+* Q30: Explainability
+
+A hospital's deep learning model predicts sepsis onset from ICU sensor
+data with 94% accuracy. The chief physician refuses to deploy it,
+saying: "I cannot tell the nurses why the alarm fired." Which
+limitation of deep learning does this illustrate?
+
+- [ ] Deep learning cannot achieve clinical-grade accuracy on sensor data
+- [ ] Deep learning models require more labeled data than hospitals typically have
+- [X] Deep learning models are black boxes — they do not explain which inputs drove a specific prediction
+- [ ] Deep learning models cannot process time-series sensor data
