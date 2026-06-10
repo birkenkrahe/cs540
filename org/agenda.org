@@ -719,7 +719,7 @@ the accuracy as a function of the number of neighbors as shown in the
 DataCamp lesson (see below). You can use the telekom_churn_clean.csv
 dataset (available via the dashboard page of the course for download).
 
-You find the code in the vode "Measuring model performance".
+You find the code in the video "Measuring model performance".
 #+attr_html: :width 400px :float nil:
 [[../img/varying_k.png]]
 
