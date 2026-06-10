@@ -7,10 +7,10 @@
 * Prayers
 ** Opening Prayer (Standard)
 #+attr_html: :width 550px :float nil:
-[[../img/opening_prayers.png]]
+[[../../img/opening_prayers.png]]
 ** Closing Prayer (Aquinas)
 #+attr_html: :width 550px :float nil:
-[[../img/closing_prayers.png]]
+[[../../img/closing_prayers.png]]
 ** Opening Prayer (May 27)
 
 #+begin_quote
@@ -527,17 +527,17 @@ Your views:
 
 * Week 4 – Movie Feedback / DataCamp Review / kNN Codealong (June 10)
 
-| Segment                  | Time   |   |
-|--------------------------+--------+---|
-| Opening prayer           | 1 min  |   |
-| Updates                  | 5 min  |   |
-| Movie feedback           | 15 min |   |
-| DataCamp review          | 20 min |   |
-| kNN codealong            | 30 min |   |
-| Project discussion       | 5 min  |   |
-| Next assignments         | 5 min  |   |
-| Round: one takeaway each | 5 min  |   |
-| Closing prayer           | 1 min  |   |
+| Segment                    | Time   |   |
+|----------------------------+--------+---|
+| Opening prayer             | 1 min  |   |
+| Updates                    | 5 min  |   |
+| Movie feedback             | 15 min |   |
+| DataCamp review            | 20 min |   |
+| kNN code along             | 30 min |   |
+| Midterm project discussion | 5 min  |   |
+| Next assignments           | 5 min  |   |
+| Round: one takeaway each   | 5 min  |   |
+| Closing prayer             | 1 min  |   |
 
 ** Updates on Magnifica Humanitas & DataCamp
 
@@ -685,6 +685,21 @@ Your views:
     cannot be reliably compared or shared.
     #+end_quote
 
+** kNN code along: Loan approval in 2D
+
+- kNN is a "lazy learner": ~knn.fit()~ only stores features and labels
+  in memory. All the work is done by ~knn.predict()~ when distances are
+  computed. It's slow at prediction but instant to train.
+
+- For a loan approval process, we want to classify new applicants
+  using their income and their credit score as predictors.
+
+- Open the template tinyurl.com/knn-loan-ipynb, make a copy and code
+  along with me.
+
+- You can find the completed solution on Colab here:
+  [[https://tinyurl.com/knn-loan-ipynb-solution][tinyurl.com/knn-loan-solution-ipynb]].
+
 ** Midterm project – first look
 
 - The midterm is an end-to-end ML workflow on a dataset of your
@@ -714,10 +729,14 @@ Your views:
    - Complete Tasks 1–4
    - Submit the shareable Colab URL to Teams
 
-*Optional:* Explore the dependency of kNN on the parameter k by plotting
-the accuracy as a function of the number of neighbors as shown in the
-DataCamp lesson (see below). You can use the telekom_churn_clean.csv
-dataset (available via the dashboard page of the course for download).
+*Optional (Bonus):* Start by predicting for a few new customers in the
+loan approval notebook — add one or two new ~x_new~ observations at
+different positions and check whether ~k=1~ and ~k=3~ agree. Then, if you
+want more: explore the dependency of kNN on the parameter k by
+plotting the accuracy as a function of the number of neighbors as
+shown in the DataCamp lesson (see below). You can use the
+telekom_churn_clean.csv dataset (available via the dashboard page of
+the course for download).
 
 You find the code in the video "Measuring model performance".
 #+attr_html: :width 400px :float nil:
