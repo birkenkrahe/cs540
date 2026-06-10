@@ -7,10 +7,10 @@
 * Prayers
 ** Opening Prayer (Standard)
 #+attr_html: :width 550px :float nil:
-[[../../img/opening_prayers.png]]
+[[../img/opening_prayers.png]]
 ** Closing Prayer (Aquinas)
 #+attr_html: :width 550px :float nil:
-[[../../img/closing_prayers.png]]
+[[../img/closing_prayers.png]]
 ** Opening Prayer (May 27)
 
 #+begin_quote
