@@ -729,16 +729,15 @@ Your views:
    - Complete Tasks 1–4
    - Submit the shareable Colab URL to Teams
 
-*Optional (Bonus):* Start by predicting for a few new customers in the
-loan approval notebook — add one or two new ~x_new~ observations at
-different positions and check whether ~k=1~ and ~k=3~ agree. Then, if you
-want more: explore the dependency of kNN on the parameter k by
+*Optional (Bonus):* Explore the dependency of kNN on the parameter k by
 plotting the accuracy as a function of the number of neighbors as
 shown in the DataCamp lesson (see below). You can use the
-telekom_churn_clean.csv dataset (available via the dashboard page of
-the course for download).
+=telekom_churn_clean.csv= dataset (available via the dashboard page of
+the course for download), or you can do it for the simple loan
+approval dataset.
 
-You find the code in the video "Measuring model performance".
+You find the code for the customer churn problem in the video
+"Measuring model performance".
 #+attr_html: :width 400px :float nil:
 [[../img/varying_k.png]]
 
