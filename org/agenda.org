@@ -552,24 +552,53 @@ Your views:
 
 ** Movie feedback
 
-/"Thinking Machines" (1961) — MIT documentary featuring Shannon, Simon, Samuel/
+*"Thinking Machines" (1961) — MIT documentary featuring Shannon, Simon, Samuel*
 
 1. *What is "thinking" here?* How does the film define machine
    intelligence — and do you buy it?
+   #+begin_quote
+   Behaviorist: If outputs look intelligent, that counts. Sidesteps
+   consciousness and meaning entirely.
+   #+end_quote
 2. *What aged well, what didn't?* Pick one prediction that held up and
    one that flopped. What explains the difference?
+   #+begin_quote
+   - Aged well: Machines dominating narrow tasks.
+   - Flopped: Implied timeline to AI - no theory for learning.
+   #+end_quote
 3. *What's missing?* What does the film seem unaware of that you'd
    consider essential to AI today?
+   #+begin_quote
+   Learning from data. The whole film assumes intelligence =
+   programmed rules except in game contexts (Samuel). The statistical
+   revolution that actually built modern AI is not on their radar
+   (except on Claude Shannon's).
+   #+end_quote
 
-/"Computer Chronicles – Artificial Intelligence" (1984)/
+*"Computer Chronicles – Artificial Intelligence" (1984)*
 
 4. *What problem did expert systems solve?* What made them feel like a
    breakthrough in 1984 — and what did they actually do well?
+   #+begin_quote
+   Bottling scarce expertise. Narrow, explicit-rule domains
+   (diagnosis, drilling, nuclear) worked genuinely well.
+   #+end_quote
 5. *Why did the hype collapse?* Based on what you saw, what were the
    hidden weaknesses that the enthusiasts seemed to underestimate?
+   #+begin_quote
+   Brittleness. The moment common sense was needed, the systems
+   failed. Real knowledge does not fit neatly into if-then rules. Too
+   rigid for messy reality.
+   #+end_quote
 6. *Pattern or fluke?* This episode sits between two AI winters. Do you
    see a recurring pattern — and does it remind you of anything
    happening in AI today?
+   #+begin_quote
+   Classic cycle: Narrow capability -> overgeneralized optimism ->
+   hidden limits emerge. LLMs do language brilliantly, so reasoning
+   and reliability are assumed to follow - different substrate, same
+   leap of imagination.
+   #+end_quote
 
 ** DataCamp review questions (Understanding ML/Classification/Regression)
 
