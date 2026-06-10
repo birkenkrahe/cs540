@@ -1,0 +1,388 @@
+#+TITLE:Predicting Loan Approval with k-Nearest Neighbors
+#+AUTHOR:Marcus Birkenkrahe
+#+SUBTITLE:CS 540 - Principles of AI - Catholic Polytechnic U, summer 2026
+#+STARTUP: overview hideblocks indent entitiespretty:
+#+OPTIONS: toc:nil num:nil ^:nil:
+#+PROPERTY: header-args:python :session *Python* :results output :exports both :noweb yes
+* Objectives
+
+Build a k-Nearest Neighbors classifier from scratch using a small
+2D loan approval dataset and learn how kNN works geometrically.
+
+1) Define a 2D dataset with two features (income, credit score).
+2) Inspect the shapes of input and output arrays.
+3) Plot the training data in 2D feature space.
+4) Fit kNN classifiers for ~k=1~ and ~k=3~.
+5) Predict the class of a new customer.
+6) Visualize the decision regions in 2D.
+7) Explore how changing ~k~ affects the decision boundary.
+
+Along the way, you will also pick up:
+- Using ~numpy~ arrays for feature matrices and label vectors.
+- Using ~np.meshgrid~ to create a 2D grid for visualization.
+- Plotting decision regions with ~plt.contourf~.
+- Understanding overfitting vs. underfitting through the value of ~k~.
+
+* Predicting Loan Approval in 2D
+
+A bank wants to decide whether to approve a loan based on *two input
+features*:
+
+- annual income (in $10,000s)
+- credit score (scaled from 0 to 10)
+
+You are given past data (in both Colab and Emacs, use pipe syntax):
+
+| income | credit_score | approval |
+|--------+--------------+----------|
+|      2 |            3 |        0 |
+|      2 |            5 |        0 |
+|      3 |            4 |        0 |
+|      4 |            4 |        1 |
+|      5 |            6 |        1 |
+|      6 |            5 |        1 |
+
+Here:
+- ~0 = denied~
+- ~1 = approved~
+
+* Predictive question
+
+A new customer has:
+- income = 4
+- credit score = 5
+
+Will the loan be approved?
+
+* Coding tasks
+
+1. Import required libraries
+2. Define the 2D dataset
+3. Inspect the shapes of input and output
+4. Plot the training data
+5. Fit and predict ~model1~ for ~k=1~
+6. Fit and predict ~model3~ for ~k=3~
+7. Compare the predictions
+8. Visualize decision regions
+
+* 1. Import required libraries
+
+Import the ~KNeighborsClassifier~ class from the ~neigbors~ module of the
+~sklearn~ library with the alias ~knn~ ([[https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html][find our more here]]).
+
+#+begin_src python :results none :session *Python* :python python3
+  from sklearn.neighbors import KNeighborsClassifier as knn
+  import numpy as np
+  import matplotlib.pyplot as plt
+#+end_src
+
+* 2. Define the dataset
+
+We have two features, =income= and =credit_score=. The classifier expects
+input in array format. The ~np.array()~ function stores these as a 2D
+array or matrix.
+
+Example:
+#+begin_src python :results output :exports both :session *Python* :python python3
+  l = [[1,2],[3,4]]   # a list with two list members
+  print(l)            # prints as a list
+  print(np.array(l))  # prints as a matrix
+  print(np.array(l)[1,1]) # prints matrix element [1,1]
+#+end_src
+
+#+RESULTS:
+: [[1, 2], [3, 4]]
+: [[1 2]
+:  [3 4]]
+
+1) create a matrix (2d array) =X= for the observations from the table
+2) create a vector (1d array) =y= for the output (target) labels
+3) create a new customer =x_new= with $40,000 income and a credit score of 5
+
+#+begin_src python :results output :session *Python* :python python3
+  # Input features: [income, credit_score]
+  X = np.array([
+      [2, 3],
+      [2, 5],
+      [3, 4],
+      [4, 4],
+      [5, 6],
+      [6, 5]
+  ])
+
+  # Output labels: 0 = denied, 1 = approved
+  y = np.array([0, 0, 0, 1, 1, 1])
+
+  # New customer
+  x_new = np.array([[4, 5]])
+
+  print(x_new)
+#+end_src
+
+#+RESULTS:
+: [[4 5]]
+
+* 3. Inspect the shapes of input and output
+
+~sklearn~ expects 2D input. Let's check the shape of our objects before
+plotting and building the model.
+
+#+begin_src python :results output :exports both :session *Python* :python python3
+  print("X shape:", X.shape)
+  print("y shape:", y.shape)
+  print("x_new shape:", x_new.shape)
+#+end_src
+
+#+RESULTS:
+: X shape: (6, 2)
+: y shape: (6,)
+: x_new shape: (1, 2)
+
+If your =x_new= shape is not a 2D array you will get an error later:
+#+begin_src python :results output :exports both :session *Python* :python python3
+  foo = np.array([4,5])
+  print(foo.shape)
+  bar = np.array([[4,5]])
+  print(bar.shape)
+#+end_src
+
+#+RESULTS:
+: (2,)
+: (1, 2)
+
+* 4. Plot the training data
+
+We use the `plt` method `scatter` to generate a scatterplot of the
+loan approval training data and the new data point.
+
+In the second step, we customize the plot to make it more
+readable/presentable.
+
+Each data point is an point in the plane. The indexing logic is the
+tricky part - we use Boolean flag vectors to subscript the values we
+want:
+
+- =y==0= produces a boolean mask
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(y)
+    print(y==0)
+  #+end_src
+
+  #+RESULTS:
+  : [0 0 0 1 1 1]
+  : [ True  True  True False False False]
+
+- =X[y==0]= goes through all rows and selects those where the label is 0 (denied):
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print('loan denied:\n', X[y==0])
+  #+end_src
+
+  #+RESULTS:
+  : loan denied:
+  :  [[2 3]
+  :  [2 5]
+  :  [3 4]]
+
+- Adding the column index 0 picks column 0 (=income=) from those rows:
+  these become the x-axis values.
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(X[y==0,0]) # income for denied loans -> x-axis
+  #+end_src
+
+  #+RESULTS:
+  : [2 2 3]
+
+- Adding the column index 1 picks column 1 (=credit_score=) from those
+  rows: the y-axis values.
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(X[y==0,1]) # credit score for denied loans -> y-axis
+  #+end_src
+
+  #+RESULTS:
+  : [3 5 4]
+
+- This pattern is repeated for =y==1= (approved loans).
+
+#+begin_src python :file loan2d_points.png :results file graphics output :exports both :session *Python* :python python3
+  plt.clf()
+
+  plt.scatter(X[y==0, 0], X[y==0, 1], label="denied (0)")
+  plt.scatter(X[y==1, 0], X[y==1, 1], label="approved (1)")
+  # s=100 increases the marker size by points^2
+  plt.scatter(x_new[:,0], x_new[:,1], marker='x', s=100, label="new customer")
+
+  plt.xlabel("Income ($10,000s)")
+  plt.ylabel("Credit score (scaled)")
+  plt.title("Loan approval training data")
+  plt.legend()
+  plt.savefig("loan2d_points.png")
+#+end_src
+
+#+RESULTS:
+[[file:loan2d_points.png]]
+
+This visualizes already which neighborhood the new customer is in -
+the distance to the approved loans is visibly smaller than to the
+denied loans.
+
+* 5. Fit and predict ~model1~ (k = 1)
+
+- To build =model1=, we only need to call =knn= (our classifier alias) and
+  specify =k=, the number of nearest neighbors to be taken into account.
+- To fit the model, we call ~knn.fit()~ on =model1=. The classifier has
+  now memorized the geometric properties of our dataset.
+- To make a prediction, we run ~knn.predict()~ on our new, unseen data
+  in =x_new=.
+
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    model1 = KNeighborsClassifier(n_neighbors=1)
+    model1.fit(X, y)
+
+    pred1 = model1.predict(x_new)
+    print(pred1)
+  #+end_src
+
+  #+RESULTS:
+  : [1]
+
+- Why does this print as =[1]=?
+  #+begin_quote
+  Because ~model.predict()~ always returns a 1D array, not a scalar,
+  even when predicting a single point. =x_new= has shape (1,2) so the
+  prediction is returned as array([1]) which prints as [1].
+
+  To return just the number, select the first index:
+  #+end_quote
+
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    print(pred1[0])
+  #+end_src
+
+  #+RESULTS:
+  : 1
+
+* 6. Fit and predict ~model3~ (k = 3)
+
+#+begin_src python :results output :exports both :session *Python* :python python3
+  model3 = KNeighborsClassifier(n_neighbors=3)
+  model3.fit(X, y)
+
+  pred3 = model3.predict(x_new)
+  print(pred3)
+#+end_src
+
+#+RESULTS:
+: [1]
+
+Notice that if you were to change k to 6 (the maximum value for this
+dataset) then you would get a 'loan denied' (0) prediction because
+you'd have a 3:3 tie. ~scikit-learn~ breaks that tie deterministically
+using the first index with the maximum count (~np.bincount + argmax~),
+and since 0 comes before 1, it wins the tie.
+
+* 7. Compare the predictions
+
+#+begin_quote
+Do the predictions differ? Why or why not?
+#+end_quote
+
+#+begin_quote
+In this example, both ~k=1~ and ~k=3~ predict approval. The new
+customer is located near points labeled 1, so both the closest single
+neighbor and the majority of the three nearest neighbors vote for
+approval.
+#+end_quote
+
+* 8. Visualize decision regions
+
+To understand how the model generalizes beyond the training points, we
+can visualize the decision regions — the areas of the 2D feature space
+that the model would classify as approved or denied for any
+hypothetical customer, not just the six we trained on.
+
+The idea is to create a fine grid of points covering the entire
+income/credit-score plane, predict the class for each grid point, and
+color the plane accordingly. Where the color changes is the decision
+boundary — the line (or curve) separating the two regions.
+
+We do this in three steps:
+1) Build a dense 2D grid with ~np.meshgrid~
+2) Run ~model.predict()~ on every grid point
+3) Plot the colored regions with ~plt.contourf~, then overlay the
+   training points and new customer
+
+#+begin_src python :file loan2d_regions.png :results file graphics output :exports both :session *Python* :python python3
+  plt.clf()
+
+  model = model1
+
+  xx, yy = np.meshgrid(
+      np.linspace(1, 7, 200),
+      np.linspace(2, 7, 200)
+  )
+
+  grid = np.c_[xx.ravel(), yy.ravel()]
+  Z = model.predict(grid).reshape(xx.shape)
+
+  plt.contourf(xx, yy, Z, alpha=0.3)
+  plt.scatter(X[y==0, 0], X[y==0, 1], label="denied (0)")
+  plt.scatter(X[y==1, 0], X[y==1, 1], label="approved (1)")
+  plt.scatter(x_new[:,0], x_new[:,1], marker='x', s=100, label="new customer")
+
+  plt.xlabel("Income ($10,000s)")
+  plt.ylabel("Credit score (scaled)")
+  plt.title("Decision regions for kNN")
+  plt.legend()
+  plt.savefig("loan2d_regions.png")
+#+end_src
+
+#+RESULTS:
+[[file:loan2d_regions.png]]
+
+*Code explanation:*
+
+- ~plt.clf()~: Clear the current figure to start with a fresh plot.
+- ~model = model1~: Select which trained kNN model to visualize (here: k = 1).
+- ~np.meshgrid(...)~: Create a grid of evenly spaced points covering the 2D feature space.
+- ~xx, yy~: Matrices representing all x- and y-coordinates in the grid.
+- ~xx.ravel(), yy.ravel()~: Flatten the grid into 1D arrays.
+- ~np.c_[...]~: Combine flattened x and y into a list of coordinate pairs — shape ~(num_points, 2)~.
+- ~model.predict(grid)~: Predict class (0 or 1) for every point in the grid.
+- ~reshape(xx.shape)~: Convert predictions back into grid shape for plotting.
+- ~plt.contourf(xx, yy, Z, alpha=0.3)~: Draw filled regions showing predicted class across the plane.
+
+* Follow-up Questions
+
+1. What determines the dimensionality of the classification problem?
+   #+begin_quote
+   The number of features (columns of the data frame) or predictors.
+   #+end_quote
+
+2. What do the decision regions show?
+   #+begin_quote
+   They show which class the model would predict at different locations
+   in the 2D feature space.
+   #+end_quote
+
+3. How might changing ~k~ affect the decision boundary?
+   #+begin_quote
+   Smaller ~k~ gives a more local, sensitive boundary, while larger ~k~
+   gives a smoother, more stable boundary.
+   #+end_quote
+
+4. What happens when the new loan application lies exactly on the
+   decision boundary?
+   #+begin_quote
+   The classification becomes ambiguous. Scikit-learn resolves ties
+   deterministically by picking the smaller class label (0).
+   #+end_quote
+
+* Possible extension
+
+Use the same dataset and do the following:
+
+1. Predict the class of these new customers: ~[3,5]~, ~[5,4]~, ~[6,6]~
+2. Compare predictions for ~k=1~, ~k=3~, ~k=5~
+3. Create one plot of the training points and the new customers.
+4. Create one plot of the decision regions for one chosen value of ~k~.
+5. In a short paragraph, explain how changing ~k~ affects the model.

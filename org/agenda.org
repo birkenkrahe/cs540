@@ -7,10 +7,10 @@
 * Prayers
 ** Opening Prayer (Standard)
 #+attr_html: :width 550px :float nil:
-[[../img/opening_prayers.png]]
+[[../../img/opening_prayers.png]]
 ** Closing Prayer (Aquinas)
 #+attr_html: :width 550px :float nil:
-[[../img/closing_prayers.png]]
+[[../../img/closing_prayers.png]]
 ** Opening Prayer (May 27)
 
 #+begin_quote
@@ -694,7 +694,7 @@ Your views:
 - For a loan approval process, we want to classify new applicants
   using their income and their credit score as predictors.
 
-- Open the template tinyurl.com/knn-loan-ipynb, make a copy and code
+- Open the template [[https://tinyurl.com/knn-loan-ipynb][tinyurl.com/knn-loan-ipynb]], make a copy and code
   along with me.
 
 - You can find the completed solution on Colab here:
