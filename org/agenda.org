@@ -63,6 +63,12 @@ now and in the our of our death.
 Amen.
 #+end_quote
 
+** Opening Prayer (June)
+[[../img/memorare_to_the_Sacred_Heart_of_Jesus.png]]
+
+** Closing Prayer (June)
+[[../img/o_most_holy_heart_of_jesus.png]]
+
 ** Why these prayers?
 
 - *The "Our Father"*, because we learn everything through him.
@@ -86,6 +92,9 @@ Amen.
 
 - *1 Cor 13:11-12*: All human and artificial intelligence sees only
   riddles and reflections, but the sould is made for the face of God.
+
+- June is the month of the Sacred Heart of Jesus, with its own
+  memorare as an opening prayer, and the prayer to His Holy Heart.
 
 * DONE Week 1 - Overview and Getting Started with Python in Colab
 
@@ -511,7 +520,6 @@ Your views:
 - Import
 
 * DONE Week 3 - [Moving week] / ML movies / DataCamp "Regression"
-
 ** Assignments
 
 1. Watch [[https://youtu.be/s7Apsqv0CpI?si=FebrJ_5lAU2CX6XQ]["Thinking Machines" (1961)]] and "[[https://youtu.be/_S3m0V_ZF_Q?si=xDry7S12sqo3OjFu][Computer Chronicles]]" (1984),
@@ -525,19 +533,19 @@ Your views:
    DataCamp course "Supervised Learning with
    scikit-learn".
 
-* Week 4 – Movie Feedback / DataCamp Review / kNN Codealong (June 10)
+* DONE Week 4 – Movie Feedback / DataCamp Review / kNN Codealong (June 10)
 
 | Segment                    | Time   |   |
 |----------------------------+--------+---|
 | Opening prayer             | 1 min  | x |
 | Updates                    | 5 min  | x |
-| Movie feedback             | 15 min |   |
-| DataCamp review            | 20 min |   |
-| kNN code along             | 30 min |   |
+| Movie feedback             | 15 min | x |
+| DataCamp review            | 20 min | x |
+| kNN code along             | 30 min | x |
 | Midterm project discussion | 5 min  |   |
-| Next assignments           | 5 min  |   |
-| Round: one takeaway each   | 5 min  |   |
-| Closing prayer             | 1 min  |   |
+| Next assignments           | 5 min  | x |
+| Round: one takeaway each   | 5 min  | x |
+| Closing prayer             | 1 min  | x |
 
 ** Updates on Magnifica Humanitas & DataCamp
 
@@ -675,7 +683,7 @@ Your views:
    #+caption: cosine similarity illustrated (see home assignment)
    #+attr_html: :width 600px :float nil:
    [[../img/cosine_similarity_2d.svg]]
-   
+
 8. ~train_test_split~ has a ~stratify=y~ parameter. What does it do
    and when would you use it?
    #+begin_quote
@@ -779,14 +787,63 @@ You find the code for the customer churn problem in the video
 - kNN
 - rare event
 
-* Week 5
+* Week 5 - End-to-end ML project Part 1
 
-** Géron Ch 2 notebook
+| Segment                    | Time   |   |
+|----------------------------+--------+---|
+| Opening prayer             | 1 min  |   |
+| Updates                    | 5 min  |   |
+| Midterm project discussion | 15 min |   |
+| End-to-End ML Project      | 45 min |   |
+| Next assignments           | 5 min  |   |
+| Round: one takeaway each   | 5 min  |   |
+| Closing prayer             | 1 min  |   |
 
-Open in Colab: [[https://colab.research.google.com/github/ageron/handson-mlp/blob/main/02_end_to_end_machine_learning_project.ipynb][tinyurl.com/geron-2-ipynb]]
+** Midterm project discussion
 
-Goal: reach step 4 (Prepare the data for ML algorithms). We do not
-need to finish — the remainder is the take-home assignment.
+- Mini-project due July 7
+- Coding or non-coding
+- Document your research
+- You can team up if you like
+
+** Next assignments
+
+- Complete "Preprocessing and Pipelines" in DataCamp (lesson 4)
+- Complete quiz on today's session
+- Submit short project outline for your prototype:
+  1) Rationale - What do you want to do?
+  2) References - What will you be looking for?
+  3) Results - What do you expect to get out of this?
+  4) Risks - What could go wrong?
+- Copy and complete the "Explore and Visualize the Data to Gain
+  Insights" chapter in Geron's original Colab notebook, and answer a
+  few questions.
+
+There will be no mandatory assignments in the week June 24-July 1
+(apart from the usual quiz) because I want you to work on the project.
+
+You can also team up for the projects if you like.
+
+** End-to-End Machine Learning Project
+
+1) Look at the big picture
+2) Get the data
+3) Explore and visualize the data
+4) Create the test data
+5) Prepare data for learning
+6) Select a model and train
+7) Fine tune a model
+8) Present your solution
+9) Launch production system
+10) Monitor and maintain production system
+
+Open the starter notebook now to code along:
+[[https://tinyurl.com/end-to-end-ml-ipynb][tinyurl.com/end-to-end-ml-ipynb]]
+
+You can later see the completed notebook here:
+[[https://tinyurl.com/end-to-end-ml-complete-ipynb][tinyurl.com/end-to-end-ml-complete-ipynb]]
+
+** Take-aways from this session
 
 
 * Footnotes

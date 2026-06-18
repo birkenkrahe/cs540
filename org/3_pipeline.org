@@ -1,0 +1,586 @@
+#+TITLE:End-to-end machine learning project
+#+AUTHOR:Marcus Birkenkrahe
+#+SUBTITLE:CS 540 - Principles of AI - Catholic Polytechnic U, summer 2026
+#+STARTUP: overview hideblocks indent entitiespretty:
+#+OPTIONS: toc:nil num:nil ^:nil:
+#+PROPERTY: header-args:python :session *Python* :results output :exports both :noweb yes
+* Objectives
+
+1) Look at the big picture
+2) Get the data
+3) Explore and visualize the data
+4) Create the test data
+5) Prepare data for learning
+6) Select a model and train
+7) Fine tune a model
+8) Present your solution
+9) Launch production system
+10) Monitor and maintain production system
+
+See also: [[https://github.com/ageron/handson-mlp/blob/main/ml-project-checklist.md][Géron's project checklist]].
+
+* Source
+
+Source: Géron's Hands-on Machine Learning with scikit-learn and
+PyTorch, Ch 2. The text is very densely written and has a lot of side
+alleys and tangents. It still covers ca. 60 pages of content.
+
+You can open his notebook (mostly code) in Colab and go through it
+yourself: [[https://colab.research.google.com/github/ageron/handson-mlp/blob/main/02_end_to_end_machine_learning_project.ipynb][tinyurl.com/geron-2-ipynb]]
+
+* Target data
+
+- Why start with data?
+  #+begin_quote
+  Machine learning is learning from data to create rules baked into a
+  machine model so that the model can make predictions on new
+  data. Therefore, data, not models or a coding language, or an
+  infrastructure, takes the center role.
+  #+end_quote
+
+- What data are we using and why?
+  #+begin_quote
+  1. *Origin*: 1990 California Housing Prices dataset from the US Census
+     Bureau ([[https://www.kaggle.com/datasets/harrywang/housing?select=housing.csv][see Kaggle]]).
+  2. *Metrics:* Population, median income, median housing price etc. by
+     district (or block group).
+  3. *Why:* Data are realistic (though outdated) and verifiable[fn:1]
+  #+end_quote
+  #+attr_html: :width 400px :float nil:
+  #+caption: Source: Géron, see Colab for source
+  [[../img/california.png]]
+
+* Frame the problem and look at the big picture
+
+** Checklist
+
+1. Define the objective in business terms.
+2. How will your solution be used?
+3. What are the current solutions/workarounds (if any)?
+4. How should you frame this problem (supervised/unsupervised, online/offline, etc.)
+5. How should performance be measured?
+6. Is the performance measure aligned with the business objective?
+7. What would be the minimum performance needed to reach the business objective?
+8. What are comparable problems? Can you reuse experience or tools?
+9. Is human expertise available?
+10. How would you solve the problem manually?
+11. List the assumptions you or others have made so far.
+12. Verify assumptions if possible.
+
+** Is there a business need for machine learning?
+
+- Model output = prediction of a district's median housing price
+
+- Goal = decide whether it's worth investing in a given area
+
+- Output will be fed to another machine learning system as part of a
+  *data science pipeline*:
+
+  + Upstream = close to the source (data)
+  + Downstream = close to the project client (insights)
+
+- Currently, a team of experts estimates house prices based on a
+  system of complex rules - costly, time-consuming, error-prone.
+
+** How would you frame this problem as an ML problem?
+
+- Supervised, unsupervised, reinforcement learning?
+
+- Classification, regression, or something else?
+
+- Batch learning or online learning?
+
+- Answer:
+  #+begin_quote
+  + Model can be trained with labeled examples: Each
+    instance/row/observation comes with the expected output, the
+    district's median house prices -> *supervised ML*
+  + Model will be asked to predict a single continuous numeric value
+    (median house price) based on a number of recorded features ->
+    *multiple* [predictors], *univariate* [predicted] regression
+  + Model data are static, small (1.42 MB), not changing fast -> *batch
+    learning* (use all available data at once, offline, then launch).
+  #+end_quote
+
+** How would you measure the model's performance?
+
+- We need a metric to evaluate the model's performance, also called a
+  loss or cost function.
+
+- For regression problems, we use RMSE (*Root Mean Squared Error*):
+  \begin{equation}
+  \text{RMSE}(\mathbf{X}, h) = \sqrt{\frac{1}{m}\sum_{i=1}^{m}\left(h(\mathbf{x}^{(i)}) - y^{(i)}\right)^2}
+  \end{equation}
+
+  #+attr_html: :width 400px :float nil:
+  [[../img/rmse.png]]
+
+  Where:
+  + m ("sample") is the number of instances (rows/observations),
+    i = 1..m
+  + x^{(i)} ("features") is the i-th vector of all feature values
+    except the label (if there are 10 features, then its length is 10)
+  + h(x^{(i)}) ("hypothesis") is the model prediction for instance i
+    (vector of length 10)
+  + y^{(i)} ("target") is the actual label for instance i
+  + *X* is a matrix with all feature values (except labels) of all
+    instances: One row per instance, the i-th row is equal to the
+    transpose of x^{(i)}, x^{(i)T}
+
+- RSME code example:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    import numpy as np
+    import pandas as pd
+
+    # Five districts with full feature vectors x^(i)
+    data = {
+        "longitude":        [-122.23, -118.41, -117.05, -121.32, -119.78],
+        "latitude":         [  37.88,   34.02,   32.91,   38.44,   36.21],
+        "housing_median_age":[  41,      25,      35,      18,      30  ],
+        "total_rooms":      [  880,    7099,    1274,    1627,    2519  ],
+        "population":       [  322,    2401,     570,     595,    1049  ],
+        "median_income":    [  8.30,    3.21,    4.58,    2.94,    5.12  ],
+        "median_house_value":[156_400, 230_000, 185_000, 310_000, 97_500],
+    }
+
+    actual    = np.array([156_400, 230_000, 185_000, 310_000,  97_500])
+    predicted = np.array([148_000, 241_000, 179_500, 325_000, 112_000])
+
+    rmse = np.sqrt(np.mean((predicted - actual) ** 2))
+    print(pd.DataFrame(data).to_string(index=False))
+    print(f"\nRMSE: ${rmse:,.0f}")
+  #+end_src
+
+  #+RESULTS:
+  :  longitude  latitude  housing_median_age  total_rooms  population  median_income  median_house_value
+  :    -122.23     37.88                  41          880         322           8.30              156400
+  :    -118.41     34.02                  25         7099        2401           3.21              230000
+  :    -117.05     32.91                  35         1274         570           4.58              185000
+  :    -121.32     38.44                  18         1627         595           2.94              310000
+  :    -119.78     36.21                  30         2519        1049           5.12               97500
+  :
+  : RMSE: $11,464
+
+- Shorter in scikit-learn (from v1.4):
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    from sklearn.metrics import root_mean_squared_error
+    rmse2 = root_mean_squared_error(actual, predicted)
+    print(f"RMSE: ${rmse:,.0f}")
+  #+end_src
+
+  #+RESULTS:
+  : RMSE: $11,464
+
+- Why use RMSE?
+  #+begin_quote
+  The code example shows it: RMSE is in the same units as the target
+  variable, which makes it more easily interpretable.
+  #+end_quote
+
+- What is common to all performance measures?
+  #+begin_quote
+  All performance measures are functions of the feature matrix *X* and
+  the model (hypothesis h): they aggregate the difference between
+  predictions h(x^{(i)}) and actual labels y^{(i)}) into a single
+  scalar. The choice between them (RMSE, MAE, etc.) depends on how you
+  want to weight errors — RMSE penalizes outliers more heavily (quadratic),
+  MAE treats all errors equally (linear absolute value).
+  #+end_quote
+
+- Does the geometric argument for Lasso vs Ridge (from "[[https://campus.datacamp.com/courses/supervised-learning-with-scikit-learn/regression-55bf0d67-0cc2-4212-a6e5-bda0d07d3411?ex=11][Regularized
+  regression]]" in DataCamp) also apply to MAE vs RMSE?
+  #+begin_quote
+  Yes — the same L1/L2 (measure) geometry applies. MAE uses absolute
+  values (L1, diamond constraint region with corners on the axes),
+  RMSE uses squared errors (L2, circular constraint region). L1 is
+  more robust to outliers because large errors are not amplified by
+  squaring. Lasso/MAE share the diamond geometry; Ridge/RMSE share the
+  circle geometry.
+  #+end_quote
+
+* Get the data
+
+** Checklist
+
+Note: automate as much as possible so you can easily get fresh data.
+
+1. List the data you need and how much you need.
+2. Find and document where you can get that data.
+3. Check how much space it will take.
+4. Check legal obligations, and get the authorization if necessary.
+5. Get access authorizations.
+6. Create a workspace (with enough storage space).
+7. Get the data.
+8. Convert the data to a format you can easily manipulate (without
+   changing the data itself).
+9. Ensure sensitive information is deleted or protected (e.g.,
+   anonymized).
+10. Check the size and type of data (time series, sample,
+    geographical, etc.).
+11. Sample a test set, put it aside, and never look at it (no data
+    snooping!).
+
+** Fetch the data
+
+- In the book, the data are contained in a compressed tarball
+  container, which cannot be read so we need to unpack it first:
+
+  #+begin_src python :results none :exports both :session *Python* :python python3
+    import tarfile
+
+    with tarfile.open("../data/housing.tgz") as tar:
+          tar.extractall(path="../data")
+  #+end_src
+
+- Let's see it:
+  #+begin_src bash :results output :exports both
+    ls -l ../data/housing
+  #+end_src
+
+  #+RESULTS:
+  : total 1392
+  : -rw-r--r-- 1 aletheia aletheia 1423529 Feb 19  2022 housing.csv
+
+- URL: [[https://tinyurl.com/housing-csv][tinyurl.com/housing-csv]]
+
+- Store the data in a ~pandas~ ~DataFrame~ and take a quick look:
+  #+begin_src python :results none :exports both :session *Python* :python python3
+    housing_full = pd.read_csv("https://tinyurl.com/housing-csv")
+  #+end_src
+
+** Get a quick overview
+
+- Look at the top five rows:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(housing_full.head())
+  #+end_src
+
+  #+RESULTS:
+  :    longitude  latitude  ...  median_house_value  ocean_proximity
+  : 0    -122.23     37.88  ...            452600.0         NEAR BAY
+  : 1    -122.22     37.86  ...            358500.0         NEAR BAY
+  : 2    -122.24     37.85  ...            352100.0         NEAR BAY
+  : 3    -122.25     37.85  ...            341300.0         NEAR BAY
+  : 4    -122.25     37.85  ...            342200.0         NEAR BAY
+  :
+  : [5 rows x 10 columns]
+
+- There is one district per row. Get info on the data structure:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(housing_full.info())
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  <class 'pandas.core.frame.DataFrame'>
+  RangeIndex: 20640 entries, 0 to 20639
+  Data columns (total 10 columns):
+   #   Column              Non-Null Count  Dtype
+  ---  ------              --------------  -----
+   0   longitude           20640 non-null  float64
+   1   latitude            20640 non-null  float64
+   2   housing_median_age  20640 non-null  float64
+   3   total_rooms         20640 non-null  float64
+   4   total_bedrooms      20433 non-null  float64
+   5   population          20640 non-null  float64
+   6   households          20640 non-null  float64
+   7   median_income       20640 non-null  float64
+   8   median_house_value  20640 non-null  float64
+   9   ocean_proximity     20640 non-null  object
+  dtypes: float64(9), object(1)
+  memory usage: 1.6+ MB
+  None
+  #+end_example
+
+- What do you see?
+  #+begin_quote
+  1. 10 features, nine numeric, one object
+  2. 20640 rows
+  3. =total_bedrooms= has 207 missing values
+  4. =ocean_proximity= could be any Python object but must be text (CSV)
+  #+end_quote
+
+- Check the ~object~ feature:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(housing_full["ocean_proximity"].value_counts())
+  #+end_src
+
+  #+RESULTS:
+  : ocean_proximity
+  : <1H OCEAN     9136
+  : INLAND        6551
+  : NEAR OCEAN    2658
+  : NEAR BAY      2290
+  : ISLAND           5
+  : Name: count, dtype: int64
+
+- =<1H OCEAN"= is "less than one hour from ocean", the others are clear.
+
+- The last quick exploration to do is to look at statistical
+  properties. We're going to do this numerically and visually:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(housing_full.describe())
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+            longitude      latitude  ...  median_income  median_house_value
+  count  20640.000000  20640.000000  ...   20640.000000        20640.000000
+  mean    -119.569704     35.631861  ...       3.870671       206855.816909
+  std        2.003532      2.135952  ...       1.899822       115395.615874
+  min     -124.350000     32.540000  ...       0.499900        14999.000000
+  25%     -121.800000     33.930000  ...       2.563400       119600.000000
+  50%     -118.490000     34.260000  ...       3.534800       179700.000000
+  75%     -118.010000     37.710000  ...       4.743250       264725.000000
+  max     -114.310000     41.950000  ...      15.000100       500001.000000
+
+  [8 rows x 9 columns]
+  #+end_example
+
+- What do we learn?
+  #+begin_quote
+  1. Missing values (~NaN~) are ignored.
+  2. ~std~ measures *spread* - it's pretty tight cp. to ~mean~ (*centrality*)
+  3. Outliers aren't dominating (cp. ~mean~ and median 50th percentile)
+  4. IQR (Inter-Quartile Range) 75th-25th percentile:
+  #+end_quote
+
+- You can make the IQR visible with a boxplot (length of the box):
+  #+begin_src python :file ../img/housing_.boxplot.png :results file graphics output :exports both :session *Python* :python python3
+    import matplotlib.pyplot as plt
+    housing_full.boxplot(column="median_house_value", figsize=(4,6)) # portrait
+    plt.title("Median House Value by District")
+    plt.ylabel("USD")
+    plt.savefig("../img/housing_boxplot.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/housing_.boxplot.png]]
+
+- What do you notice about this distribution?
+  #+begin_quote
+  The top of the whiskers seem capped or clipped. You can also see
+  this in the histograms. Capped values are a strong pattern and you
+  don't want the model to learn that.
+  #+end_quote
+
+- What is capping/clipping/winsorizing?
+  #+begin_quote
+  This is not *truncating* (removing the values) but clipping the values
+  to a chosen threshold - so e.g. a house value of $1,000,000 still
+  appears in the data but its value is recorded as $500,000 (the cap).
+  #+end_quote
+
+** Make a quick plot
+
+- You can plot a histogram for every numerical attribute. A histogram
+  shows the frequency (value counts) for a given (continuous
+  numerical) feature.
+
+- The ~hist()~ method produces histobrams for the whole dataset:
+  #+begin_src python :file ../img/housing_histplot.png :results file graphics output :exports both :session *Python* :python python3
+    plt.clf()
+    housing_full.hist(bins=50,figsize=(12,8)) # landscape
+    plt.savefig("../img/housing_histplot.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/housing_histplot.png]]
+
+- What do you see? Share all your observations.
+  #+begin_quote
+  1. =median_house_value= and =housing_median_age= appears *clipped* at the
+     top (values above cap are recorded as the cap value).
+  2. =median_income= appears *clipped* at both ends and is not in USD
+     (5-15 equates to $50,000 to $1,500,000).
+  3. =total_rooms=, =total_bedrooms=, =population=, =households=,
+     =median_income=, and =median_house_value= are all *right-skewed*: a few
+     very large (outlier) values are pulling the ~mean~ above ~median~.
+  4. The features are on wildly different *scales*. Scaling matters
+     before training.
+  5. =median_income= is the closest to bell-shaped: this is a candidate
+     for *stratified sampling* - cutting the data into strata (groups).
+  6. =latitude=, and =longitude= are bi-modal (two spikes), which means
+     that there are two distinct subpopulations present in the data
+     (most likely pre-WWI housing stock and post-WWI suburbans). The
+     =housing_median_age= is even tri-modal (1970-1980 construction boom).
+  #+end_quote
+
+- Followup question: Which of these features would you trust to feed
+  directly into a linear regression model, and which would you want to
+  transform first? And why?
+  #+begin_quote
+  1. Direct (non-skewed): =longitude=, =latitude=, =housing_median_age=,
+     =median_income=.
+  2. Transform: =total_rooms=, =total_bedrooms=, =population=, =households=
+     (log transformation is standard).
+  3. Problematic no matter what: =median_house_value= because of the
+     capping, which disrupts the target variable (high prices will not
+     be predicted).
+  4. =median_income= with unreliable tails at both ends.
+
+  *Why?* Linear regression assumes a linear relationship between each
+  feature and the target. Skewed features compress variation at the
+  high end - the model has a harder time detecting the
+  relationhip. Log transform spreads the values more evenly.
+  #+end_quote
+
+- The needs for transformation are addressed later when we talk about
+  preparing the data for training.
+
+* Create a test set
+
+** Why?
+
+- We need to evaluate the model on data it has never seen to avoid
+  different forms of *bias*, which would mean that the data set does not
+  represent the population - and then the performance measureis fake:
+  the model looks as if it generalizes well but actually it does not.
+
+- The test set must be set aside *before* any exploration (*no data
+  snooping*): looking at the test set biases your intuitions and
+  model choices.
+
+** Random sampling
+
+- The simplest approach: pick 20% of instances at random:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    from sklearn.model_selection import train_test_split
+
+    train_set, test_set = train_test_split(
+        housing_full, test_size=0.2, random_state=42)
+    print(len(train_set), len(test_set))
+  #+end_src
+
+  #+RESULTS:
+  : 16512 4128
+
+- Problem: with a small dataset, random sampling may introduce
+  *sampling bias* — the test set may not represent the full population.
+
+- DataCamp's ~train_test_split~ examples avoided this issue by using
+  clean, balanced datasets. Real-world data is rarely that
+  cooperative.
+
+- Worse: if the script is re-run with a different ~random_state~, a
+  different 20% is selected each time. Over multiple runs the model
+  indirectly sees the *whole dataset* — defeating the purpose of a test
+  set entirely.
+
+- Solution: fix ~random_state~ (we use 42 by convention) or save the
+  test set to disk after the first split and never regenerate it.
+
+- Problem with both solutions: if the dataset is refreshed with new
+  instances, the fixed seed selects a different 20% and the saved test
+  set is stale. The robust solution is to assign each instance a *hash*
+  of a stable identifier (e.g. row index or district ID) and always
+  put the same instances in the test set regardless of dataset order
+  or size — new instances get assigned by their own hash, old ones
+  stay where they were.
+
+- The hash is essentially a *unique key* per row: the same input always
+  produces the same hash value, so the train/test assignment is
+  deterministic and stable across dataset updates.
+
+** Stratified sampling
+
+- Key insight: ~median_income~ is the most important predictor of
+  housing price. We must ensure the test set represents its
+  distribution faithfully.
+
+- Step 1: cut ~median_income~ into categories:
+  #+begin_src python :results none :exports both :session *Python* :python python3
+    import numpy as np
+
+    housing_full["income_cat"] = pd.cut(
+        housing_full["median_income"],
+        bins=[0, 1.5, 3.0, 4.5, 6.0, np.inf],
+        labels=[1, 2, 3, 4, 5])
+  #+end_src
+
+- Visualize the income categories to confirm the strata are
+  well-populated before splitting:
+  #+begin_src python :file ../img/housing_income_cat.png :results file graphics output :exports both :session *Python* :python python3
+    housing_full["income_cat"].value_counts().sort_index().plot(
+        kind="bar", figsize=(8, 4), rot=0)
+    plt.xlabel("Income category")
+    plt.ylabel("Number of districts")
+    plt.title("Income category distribution")
+    plt.savefig("../img/housing_income_cat.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/housing_income_cat.png]]
+
+- Step 2: split *within* each category:
+  #+begin_src python :results none :exports both :session *Python* :python python3
+    strat_train, strat_test = train_test_split(
+        housing_full, test_size=0.2,
+        stratify=housing_full["income_cat"],
+        random_state=42)
+  #+end_src
+
+- Step 3: verify proportions match the full dataset:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    # Full dataset proportions
+    print(housing_full["income_cat"].value_counts() / len(housing_full))
+
+    # Test set proportions
+    print(strat_test["income_cat"].value_counts() / len(strat_test))
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  income_cat
+  3    0.350581
+  2    0.318847
+  4    0.176308
+  5    0.114438
+  1    0.039826
+  Name: count, dtype: float64
+  income_cat
+  3    0.350533
+  2    0.318798
+  4    0.176357
+  5    0.114341
+  1    0.039971
+  Name: count, dtype: float64
+  #+end_example
+
+- Step 4: drop the helper column:
+  #+begin_src python :results none :exports both :session *Python* :python python3
+    for df in (strat_train, strat_test):
+        df.drop("income_cat", axis=1, inplace=True)
+  #+end_src
+
+- What do we learn?
+  #+begin_quote
+  1. *Stratified sampling* preserves the income distribution of the full
+     dataset in both train and test sets. *Random sampling* does not
+     guarantee this — especially in the tails where rare high-income
+     districts (category 1 and 5) could be over- or under-represented.
+  2. The *bar chart* confirms the strata are well-populated before
+     splitting: category 3 dominates (most districts have middle
+     incomes), categories 1 and 5 are rare but not empty.
+  3. The *proportion comparison* after splitting verifies that the test
+     set mirrors the full dataset's income distribution faithfully —
+     this is what "representative" means empirically.
+  #+end_quote
+
+
+
+* TODO Explore and visualize [home assignment]
+
+* TODO Prepare the data
+
+* TODO Select and train
+
+* TODO Fine-tune the system
+
+* TODO Present your solution
+
+* Footnotes
+
+[fn:1] The original dataset appeared in R. Kelley Pace and Ronald
+Barry, “Sparse Spatial Autoregressions”, Statistics & Probability
+Letters 33, no. 3 (1997): 291–297.
