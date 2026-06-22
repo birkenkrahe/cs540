@@ -1,0 +1,111 @@
+#+TITLE: Fraud detection: Why your model is not surprised
+#+SUBTITLE: From Information Theory to Machine Learning
+#+AUTHOR: Marcus Birkenkrahe
+#+DATE: CS 540 -- Summer 2026
+#+OPTIONS: toc:nil ^:nil num:nil
+#+STARTUP: overview hideblocks indent entitiespretty
+* Objectives
+
+I wrote a little detour which is neither in the textbook nor in
+DataCamp. It emerged from a question about the deeper mathematical
+reason why a model fails to learn when classes are imbalanced — for
+example in fraud detection, where most transactions are legitimate and
+very few are fraud.
+
+This led to a mini-lecture touching on Shannon's information theory. I
+also had Claude produce some slides, which may be easier to read than
+the notes.
+
+You may have similar moments when something in class or in your work
+genuinely baffles you. Always follow the rabbit — you will find a
+treasure.
+
+* Detour: Shannon's theorem (1948)
+
+- What does it mean for a model to be "surprised" by the data it sees?
+  The answer is linked to the foundation of information theory.
+
+- Shannon asked if there is a unique way to measure the uncertainty of
+  an event x that satisfies certain axiomatic properties?
+
+- The measure should be continuous (not discrete): small changes in
+  probability produce small changes in information = curve has no
+  jumps or breaks.
+
+- It should be monotone: less probable events carry more
+  information. p < q -> I(p) > I(q) = curve always slopes down, no
+  flat region, no reversals, increasing steepness towards zero.
+
+- It should be additive: independent events should have additive
+  information: I(p * q) = I(p) + I(q) = rules out most functions.
+  
+| Property     | Formal Statement       | Geometric Meaning                             |
+|--------------+------------------------+-----------------------------------------------|
+| Continuity   | Small Δp → small ΔI(p) | Curve has no jumps or breaks                  |
+| Monotonicity | p < q → I(p) > I(q)    | Curve slopes down, no flat regions,           |
+|              |                        | steeper towards zero                          |
+| Additivity   | I(p·q) = I(p) + I(q)   | Independent events have additive information; |
+|              |                        | rules out most functions except log           |
+
+- For a given probability of an even x, p(x):
+  
+  1) Self-information I(p(x)) = -log p(x) is the *surprise* (aka
+     uncertainty) of observing one specific outcome. Property of an
+     event after it occurs.
+  2) Entropy H = - \sum_{x} p(x) log p(x) : the expected self-information
+     over the whole distribution, the average surprise before outcome
+     is observed. A property of the distribution, not the event.
+
+* From Shannon to ML: The Model's Surprise
+
+- Question: why does a model trained on imbalanced data fail to
+  recognize the minority class — even when the loss appears low?
+
+- To answer this precisely, we need to understand what the loss
+  function is actually measuring.
+
+- A trained model assigns probability q(x) to each possible outcome.
+  This is the model's *belief* about the distribution.
+
+- The true distribution is given by the training labels: p(x) = 1
+  for the correct class, 0 for all others (a one-hot spike).
+
+- Cross-entropy H(p, q) = -\sum_{x} p(x) log q(x) measures the
+  average surprise the model experiences when confronted with the
+  true labels:
+  - p(x) weights which outcomes actually matter (the true labels)
+  - log q(x) measures how surprised the model is by each one
+
+- If the model's beliefs match reality: low surprise, low
+  cross-entropy. If they diverge: high surprise, high cross-entropy.
+
+- Training = minimizing average surprise across all m examples:
+
+  J = - (1/m) \sum_{i=1}^{m} log q(y^{(i)} | x^{(i)})   [conditional on input]
+
+- *Class imbalance* corrupts this: the average is taken over a skewed
+  distribution. The model learns to be unsurprised by the majority
+  (for example "no fraud") and never pays enough penalty for being
+  blindsided by the minority ("fraud") — because fraud cases
+  contribute only a small fraction of the sum, their high surprise is
+  diluted by the overwhelming low surprise of the majority.
+
+* References
+
+- Shannon, C.E. (1948). A Mathematical Theory of Communication.
+  /Bell System Technical Journal/, 27, 379–423.
+  [[https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf]]
+
+- Cover, T.M. & Thomas, J.A. (2006). /Elements of Information Theory/
+  (2nd ed.). Wiley, Chapter 2. — not free, but the standard reference.
+
+- Nielsen, M. (2015). /Neural Networks and Deep Learning/, Chapter 3.
+  [[http://neuralnetworksanddeeplearning.com/chap3.html]]
+
+- Kolchinsky, A. (2017). A Friendly Introduction to Cross-Entropy
+  Loss.
+  [[https://rdipietro.github.io/friendly-intro-to-cross-entropy-loss/]]
+
+- Olah, C. (2015). Visual Information Theory.
+  [[https://colah.github.io/posts/2015-09-Visual-Information/]]
+
