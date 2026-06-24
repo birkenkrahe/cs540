@@ -29,6 +29,9 @@
   contiguous numeric array and fast array methods. SciPy provides fast
   numerical operations often wrapping C/C++/Fortran implementations.
 
+- There are other "scikit" libraries besides scikit-learn. Also
+  popular is [[https://scikit-image.org/][scikit-image]] with algorithms for image processing.
+
 * Core API: Three Core Interfaces
 
 Scikit-learn objects play one or more of three roles.
