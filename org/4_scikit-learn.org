@@ -1,0 +1,131 @@
+#+TITLE:Scikit-learn library overview
+#+AUTHOR:Marcus Birkenkrahe
+#+SUBTITLE:CS 540 - Principles of AI - Catholic Polytechnic U, summer 2026
+#+STARTUP: overview hideblocks indent entitiespretty:
+#+OPTIONS: toc:nil num:nil ^:nil:
+#+PROPERTY: header-args:python :session *Python* :results output :exports both :noweb yes
+
+* Scikit-Learn API Design Principles
+
+- Géron (2025, p. 72) identifies six core design principles that make
+  scikit-learn's API "remarkably well designed".
+- Here, we are looking at [[https://arxiv.org/pdf/1309.0238][the original API design paper]] (Buitinck et
+  al, 2013) of this library, which was first launched in 2011
+  (Pedregosa et al).
+- The up to date [[https://scikit-learn.org/stable/api/index.html][description of the API]] is a vast online document.
+
+* What is scikit-learn?
+
+- A software application that provides "efficient and well-established
+  ML tools [...] accessible to non-ML experts."
+
+- A "library, i.e. a collection of classes and functions that users
+  import into Python programs."
+
+- No command-line or graphical user interface is offered. Interactive
+  use is made possible by Python's native interpreter and by IPython.
+
+- Designed to tie in with NumPy and SciPy libraries. NumPy provides a
+  contiguous numeric array and fast array methods. SciPy provides fast
+  numerical operations often wrapping C/C++/Fortran implementations.
+
+* Core API: Three Core Interfaces
+
+Scikit-learn objects play one or more of three roles.
+
+** Estimator
+
+- Any object that can estimate some parameters based on a dataset.
+
+- Estimation is performed by the ~fit()~ method.
+
+- ~fit()~ takes a dataset as parameter, or two for supervised learning
+
+- Any other parameter guiding the process is a *hyperparameter*
+
+- Hyperparameters have no underscore, learned parameters do
+
+#+BEGIN_EXAMPLE python
+model = LinearRegression(fit_intercept=True)  # fit_intercept: hyperparameter
+model.fit(X_train, y_train)
+model.coef_                                   # learned parameter
+#+END_EXAMPLE
+
+** Predictor
+
+- An estimator that makes predictions via ~predict()~ and evaluates them
+  via ~score()~.
+
+#+BEGIN_EXAMPLE python
+model = LinearRegression()
+model.fit(X_train, y_train)
+model.predict(X_new)
+model.score(X_test, y_test)   # returns R²
+#+END_EXAMPLE
+
+Many objects play all three roles. ~Pipeline~ works because all three
+share a consistent interface.
+
+** Transformer
+
+- An estimator that also converts data via ~transform()~ (or the combined
+  ~fit_transform()~).
+
+#+BEGIN_EXAMPLE python
+scaler = StandardScaler() # removes mean and scales to unit variance
+X_train_scaled = scaler.fit_transform(X_train)  # fit + transform
+X_test_scaled  = scaler.transform(X_test)       # transform only, no refit
+#+END_EXAMPLE
+
+* General principles
+
+** Consistency
+
+All objects share a consistent interface. All of the following and the
+estimator/predictor/transformer classes make the API consistent.
+
+** Inspection
+
+- All of the estimator's hyperparameters are directly accessible via
+  public instance variables
+
+- All of the estimator's learned parameters are accessible via public
+  instance variables with an underscore.
+
+** Non-proliferation of classes
+
+- Datasets are represented as NumPy arrays or SciPy sparse matrices,
+  instead of homemade classes.
+
+- Hyperparameters are just regular Python strings or numbers.
+
+** Composition
+
+- Existing building blocks are reused as much as possible (for example
+  to build pipelines, or chains).
+
+** Sensible defaults
+
+- Scikit-Learn provides reasonable default values for most parameters.
+
+* Summary
+
+Scikit-learn's API rests on three interfaces — estimator (~fit()~),
+predictor (~predict()~, ~score()~), transformer (~transform()~) — and five
+design principles: consistency, inspection, nonproliferation of classes,
+composition, and sensible defaults. Most objects play multiple roles
+simultaneously (e.g. ~LinearRegression~ is both an estimator and a
+predictor; ~StandardScaler~ is both an estimator and a transformer).
+The shared interface is what makes ~Pipeline~ work: any sequence of
+transformers plus a final predictor can be chained automatically.
+
+* Further reading
+
+- [[https://scikit-learn.org/stable/getting_started.html][Getting Started]] — official quickstart; covers estimators, pipelines,
+  and model evaluation in one page
+- [[https://scikit-learn.org/stable/user_guide.html][User Guide]] — main reference while working; organized by task
+  (preprocessing, model selection, supervised/unsupervised learning)
+- [[https://scikit-learn.org/stable/auto_examples/index.html][Examples gallery]] — runnable notebooks covering common use cases
+- [[https://arxiv.org/pdf/1309.0238][Buitinck et al. (2013)]] — original API design paper; explains the
+  rationale behind the three-interface model
+
