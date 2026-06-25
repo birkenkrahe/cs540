@@ -787,17 +787,17 @@ You find the code for the customer churn problem in the video
 - kNN
 - rare event
 
-* Week 5 - End-to-end ML project Part 1
+* DONE Week 5 - End-to-end ML project Part 1
 
-| Segment                    | Time   |   |
-|----------------------------+--------+---|
-| Opening prayer             | 1 min  |   |
-| Updates                    | 5 min  |   |
-| Midterm project discussion | 15 min |   |
-| End-to-End ML Project      | 45 min |   |
-| Next assignments           | 5 min  |   |
-| Round: one takeaway each   | 5 min  |   |
-| Closing prayer             | 1 min  |   |
+| Segment                      | Time   |   |
+|------------------------------+--------+---|
+| Opening prayer               | 1 min  | x |
+| Updates                      | 5 min  | x |
+| Midterm project discussion   | 15 min | x |
+| Next assignments             | 5 min  | x |
+| End-to-End ML Project Part 1 | 45 min | x |
+| Round: one takeaway each     | 5 min  | x |
+| Closing prayer               | 1 min  | x |
 
 ** Midterm project discussion
 
@@ -811,31 +811,27 @@ You find the code for the customer churn problem in the video
 - Complete "Preprocessing and Pipelines" in DataCamp (lesson 4)
 - Complete quiz on today's session
 - Submit short project outline for your prototype:
-  1) Rationale - What do you want to do?
-  2) References - What will you be looking for?
-  3) Results - What do you expect to get out of this?
-  4) Risks - What could go wrong?
-- Copy and complete the "Explore and Visualize the Data to Gain
-  Insights" chapter in Geron's original Colab notebook, and answer a
-  few questions.
+  1) Rationale - *What do you want to do?*
+  2) References - *What will you be looking for?*
+  3) Results - *What do you expect to get out of this?*
+  4) Risks - *What could go wrong?*
 
 There will be no mandatory assignments in the week June 24-July 1
-(apart from the usual quiz) because I want you to work on the project.
+(apart from the usual quiz) so that you can work on your project.
 
 You can also team up for the projects if you like.
 
-** End-to-End Machine Learning Project
+** End-to-End Machine Learning Project (part 1)
 
-1) Look at the big picture
-2) Get the data
-3) Explore and visualize the data
-4) Create the test data
-5) Prepare data for learning
-6) Select a model and train
-7) Fine tune a model
-8) Present your solution
-9) Launch production system
-10) Monitor and maintain production system
+1) [X] Look at the big picture
+2) [X] Get the data
+3) [X] Explore and visualize the data
+4) [ ] Create the test data
+5) [ ] Prepare data for learning
+6) [ ] Select a model and train
+7) [ ] Fine tune a model
+8) [ ] Present your solution
+9) [ ] Launch, monitor and maintain production system
 
 Open the starter notebook now to code along:
 [[https://tinyurl.com/end-to-end-ml-ipynb][tinyurl.com/end-to-end-ml-ipynb]]
@@ -845,6 +841,92 @@ You can later see the completed notebook here:
 
 ** Take-aways from this session
 
+
+* Week 6 - Local install / End-to-end ML project Part 2
+
+| Segment                      |   |
+|------------------------------+---|
+| Opening prayer               |   |
+| Updates                      |   |
+| Midterm project discussion   |   |
+| Detour: Information theory   |   |
+| End-to-End ML Project Part 2 |   |
+| Round: one takeaway each     |   |
+| Closing prayer               |   |
+
+** Updates
+
+- All remaining DataCamp lessons assigned (July 8-Aug 26):
+  1) Unsupervised learning in Python
+  2) Introduction to Deep Learning with PyTorch
+  
+** Local Python/Jupyter install
+
+Sam asked:
+#+begin_quote
+I'm interested in using a dataset that I would prefer to not host
+publicly on the internet- wondering if there are tips/ preferences for
+a python desktop setup to run on my machine locally? thanks!
+#+end_quote
+
+There are two things here: Getting Python, and setting up the IDE
+(like Colab). It all depends on your OS.
+
+For both MacOS and Windows, Anaconda is probably your best option. The
+lightweight installation is called "miniconda":
+- installs Python and the `conda` package manager
+- small download (ca. 50MB)
+- you have to install Python packages yourself with `conda install` or
+  `pip install`.
+
+The alternative is the full Anaconda, which is much bigger (with + 600
+packages, pre-installed like Colab), but you may not care about size.
+
+Go to anaconda.com/download. It's free. I used it many moons ago, now
+I use Emacs + Org-mode on Linux.
+
+An alternative that many developers use is to get Python + VS Code
+(editor) + Jupyter-plugin (notebook). But I don't like VS Code
+(bloated Microsoft product, though free).
+
+Or you could also just get Python standalone and download Jupyter from
+jupyter.org. Then you can work like in Colab on your computer.
+
+Let me know if you have further questions! 
+
+** scikit-learn API
+
+- [[https://arxiv.org/pdf/1309.0238][This is the original paper]] that described the library's API.
+
+- One of the authors, Jake Vanderplas, moved on to creating Google
+  Colab, our cloud-based coding platform.
+
+- More about the design of the programming interface [[https://github.com/birkenkrahe/cs540/blob/main/org/4_scikit-learn.org][in my lecture]].
+
+** Midterm project discussion
+
+- Briefly introduce your planned project
+
+** End-to-End Machine Learning Project (part 2)
+
+1) [X] Look at the big picture
+2) [X] Get the data
+3) [X] Explore and visualize the data
+4) [ ] Create the test data
+5) [ ] Prepare data for learning
+6) [ ] Select a model and train
+7) [ ] Fine tune a model
+8) [ ] Present your solution
+9) [ ] Launch, monitor, maintain production system
+
+Open the starter notebook now to code along (this is the last
+completed version): [[https://tinyurl.com/end-to-end-ml-ipynb][tinyurl.com/end-to-end-ml-part-1-ipynb]] 
+
+You can see the completed notebook (part 1) here:
+[[https://tinyurl.com/end-to-end-ml-1-full-ipynb][tinyurl.com/end-to-end-ml-1-full-ipynb]]
+
+For the second part, open this starter notebook to code along:
+tinyurl.com/end-to-end-ml-ipynb-2
 
 * Footnotes
 

@@ -158,7 +158,7 @@ yourself: [[https://colab.research.google.com/github/ageron/handson-mlp/blob/mai
   :    -117.05     32.91                  35         1274         570           4.58              185000
   :    -121.32     38.44                  18         1627         595           2.94              310000
   :    -119.78     36.21                  30         2519        1049           5.12               97500
-  :
+  : 
   : RMSE: $11,464
 
 - Shorter in scikit-learn (from v1.4):
@@ -199,7 +199,6 @@ yourself: [[https://colab.research.google.com/github/ageron/handson-mlp/blob/mai
   #+end_quote
 
 * Get the data
-
 ** Checklist
 
 Note: automate as much as possible so you can easily get fresh data.
@@ -256,13 +255,13 @@ Note: automate as much as possible so you can easily get fresh data.
   #+end_src
 
   #+RESULTS:
-  :    longitude  latitude  ...  median_house_value  ocean_proximity
-  : 0    -122.23     37.88  ...            452600.0         NEAR BAY
-  : 1    -122.22     37.86  ...            358500.0         NEAR BAY
-  : 2    -122.24     37.85  ...            352100.0         NEAR BAY
-  : 3    -122.25     37.85  ...            341300.0         NEAR BAY
-  : 4    -122.25     37.85  ...            342200.0         NEAR BAY
-  :
+  :    longitude  latitude  housing_median_age  ...  median_income  median_house_value  ocean_proximity
+  : 0    -122.23     37.88                41.0  ...         8.3252            452600.0         NEAR BAY
+  : 1    -122.22     37.86                21.0  ...         8.3014            358500.0         NEAR BAY
+  : 2    -122.24     37.85                52.0  ...         7.2574            352100.0         NEAR BAY
+  : 3    -122.25     37.85                52.0  ...         5.6431            341300.0         NEAR BAY
+  : 4    -122.25     37.85                52.0  ...         3.8462            342200.0         NEAR BAY
+  : 
   : [5 rows x 10 columns]
 
 - There is one district per row. Get info on the data structure:
@@ -275,8 +274,8 @@ Note: automate as much as possible so you can easily get fresh data.
   <class 'pandas.core.frame.DataFrame'>
   RangeIndex: 20640 entries, 0 to 20639
   Data columns (total 10 columns):
-   #   Column              Non-Null Count  Dtype
-  ---  ------              --------------  -----
+   #   Column              Non-Null Count  Dtype  
+  ---  ------              --------------  -----  
    0   longitude           20640 non-null  float64
    1   latitude            20640 non-null  float64
    2   housing_median_age  20640 non-null  float64
@@ -286,7 +285,7 @@ Note: automate as much as possible so you can easily get fresh data.
    6   households          20640 non-null  float64
    7   median_income       20640 non-null  float64
    8   median_house_value  20640 non-null  float64
-   9   ocean_proximity     20640 non-null  object
+   9   ocean_proximity     20640 non-null  object 
   dtypes: float64(9), object(1)
   memory usage: 1.6+ MB
   None
@@ -429,7 +428,6 @@ Note: automate as much as possible so you can easily get fresh data.
   preparing the data for training.
 
 * Create a test set
-
 ** Why?
 
 - We need to evaluate the model on data it has never seen to avoid
@@ -482,6 +480,17 @@ Note: automate as much as possible so you can easily get fresh data.
   produces the same hash value, so the train/test assignment is
   deterministic and stable across dataset updates.
 
+- However, why is pure random sampling - even with stable hashing
+  still potentially problematic for the housing dataset specifically?
+  #+begin_quote
+  Both the test and the training data set should be representative of
+  the full dataset (a sample of the real population of CA districts).
+
+  Domain experts say that the income is highly correlated with the
+  house value - if the test set undersamples high or low income
+  districts randomy, the error estimates will be systematically off.
+  #+end_quote
+
 ** Stratified sampling
 
 - Key insight: ~median_income~ is the most important predictor of
@@ -497,6 +506,14 @@ Note: automate as much as possible so you can easily get fresh data.
         bins=[0, 1.5, 3.0, 4.5, 6.0, np.inf],
         labels=[1, 2, 3, 4, 5])
   #+end_src
+
+- *Why?* What does stratified sampling require that makes continous
+  income unusable directly?
+  #+begin_quote
+  *Answer:* Hint - Take continous income values like 3.2741, 5.1823,
+  2.9004 - how many districts share these? None! So every district
+  would be its own stratum and too small to meaningfully sample from.
+  #+end_quote
 
 - Visualize the income categories to confirm the strata are
   well-populated before splitting:
@@ -514,7 +531,7 @@ Note: automate as much as possible so you can easily get fresh data.
 
 - Step 2: split *within* each category:
   #+begin_src python :results none :exports both :session *Python* :python python3
-    strat_train, strat_test = train_test_split(
+    strat_train_set, strat_test_set = train_test_split(
         housing_full, test_size=0.2,
         stratify=housing_full["income_cat"],
         random_state=42)
@@ -526,30 +543,21 @@ Note: automate as much as possible so you can easily get fresh data.
     print(housing_full["income_cat"].value_counts() / len(housing_full))
 
     # Test set proportions
-    print(strat_test["income_cat"].value_counts() / len(strat_test))
+    print(strat_test_set["income_cat"].value_counts() / len(strat_test))
   #+end_src
 
   #+RESULTS:
-  #+begin_example
-  income_cat
-  3    0.350581
-  2    0.318847
-  4    0.176308
-  5    0.114438
-  1    0.039826
-  Name: count, dtype: float64
-  income_cat
-  3    0.350533
-  2    0.318798
-  4    0.176357
-  5    0.114341
-  1    0.039971
-  Name: count, dtype: float64
-  #+end_example
+  : income_cat
+  : 3    0.350581
+  : 2    0.318847
+  : 4    0.176308
+  : 5    0.114438
+  : 1    0.039826
+  : Name: count, dtype: float64
 
 - Step 4: drop the helper column:
   #+begin_src python :results none :exports both :session *Python* :python python3
-    for df in (strat_train, strat_test):
+    for df in (strat_train_set, strat_test_set):
         df.drop("income_cat", axis=1, inplace=True)
   #+end_src
 
@@ -567,11 +575,1042 @@ Note: automate as much as possible so you can easily get fresh data.
      this is what "representative" means empirically.
   #+end_quote
 
+* Explore and visualize [home assignment]
+
+- To preserve the original training set, make a copy:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    housing = strat_train.copy()
+    print(housing.info())
+  #+end_src
+
+  #+RESULTS:
+
+- Since we have geographical information, we can create a map of our
+  data.
+
+  #+begin_src python :file ../img/HousingPlot.png :results file graphics output :exports both :session *Python* :python python3
+    plt.clf()
+    housing.plot(kind="scatter",  # creates scatterplot (rather than line, bar)
+                 x="longitude",   # maps districts geographically
+                 y="latitude",
+                 grid=True)       # adds grid lines
+    plt.savefig("../img/HousingPlot.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/HousingPlot.png]]
+
+** Making a messy map more readable (~alpha~)
+
+- Not easy to read. What can we do? Check out the help?
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    help(housing.plot)
+  #+end_src
+
+  #+RESULTS:
+
+- Alas, the information needed is hidden in ~**kwargs~ - keyword
+  arguments passed on to matplotlib under the hood, and we've been
+  asking for the pandas docstring.
+
+- Check out the help for ~plt.scatter~:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    help(plt.scatter)
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  Help on function scatter in module matplotlib.pyplot:
+
+  scatter(x: 'float | ArrayLike', y: 'float | ArrayLike', s: 'float | ArrayLike | None' = None, c: 'ArrayLike | Sequence[ColorType] | ColorType | None' = None, marker: 'MarkerType | None' = None, cmap: 'str | Colormap | None' = None, norm: 'str | Normalize | None' = None, vmin: 'float | None' = None, vmax: 'float | None' = None, alpha: 'float | None' = None, linewidths: 'float | Sequence[float] | None' = None, *, edgecolors: "Literal['face', 'none'] | ColorType | Sequence[ColorType] | None" = None, plotnonfinite: 'bool' = False, data=None, **kwargs) -> 'PathCollection'
+      A scatter plot of *y* vs. *x* with varying marker size and/or color.
+
+      Parameters
+      ----------
+      x, y : float or array-like, shape (n, )
+          The data positions.
+
+      s : float or array-like, shape (n, ), optional
+          The marker size in points**2 (typographic points are 1/72 in.).
+          Default is ``rcParams['lines.markersize'] ** 2``.
+
+          The linewidth and edgecolor can visually interact with the marker
+          size, and can lead to artifacts if the marker size is smaller than
+          the linewidth.
+
+          If the linewidth is greater than 0 and the edgecolor is anything
+          but *'none'*, then the effective size of the marker will be
+          increased by half the linewidth because the stroke will be centered
+          on the edge of the shape.
+
+          To eliminate the marker edge either set *linewidth=0* or
+          ,*edgecolor='none'*.
+
+      c : array-like or list of :mpltype:`color` or :mpltype:`color`, optional
+          The marker colors. Possible values:
+
+          - A scalar or sequence of n numbers to be mapped to colors using
+            ,*cmap* and *norm*.
+          - A 2D array in which the rows are RGB or RGBA.
+          - A sequence of colors of length n.
+          - A single color format string.
+
+          Note that *c* should not be a single numeric RGB or RGBA sequence
+          because that is indistinguishable from an array of values to be
+          colormapped. If you want to specify the same RGB or RGBA value for
+          all points, use a 2D array with a single row.  Otherwise,
+          value-matching will have precedence in case of a size matching with
+          ,*x* and *y*.
+
+          If you wish to specify a single color for all points
+          prefer the *color* keyword argument.
+
+          Defaults to `None`. In that case the marker color is determined
+          by the value of *color*, *facecolor* or *facecolors*. In case
+          those are not specified or `None`, the marker color is determined
+          by the next color of the ``Axes``' current "shape and fill" color
+          cycle. This cycle defaults to :rc:`axes.prop_cycle`.
+
+      marker : `~.markers.MarkerStyle`, default: :rc:`scatter.marker`
+          The marker style. *marker* can be either an instance of the class
+          or the text shorthand for a particular marker.
+          See :mod:`matplotlib.markers` for more information about marker
+          styles.
+
+      cmap : str or `~matplotlib.colors.Colormap`, default: :rc:`image.cmap`
+          The Colormap instance or registered colormap name used to map scalar data
+          to colors.
+
+          This parameter is ignored if *c* is RGB(A).
+
+      norm : str or `~matplotlib.colors.Normalize`, optional
+          The normalization method used to scale scalar data to the [0, 1] range
+          before mapping to colors using *cmap*. By default, a linear scaling is
+          used, mapping the lowest value to 0 and the highest to 1.
+
+          If given, this can be one of the following:
+
+          - An instance of `.Normalize` or one of its subclasses
+            (see :ref:`colormapnorms`).
+          - A scale name, i.e. one of "linear", "log", "symlog", "logit", etc.  For a
+            list of available scales, call `matplotlib.scale.get_scale_names()`.
+            In that case, a suitable `.Normalize` subclass is dynamically generated
+            and instantiated.
+
+          This parameter is ignored if *c* is RGB(A).
+
+      vmin, vmax : float, optional
+          When using scalar data and no explicit *norm*, *vmin* and *vmax* define
+          the data range that the colormap covers. By default, the colormap covers
+          the complete value range of the supplied data. It is an error to use
+          ,*vmin*/*vmax* when a *norm* instance is given (but using a `str` *norm*
+          name together with *vmin*/*vmax* is acceptable).
+
+          This parameter is ignored if *c* is RGB(A).
+
+      alpha : float, default: None
+          The alpha blending value, between 0 (transparent) and 1 (opaque).
+
+      linewidths : float or array-like, default: :rc:`lines.linewidth`
+          The linewidth of the marker edges. Note: The default *edgecolors*
+          is 'face'. You may want to change this as well.
+
+      edgecolors : {'face', 'none', *None*} or :mpltype:`color` or list of :mpltype:`color`, default: :rc:`scatter.edgecolors`
+          The edge color of the marker. Possible values:
+
+          - 'face': The edge color will always be the same as the face color.
+          - 'none': No patch boundary will be drawn.
+          - A color or sequence of colors.
+
+          For non-filled markers, *edgecolors* is ignored. Instead, the color
+          is determined like with 'face', i.e. from *c*, *colors*, or
+          ,*facecolors*.
+
+      plotnonfinite : bool, default: False
+          Whether to plot points with nonfinite *c* (i.e. ``inf``, ``-inf``
+          or ``nan``). If ``True`` the points are drawn with the *bad*
+          colormap color (see `.Colormap.set_bad`).
+
+      Returns
+      -------
+      `~matplotlib.collections.PathCollection`
+
+      Other Parameters
+      ----------------
+      data : indexable object, optional
+          If given, the following parameters also accept a string ``s``, which is
+          interpreted as ``data[s]`` (unless this raises an exception):
+
+          ,*x*, *y*, *s*, *linewidths*, *edgecolors*, *c*, *facecolor*, *facecolors*, *color*
+      ,**kwargs : `~matplotlib.collections.Collection` properties
+
+      See Also
+      --------
+      plot : To plot scatter plots when markers are identical in size and
+          color.
+
+      Notes
+      -----
+
+      .. note::
+
+          This is the :ref:`pyplot wrapper <pyplot_interface>` for `.axes.Axes.scatter`.
+
+      ,* The `.plot` function will be faster for scatterplots where markers
+        don't vary in size or color.
+
+      ,* Any or all of *x*, *y*, *s*, and *c* may be masked arrays, in which
+        case all masks will be combined and only unmasked points will be
+        plotted.
+
+      ,* Fundamentally, scatter works with 1D arrays; *x*, *y*, *s*, and *c*
+        may be input as N-D arrays, but within scatter they will be
+        flattened. The exception is *c*, which will be flattened only if its
+        size matches the size of *x* and *y*.
+  #+end_example
+
+- Here it is, though you still have to know what you're looking for -
+  but the name of this parameter, ~alpha~, is the same across different
+  graphics packages in different programming languages:
+  #+begin_example
+  alpha : float, default: None
+          The alpha blending value, between 0 (transparent) and 1 (opaque).
+  #+end_example
+
+- New version:
+  #+begin_src python :file ../img/HousingPlot2.png :results file graphics output :exports both :session *Python* :python python3
+    plt.clf()
+    housing.plot(kind="scatter",
+                 x="longitude",
+                 y="latitude",
+                 grid=True,
+                 alpha=0.2)  # adds transparency to points
+    plt.savefig("../img/HousingPlot2.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/HousingPlot2.png]]
+
+- ~alpha~ is just a display parameter: Every point gets the same
+  transparency, and when many points overlap, the area appears darker
+  because of additive rendering.
+
+** Adding more variables with marker and color (~population~, ~median_house_value~)
+
+- Next, we mark the housing prices, effectively turning the 2D plot
+  into a 3D plot where the third dimension is added through color:
+  #+begin_src python :file ../img/HousingPlot3.png :results file graphics output :exports both :session *Python* :python python3
+    plt.clf()
+    housing.plot(kind="scatter",
+                 x="longitude",
+                 y="latitude",
+                 grid=True,
+                 alpha=0.2,
+                 s=housing["population"]/100, # adds marker = dot size
+                 c="median_house_value", # controls dot color for column
+                 cmap="jet", # use color map, blue=low, red=high values
+                 colorbar=True) # show color scale legend on the side
+    plt.savefig("../img/HousingPlot3.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/HousingPlot3.png]]
+
+- So in the resulting diagram, each dot now has a size corresponding
+  to the =population= of the district, and a color corresponding to the
+  =median_house_value=.
+
+** Exploring correlation coefficients (Pearson, custom)
+
+- Compute the standard (Pearson's) correlation coefficient between
+  every pair of numerical attributes using ~corr()~ (a ~pandas~ method):
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    help(housing.corr)
+  #+end_src
+
+  #+RESULTS:
+
+- Sometimes, running a docstring example is instructive:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    def histogram_intersection(a,b):
+        v=np.minimum(a,b).sum().round(decimals=1)
+        return v
+
+    df = pd.DataFrame([(.2, .3), (.0, .6), (.6, .0), (.2, .1)],
+                      columns=['dogs', 'cats'])
+
+    def main():
+        print(df.corr(method=histogram_intersection))
+
+    if __name__ == "__main__":
+        main()
+  #+end_src
+
+  #+RESULTS:
+  :       dogs  cats
+  : dogs   1.0   0.3
+  : cats   0.3   1.0
+
+- Can you interpret this simple result?
+  #+begin_quote
+  + ~corr()~ accepts a custom method (here =histogram_intersection=)
+  + Each matrix element says how the point values (pairs) of the
+    DataFrame are correlated in the sense that they overlap.
+  + The transposed matrix is the same as the matrix - it is *symmetric*.
+  + The diagonal is always 1.0: any feature correlates perfectly with
+    itself because the columns add up to 1.0.
+  #+end_quote
+- The DataFrame looks like this - could e.g. come from a computer
+  imaging dataset
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(df)
+  #+end_src
+
+  #+RESULTS:
+  :    dogs  cats
+  : 0   0.2   0.3
+  : 1   0.0   0.6
+  : 2   0.6   0.0
+  : 3   0.2   0.1
+
+- Notice row 1 and 2 are mirror images, which drives the negative
+  correlation that keeps the off-diagonal values low. Also, because
+  non-negative values are summed, negative correlation is impossible:
+  #+begin_example
+  min(0.2, 0.3) = 0.2
+  min(0.0, 0.6) = 0.0
+  min(0.6, 0.0) = 0.0
+  min(0.2, 0.1) = 0.1
+  sum = 0.3
+  #+end_example
+
+- What would we get for the standard version of ~corr()~?
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    corr_matrix = df.corr(numeric_only=True)
+    print(corr_matrix)
+  #+end_src
+
+  #+RESULTS:
+  :           dogs      cats
+  : dogs  1.000000 -0.851064
+  : cats -0.851064  1.000000
+
+- This coefficient measures if the =dogs= and =cats= data grow and fall
+  together or not. It computes covariance normalized by the product of
+  standard deviation: r = Σ((a - ā)(b - b̄)) / (σ_a · σ_b).
+
+** Attribute correlation with the median house value using ~corr()~
+
+- We compute Pearson's coefficient against =median_house_value= - these
+  values express how other features fall and grow linearly with it:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    corr_matrix = housing.corr(numeric_only=True) # full correlation matrix
+    print(corr_matrix["median_house_value"].sort_values(ascending=False))
+  #+end_src
+
+  #+RESULTS:
+
+- What do we learn?
+  #+begin_quote
+  + The correlation coefficient ranges from -1 to 1.
+  + House value goes up when income goes up.
+  + Prices go slightly down when you go North.
+  + Coefficients close to zero mean that there is no linear
+    correlation.
+  #+end_quote
+
+- "Coefficients close to zero mean that there is no linear
+  correlation." What does that mean?
+  #+begin_quote
+  It means that fitting a line through the scatterplot of two
+  uncorrelated variables x,y would be a flat line. Changes in x give
+  you no predictive power over y.
+  #+end_quote
+
+- What does it *not* mean?
+  #+begin_quote
+  It does not mean that there is no non-linear relationhip. There
+  could be a non-linear curve that describes correlated growth.
+  #+end_quote
+
+** Attribute correlation visually with pandas ~scatter_matrix()~
+
+- Pandas ~scatter_matrix~ function would plot 9 features against 9
+  features resulting in 81 panel plots. Focusing on the most promising
+  ones (the Pearson coefficient helps):
+
+  #+begin_src python :file ../img/HousingPlot4.png :results file graphics output :exports both :session *Python* :python python3 
+    from pandas.plotting import scatter_matrix
+    attributes = ["median_house_value",
+                  "median_income",
+                  "total_rooms",
+                  "housing_median_age"] # create a list of attributes
+    scatter_matrix(housing[attributes],figsize=(12,8))
+    plt.savefig("../img/HousingPlot4.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/HousingPlot4.png]]
+
+- What do you learn from this?
+  #+begin_quote
+  + The main diagonal is (by default) populated with a histogram of
+    each attribute. We already did that - you can pick different
+    plots.
+  + Three attributes look promising but the plot with the clearest
+    point trend (greatest predictive potential) is =median_income=.
+  #+end_quote
+
+- Which plots are available on the diagonal besides the histogram? If
+  you don't get an answer, remember that pandas was aliased as =pd= and
+  that ~scatter_matrix~ is a method in ~pandas.plotting~:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    help(pd.plotting.scatter_matrix)
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  Help on function scatter_matrix in module pandas.plotting._misc:
+
+  scatter_matrix(frame: 'DataFrame', alpha: 'float' = 0.5, figsize: 'tuple[float, float] | None' = None, ax: 'Axes | None' = None, grid: 'bool' = False, diagonal: 'str' = 'hist', marker: 'str' = '.', density_kwds: 'Mapping[str, Any] | None' = None, hist_kwds: 'Mapping[str, Any] | None' = None, range_padding: 'float' = 0.05, **kwargs) -> 'np.ndarray'
+      Draw a matrix of scatter plots.
+
+      Parameters
+      ----------
+      frame : DataFrame
+      alpha : float, optional
+          Amount of transparency applied.
+      figsize : (float,float), optional
+          A tuple (width, height) in inches.
+      ax : Matplotlib axis object, optional
+      grid : bool, optional
+          Setting this to True will show the grid.
+      diagonal : {'hist', 'kde'}
+          Pick between 'kde' and 'hist' for either Kernel Density Estimation or
+          Histogram plot in the diagonal.
+      marker : str, optional
+          Matplotlib marker type, default '.'.
+      density_kwds : keywords
+          Keyword arguments to be passed to kernel density estimate plot.
+      hist_kwds : keywords
+          Keyword arguments to be passed to hist function.
+      range_padding : float, default 0.05
+          Relative extension of axis range in x and y with respect to
+          (x_max - x_min) or (y_max - y_min).
+      ,**kwargs
+          Keyword arguments to be passed to scatter function.
+
+      Returns
+      -------
+      numpy.ndarray
+          A matrix of scatter plots.
+
+      Examples
+      --------
+
+      .. plot::
+          :context: close-figs
+
+          >>> df = pd.DataFrame(np.random.randn(1000, 4), columns=['A','B','C','D'])
+          >>> pd.plotting.scatter_matrix(df, alpha=0.2)
+          array([[<Axes: xlabel='A', ylabel='A'>, <Axes: xlabel='B', ylabel='A'>,
+                  <Axes: xlabel='C', ylabel='A'>, <Axes: xlabel='D', ylabel='A'>],
+                 [<Axes: xlabel='A', ylabel='B'>, <Axes: xlabel='B', ylabel='B'>,
+                  <Axes: xlabel='C', ylabel='B'>, <Axes: xlabel='D', ylabel='B'>],
+                 [<Axes: xlabel='A', ylabel='C'>, <Axes: xlabel='B', ylabel='C'>,
+                  <Axes: xlabel='C', ylabel='C'>, <Axes: xlabel='D', ylabel='C'>],
+                 [<Axes: xlabel='A', ylabel='D'>, <Axes: xlabel='B', ylabel='D'>,
+                  <Axes: xlabel='C', ylabel='D'>, <Axes: xlabel='D', ylabel='D'>]],
+                dtype=object)
+  #+end_example
+
+- Change the diagonal plots to 'kde' (density plots, essentially a
+  smoothed histogram):
+  #+begin_src python :file ../img/HousingPlot5.png :results file graphics output :exports both :session *Python* :python python3 
+    from pandas.plotting import scatter_matrix
+    attributes = ["median_house_value",
+                  "median_income",
+                  "total_rooms",
+                  "housing_median_age"] # create a list of attributes
+    scatter_matrix(housing[attributes],
+                   figsize=(12,8),
+                   diagonal='kde')
+    plt.savefig("../img/HousingPlot5.png")
+  #+end_src
+
+  #+RESULTS:	
+  [[file:../img/HousingPlot5.png]]
+
+  It's interesting how much longer the computation takes! But the
+  insight isn't overwhelming.
+
+- Zoom in on the most promising scatterplot:
+  #+begin_src python :file ../img/HousingPlot6.png :results file graphics output :exports both :session *Python* :python python3 
+    plt.clf()
+    housing.plot(kind="scatter",
+                 x="median_income",
+                 y="median_house_value",
+                 alpha=0.1,
+                 grid=True)
+    plt.savefig("../img/HousingPlot6.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/HousingPlot6.png]]
+  
+- What do you learn?
+  #+begin_quote
+  + The correlation is strong. Despite noisy data, the trend is
+    clearly visible.
+  + Price cap above $500,000 is clearly visible.
+  + There are other patterns: straight lines at $450,000 and $350,000,
+    and perhaps other places - likely artifacts of data collection
+    (mislabeled data). Might want to remove the corresponding
+    districts so that the algorithm does not learn the patterns and
+    conludes, e.g. that "at high incomes, house value plateaus at
+    $450,000".
+  #+end_quote
+
+- Can you be sure that regular pattern in the data (like lines) are
+  artifacts?
+  #+begin_quote
+  No you cannot be sure but it's likely because nature does not
+  usually produce perfect patterns. It's an inference/hunch only.
+  #+end_quote
+
+- Lastly, look at the illustration of standard correlation
+  coefficients of different datasets:
+  #+attr_html: :width 600px :float nil: 
+  [[../img/correlation.png]]
+
+  1) All plots in the bottom row have a (linear) coefficient of 0:
+     these are examples of nonlinear relationships.
+
+  2) As the second row shows, the slope is independent of the
+     coefficient. As an example: unit conversions (inches or
+     nanometers) have vastly different slopes but the same coefficient
+     1 because the data point still grow together (perfectly).
+
+     The reason for this is that the measure is normalized by standard
+     deviations, so scaling cancels out completely.
+  
+* Prepare the data
+
+- Preparing the data is something you'll have to do again and again.
+
+- You will write functions for this to build a reusable library.
+
+- Let's first see our objects again:
+  
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    for _ in dir():
+        if not _.startswith('_'):
+            print(_)
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  actual
+  attributes
+  corr_matrix
+  data
+  df
+  f
+  histogram_intersection
+  housing
+  housing_full
+  housing_labels
+  main
+  matplotlib
+  np
+  pd
+  plt
+  predicted
+  readline
+  rmse
+  rmse2
+  root_mean_squared_error
+  scatter_matrix
+  strat_test_set
+  strat_train_set
+  tar
+  tarfile
+  test_set
+  train_set
+  train_test_split
+  tty
+  #+end_example
+
+- Revert to a clean training set:
+  1) Drop target label from the stratified training set and store in =housing=
+  2) Separate predictors and labels by copying the stratified training
+     set target label into =housing_labels=
+  3) Check dimensions of these datasets
+
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    housing = strat_train_set.drop("median_house_value",axis=1)
+    housing_labels = strat_train_set["median_house_value"].copy()
+    print(housing.shape)
+    print(housing_labels.shape)    
+  #+end_src
+
+  #+RESULTS:
+  : (16512, 9)
+  : (16512,)
+    
+** Clean the data
+
+- Most ML algorithms cannot work with missing features. Options:
+  1. Get rid of the corresponding districts[fn:2]
+     #+begin_example python
+     housing.dropna(subset=["total_bedrooms"]) 
+     #+end_example
+  2. Get rid of the whole attribute
+     #+begin_example python
+     housing.drop("total_bedrooms",axis=1)
+     #+end_example
+  3. Imputation: Set missing values to some value (zero, median etc.)
+     #+begin_example python
+     median = housing["total_bedrooms"].median()
+     housing["total_bedrooms"] = housing["total_bedrooms"].fillna(median)
+     #+end_example
+
+- Which do you think is best?
+  #+begin_quote
+  Option 3, because the ~median~ is robust to outliers, all rows and all
+  other features are preserved. Option 1 loses data, option 2 loses a
+  potentially  useful predictor.
+  #+end_quote
+
+** Imputing (aka substituting) values
+
+- Instead of coding this by hand, we use a transformer class from
+  scikit-learn, ~SimpleImputer~. We're telling it to replace the missing
+  values with the median:
+  #+begin_src python :results none :exports both :session *Python* :python python3 
+    from sklearn.impute import SimpleImputer
+
+    imputer = SimpleImputer(strategy="median")
+  #+end_src
+
+- A median can only be computed on numerical features. To apply
+  =imputer=, we must remove the text attribute (=ocean_proximity=):
+  #+begin_src python :results none :exports both :session *Python* :python python3 
+    housing_num = housing.select_dtypes(include=[np.number])
+  #+end_src
+
+  ~select_dtypes()~ filters columns by data type, and
+  ~include=[np.number]~ keeps only numerical columns and drops
+  categorical ones.
+
+- Check the resulting ~DataFrame~:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    housing_num.info()
+  #+end_src  
+
+  #+RESULTS:
+  #+begin_example
+  <class 'pandas.core.frame.DataFrame'>
+  Index: 16512 entries, 13096 to 19888
+  Data columns (total 8 columns):
+   #   Column              Non-Null Count  Dtype  
+  ---  ------              --------------  -----  
+   0   longitude           16512 non-null  float64
+   1   latitude            16512 non-null  float64
+   2   housing_median_age  16512 non-null  float64
+   3   total_rooms         16512 non-null  float64
+   4   total_bedrooms      16344 non-null  float64
+   5   population          16512 non-null  float64
+   6   households          16512 non-null  float64
+   7   median_income       16512 non-null  float64
+  dtypes: float64(8)
+  memory usage: 1.1 MB
+  #+end_example
+
+- This still has the missing values in =total_bedrooms=. The imputer
+  instance is now fitted to the training data using ~fit()~: The ~fit()~
+  call learns from the data (computes the median). Any object with
+  ~fit()~ is acting as an estimator.
+  #+begin_src python :results none :exports both :session *Python* :python python3 
+    imputer.fit(housing_num)
+  #+end_src
+
+  The result of this fit is a learned parameter - the medians are
+  stored in ~imputer.statistics_~ (no data is changed yet)[fn:3]:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    print(imputer.statistics_)
+    print(housing_num.median().values)
+  #+end_src
+
+  #+RESULTS:
+  : [-118.51     34.26     29.     2125.      434.     1167.      408.
+  :     3.5385]
+  : [-118.51     34.26     29.     2125.      434.     1167.      408.
+  :     3.5385]
+
+  The output is a NumPy array:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    print(type(imputer.statistics_))
+    print(imputer.statistics_.shape)    
+  #+end_src
+
+  #+RESULTS:
+  : <class 'numpy.ndarray'>
+  : (8,)
+
+- Now we use the fitted ("trained") imputer to transform the training
+  set itself by replacing missing values with the learned medians:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    X = imputer.transform(housing_num)
+    print(X.shape) # NumPy array
+    print(type(X))
+  #+end_src
+
+  #+RESULTS:
+  : (16512, 8)
+  : <class 'numpy.ndarray'>
+
+- Scikit-Learn transformers output NumPy arrays even when they are fed
+  pandas DataFrames as input[fn:4]. 
+
+- What does this mean?
+  #+begin_quote
+  It means that =X= has neither column names nor index.
+  #+end_quote
+
+- Wrap =X= into a ~DataFrame~ and recover column names and index from
+  =housing_num=:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    housing_tr = pd.DataFrame(X,
+                              columns=housing_num.columns,
+                              index=housing_num.index)
+    housing_tr.info()
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  <class 'pandas.core.frame.DataFrame'>
+  Index: 16512 entries, 13096 to 19888
+  Data columns (total 8 columns):
+   #   Column              Non-Null Count  Dtype  
+  ---  ------              --------------  -----  
+   0   longitude           16512 non-null  float64
+   1   latitude            16512 non-null  float64
+   2   housing_median_age  16512 non-null  float64
+   3   total_rooms         16512 non-null  float64
+   4   total_bedrooms      16512 non-null  float64
+   5   population          16512 non-null  float64
+   6   households          16512 non-null  float64
+   7   median_income       16512 non-null  float64
+  dtypes: float64(8)
+  memory usage: 1.1 MB
+  #+end_example
+
+- There are other imputing strategies available - [[https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html][see doc]]. You can for
+  example apply kNN or regression to predict the missing values based
+  on the available values.
+
+** Handling text and categorical attributes
+
+- This dataset has only one categorical feature, =ocean_proximity=:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    housing_cat = housing[["ocean_proximity"]]
+    print(housing_cat.shape)
+    print(housing_cat[:8])
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  (16512, 1)
+        ocean_proximity
+  13096        NEAR BAY
+  14973       <1H OCEAN
+  3785           INLAND
+  14689          INLAND
+  20507      NEAR OCEAN
+  1286           INLAND
+  18078       <1H OCEAN
+  4396         NEAR BAY
+  #+end_example
+
+- ML algorithms prefer numbers to text. Why?
+  #+begin_quote
+  They require numerical input because they perform arithmetic
+  operations, which are only defined on numbers and not on strings. A
+  value like ='NEAR BAY' has no meaningful magnitude or order.
+  #+end_quote
+
+** ~OrdinalEncoder~: From categories to integers
+
+- We convert the categories from text to numbers using Scikit-Learn's
+  ~OrdinalEncoder~ class:
+  #+begin_src python :results none :exports both :session *Python* :python python3 
+    from sklearn.preprocessing import OrdinalEncoder
+
+    ordinal_encoder = OrdinalEncoder()
+    housing_cat_encoded = ordinal_encoder.fit_transform(housing_cat)
+  #+end_src
+
+- This transformer is both fitted and transformed in a single call of
+  ~.fit_transform()~, which is short for ~.fit()~ followed by
+  ~.transform()~:
+  1. ~fit~ learns the unique categories and assigns each an integer
+  2. ~transform()~ replaces the strings with those integers
+
+- The first few values of the encoded array look like this:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    print(housing_cat_encoded[:8])
+  #+end_src     
+
+  #+RESULTS:
+  : [[3.]
+  :  [0.]
+  :  [1.]
+  :  [1.]
+  :  [4.]
+  :  [1.]
+  :  [0.]
+  :  [3.]]
+
+- The ~categories_~ instance variable returns a list of categories:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    print(ordinal_encoder.categories_)
+  #+end_src
+
+  #+RESULTS:
+  : [array(['<1H OCEAN', 'INLAND', 'ISLAND', 'NEAR BAY', 'NEAR OCEAN'],
+  :       dtype=object)]
+
+- Most ML algorithms treat the encoded numbers as numbers, not as
+  labels: if "INLAND" = 1 and "NEAR OCEAN" = 4, then the algorithm
+  assumes that "INLAND" an "NEAR BAY" (2) are more similar than
+  "INLAND" and "NEAR OCEAN", because |1-2| < |1-4|. But that ordering
+  is meaningless in terms of housing prices (or geographically).
+
+- This assumption is justified for ordered categories though
+  (e.g. "BAD", "AVERAGE", "GOOD").
+
+- A common solution is called "one-hot encoding": create one binary
+  attribute per category. Only one category will be 1 (hot), all
+  others (also called "dummies") will be 0 (cold).
+
+** ~OneHotEncoder~: from categorical values into one-hot vectors
+
+- Scikit-Learn provides the ~OneHotEncoder~ class to convert categorical
+  values into one-hot vectors:
+  #+begin_src python :results none :exports both :session *Python* :python python3 
+    from sklearn.preprocessing import OneHotEncoder
+
+    cat_encoder = OneHotEncoder()
+    housing_cat_1hot = cat_encoder.fit_transform(housing_cat)
+  #+end_src
+
+- This encoding gives you 5 binary columns, one per category. For a
+  district near the bay it would look like this (no ordering implied):
+  #+begin_example
+  <1H OCEAN  INLAND  ISLAND  NEAR BAY  NEAR OCEAN
+      0         0       0        1          0
+  #+end_example
+
+** Sparse matrices
+
+- The output of a ~OneHotEncoder~ is always a sparse SciPy matrix:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    print(housing_cat_1hot.shape) # matrix dimension
+    print(housing_cat_1hot.nnz)   # number of non-zero elements (no. of districs)
+  #+end_src
+
+  #+RESULTS:
+  : (16512, 5)
+  : 16512
+
+- A sparse matrix is an efficient representation for matrices that
+  contain mostly zeros because only nonzero values and their positions
+  are stored:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    print(housing_cat_1hot)
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  <Compressed Sparse Row sparse matrix of dtype 'float64'
+          with 16512 stored elements and shape (16512, 5)>
+    Coords	Values
+    (0, 3)	1.0
+    (1, 0)	1.0
+    (2, 1)	1.0
+    (3, 1)	1.0
+    (4, 4)	1.0
+    (5, 1)	1.0
+    (6, 0)	1.0
+    (7, 3)	1.0
+    (8, 0)	1.0
+    (9, 0)	1.0
+    (10, 1)	1.0
+    (11, 0)	1.0
+    (12, 0)	1.0
+    (13, 1)	1.0
+    (14, 4)	1.0
+    (15, 0)	1.0
+    (16, 1)	1.0
+    (17, 3)	1.0
+    (18, 1)	1.0
+    (19, 0)	1.0
+    (20, 0)	1.0
+    (21, 4)	1.0
+    (22, 1)	1.0
+    (23, 3)	1.0
+    (24, 1)	1.0
+    :	:
+    (16487, 1)	1.0
+    (16488, 0)	1.0
+    (16489, 0)	1.0
+    (16490, 3)	1.0
+    (16491, 1)	1.0
+    (16492, 4)	1.0
+    (16493, 4)	1.0
+    (16494, 1)	1.0
+    (16495, 0)	1.0
+    (16496, 1)	1.0
+    (16497, 0)	1.0
+    (16498, 0)	1.0
+    (16499, 4)	1.0
+    (16500, 0)	1.0
+    (16501, 0)	1.0
+    (16502, 0)	1.0
+    (16503, 0)	1.0
+    (16504, 0)	1.0
+    (16505, 0)	1.0
+    (16506, 1)	1.0
+    (16507, 0)	1.0
+    (16508, 1)	1.0
+    (16509, 4)	1.0
+    (16510, 0)	1.0
+    (16511, 4)	1.0
+  #+end_example
+
+- If you want to convert it to a dense NumPy array:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(type(housing_cat_1hot))
+    print(housing_cat_1hot.toarray())
+  #+end_src  
+
+  #+RESULTS:
+  : <class 'scipy.sparse._csr.csr_matrix'>
+  : [[0. 0. 0. 1. 0.]
+  :  [1. 0. 0. 0. 0.]
+  :  [0. 1. 0. 0. 0.]
+  :  ...
+  :  [0. 0. 0. 0. 1.]
+  :  [1. 0. 0. 0. 0.]
+  :  [0. 0. 0. 0. 1.]]
+
+- Alternatively, you can set ~sparse_output=False~ and a dense NumPy
+  array will directly be created:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    cat_encoder = OneHotEncoder(sparse_output=False)
+    housing_cat_1hot = cat_encoder.fit_transform(housing_cat)
+    print(type(housing_cat_1hot))    
+    print(housing_cat_1hot)
+  #+end_src
+
+  #+RESULTS:
+  : <class 'numpy.ndarray'>
+  : [[0. 0. 0. 1. 0.]
+  :  [1. 0. 0. 0. 0.]
+  :  [0. 1. 0. 0. 0.]
+  :  ...
+  :  [0. 0. 0. 0. 1.]
+  :  [1. 0. 0. 0. 0.]
+  :  [0. 0. 0. 0. 1.]]
+
+- All transformers keep the list of categories in ~.categories_~
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    print(cat_encoder.categories_)
+  #+end_src
+
+  #+RESULTS:
+  : [array(['<1H OCEAN', 'INLAND', 'ISLAND', 'NEAR BAY', 'NEAR OCEAN'],
+  :       dtype=object)]
+
+- There are always different ways to get to the same goal: Pandas, the
+  library for DataFrame manipulation, has a function ~pd.get_dummies()~
+  that also converts each categorical feature into a one-hot
+  representation:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    df_test = pd.DataFrame({"ocean_proximity": ["INLAND","NEAR BAY"]})
+    print(pd.get_dummies(df_test))
+  #+end_src
+
+  #+RESULTS:
+  :    ocean_proximity_INLAND  ocean_proximity_NEAR BAY
+  : 0                    True                     False
+  : 1                   False                      True
+
+- What's the advantage of ~OneHotEncoder~?
+  #+begin_quote
+  Like all transformers, it remembers which categories it was trained
+  on. If an unknown category appears later in production data, it
+  won't silently produce the wrong integer but raise an exception.
+
+  Another way of saying this is: ~pd.get_dummies()~ is *stateless*.
+  #+end_quote
+
+- Check the difference by transforming the DataFrame rather than the
+  OneHotEncoder output and then feeding an unknown category to it:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    print(cat_encoder.transform(df_test)) # only two categories remembered
+    df_test_unknown = pd.DataFrame({"ocean_proximity":["<2H OCEAN","ISLAND"]})
+    print(pd.get_dummies(df_test_unknown)) # new column generated - not learnt!
+  #+end_src
+
+  #+RESULTS:
+  : [[0. 1. 0. 0. 0.]
+  :  [0. 0. 0. 1. 0.]]
+  :    ocean_proximity_<2H OCEAN  ocean_proximity_ISLAND
+  : 0                       True                   False
+  : 1                      False                    True
+
+- ~OneHotEncoder~ detects the unknown category and raise an
+  exception. You can set the hyperparameter ~handle_unknown="ignore"~
+  and the unknown categories will be represented with zeros:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    cat_encoder.handle_unknown = "ignore"
+    print(cat_encoder.transform(df_test_unknown))
+  #+end_src
+
+  #+RESULTS:
+  : [[0. 0. 0. 0. 0.]
+  :  [0. 0. 1. 0. 0.]]
+
+- This is how that looks like:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    # What happens without handle_unknown="ignore"?
+    try:
+        cat_encoder_strict = OneHotEncoder()
+        cat_encoder_strict.fit(housing_cat)
+        print(cat_encoder_strict.transform(df_test_unknown))
+    except ValueError as e:
+        print(f"ValueError: {e}")    
+  #+end_src
+
+  #+RESULTS:
+  : ValueError: Found unknown categories ['<2H OCEAN'] in column 0 during transform
+
+- Category learning is computationally expensive: For datasets with a
+  large number of categorical features, you can replace the categories
+  with numerical features related to the categories, e.g. instead of
+  "country code", you use "population" and "GDP per capita":
+  #+begin_example
+  country_code     -> population    gdp_per_capita 
+  US                  331000000     63000          
+  DE                  83000000      46000          
+  IN                  1380000000    2000           
+  #+end_example
+
+** Feature scaling and transformation
 
 
-* TODO Explore and visualize [home assignment]
-
-* TODO Prepare the data
 
 * TODO Select and train
 
@@ -584,3 +1623,13 @@ Note: automate as much as possible so you can easily get fresh data.
 [fn:1] The original dataset appeared in R. Kelley Pace and Ronald
 Barry, “Sparse Spatial Autoregressions”, Statistics & Probability
 Letters 33, no. 3 (1997): 291–297.
+
+[fn:2] What does the ~inplace=True~ parameter do? It skips the
+intermediate copy and modifies the dataset itself.
+
+[fn:3] We did not have to apply =imputer= to all features but you don't
+know that new data won't have missing values, which is why we apply it
+to all of them.
+
+[fn:4] Though you can change that with
+~sklearn.set_config(transform_output="pandas")~
