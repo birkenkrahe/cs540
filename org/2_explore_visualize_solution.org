@@ -1,0 +1,105 @@
+#+STARTUP: overview hideblocks indent entitiespretty:
+* Home Assignment: Explore and Visualize
+
+1) Open this copy of Géron's chapter 2 notebook.
+
+2) Go to the "Discover and Visualize the Data to Gain Insights" section.
+
+3) Click on the headline and run ~Runtime > Run before~ (CTRL + F8).
+
+4) Work through the following subsections:
+   - Visualizing Geographical Data
+   - Looking for Correlations
+   - Experimenting with Attribute Combinations
+
+   You can use AI as you go along but you need to make sure that you
+   understand what you are doing and be able to explain it to us.
+
+5) Answer the following three questions in a short text (3-5 sentences
+   each) and post your answers as a reply in this Teams thread before
+   the next class:
+
+   1. The geographical scatter plot colors districts by median house
+      value and sizes them by population. What patterns do you notice,
+      and what does the plot reveal that a table of numbers cannot?
+
+   2. Géron computes a correlation matrix and identifies ~median_income~
+      as the strongest predictor of ~median_house_value~ with a
+      coefficient of 0.69. What does this number mean in plain
+      English, and what does it *not* tell you?
+
+   3. Géron engineers three new features from existing ones
+      (~rooms_per_house~, ~bedrooms_ratio~, ~people_per_house~) and checks
+      their correlations with ~median_house_value~. What do you find,
+      and why do you think that might be?
+
+Let me know if you have any problems!
+
+* Solution
+
+1. The geographical scatter plot colors districts by median house value
+   and sizes them by population. What patterns do you notice, and what
+   does the plot reveal that a table of numbers cannot?
+
+   #+begin_quote
+   The plot reveals three things simultaneously that no table can:
+   /where/ districts are, /how big/ they are (dot size = population), and
+   /how expensive/ they are (color). The pattern that jumps out: high
+   house values (red/warm) cluster along the California coast — the Bay
+   Area and the LA basin — while inland districts are predominantly
+   blue. Population and price co-localize in the same coastal urban
+   centers. The spatial clustering makes the =ocean_proximity= feature
+   feel almost redundant — you can see the gradient by eye. A table of
+   longitude, latitude, and price numbers would take significant mental
+   work to produce this insight; the plot produces it in one glance.
+   #+end_quote
+
+2. Géron computes a correlation matrix and identifies ~median_income~ as
+   the strongest predictor of ~median_house_value~ with a coefficient of
+   0.69. What does this number mean in plain English, and what does it
+   *not* tell you?
+
+   #+begin_quote
+   In plain English: districts with higher median incomes tend to have
+   substantially higher median house values, and this tendency is fairly
+   consistent across the data. More precisely, when income goes up by
+   one standard deviation, house value tends to go up by about 0.69
+   standard deviations on average.
+
+   What it does /not/ tell you: (1) *Causation* — high income and high
+   house prices likely share a common cause (desirable location, good
+   schools) rather than one causing the other. (2) *Non-linear
+   structure* — the zoomed scatter plot shows noise and clear artifacts
+   (horizontal lines at $450k and $350k, hard cap at $500k) that
+   distort the coefficient downward. (3) *Explained variance* — 0.69²
+   ≈ 0.48, so income alone accounts for roughly half the variance in
+   house value; the other half comes from everything else.
+   #+end_quote
+
+3. Géron engineers three new features from existing ones
+   (~rooms_per_house~, ~bedrooms_ratio~, ~people_per_house~) and checks their
+   correlations with ~median_house_value~. What do you find, and why do
+   you think that might be?
+
+   #+begin_quote
+   The raw counts (=total_rooms=, =total_bedrooms=, =population=) are
+   district-level totals that conflate district size with housing
+   character. Dividing by households normalizes for this:
+
+   | Feature            | Approx. correlation with =median_house_value= |
+   |--------------------+-----------------------------------------------|
+   | =rooms_per_house=    | ~+0.14                                        |
+   | =bedrooms_ratio=     | ~−0.26                                        |
+   | =people_per_house=   | ~−0.04                                        |
+
+   =bedrooms_ratio= is the most revealing: a /lower/ ratio (fewer bedrooms
+   relative to total rooms) correlates with /higher/ prices. Expensive
+   homes tend to have more living space, hallways, studies, and
+   open-plan areas relative to the number of bedrooms — a cramped
+   apartment block has a high bedroom ratio; a spacious single-family
+   home does not. =rooms_per_house= also beats =total_rooms= (which was
+   near zero) because per-household room count is a proxy for home
+   size, not just district density. The broader lesson: raw counts in
+   this dataset are confounded by how many households share them —
+   ratios remove that confound and expose the underlying signal.
+   #+end_quote
