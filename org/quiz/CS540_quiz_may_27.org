@@ -1,0 +1,229 @@
+Week 2 quiz covering DataCamp "Understanding Machine Learning" (all 3
+chapters): What is ML, ML Models, and Deep Learning. 30 questions, 1
+point each. No time limit. Open notes — use your course materials if
+needed. Created in Org-mode by Marcus Birkenkrahe with Claude Code
+(Anthropic), imported into MS Teams via Microsoft Copilot. Late
+submission incurs a 50% point penalty.
+
+1. Which best captures the DataCamp definition of machine learning?
+
+- [ ] A set of explicit rules programmed for each task
+- [X] A set of tools for making inferences and predictions from data
+- [ ] A statistical technique for regression only
+- [ ] A subfield of robotics focused on autonomous movement
+
+2. How does machine learning relate to AI?
+
+- [ ] AI is a subset of machine learning
+- [ ] They are completely separate fields with no overlap
+- [X] Machine learning is the most prevalent subset of AI today
+- [ ] AI is robotics; machine learning is data science
+
+3. A team builds two systems: one predicts tomorrow's highway congestion, one identifies which factors cause rush-hour slowdowns. What ML tasks are these, respectively?
+
+- [ ] Inference, then prediction
+- [X] Prediction, then inference
+- [ ] Both are prediction tasks
+- [ ] Both are inference tasks
+
+4. In a supervised learning dataset for heart disease prediction, what are the "labels"?
+
+- [ ] The column headers
+- [ ] The rows of patient records
+- [X] The known values of the target variable (True/False for heart disease)
+- [ ] The input features such as age and cholesterol
+
+5. Which of the following is the defining characteristic that separates
+unsupervised learning from supervised learning?
+
+- [ ] Unsupervised learning uses more data
+- [ ] Unsupervised learning runs faster than supervised learning
+- [X] Unsupervised learning has no target variable or labels
+- [ ] Unsupervised learning can only be used for image data
+
+6. A dataset has: age, cholesterol, blood pressure, and "heart disease: yes/no." Which are the features?
+
+- [ ] Heart disease: yes/no only
+- [X] Age, cholesterol, and blood pressure
+- [ ] All four columns
+- [ ] Whichever column the analyst picks
+
+7. In the ML workflow, why must the dataset be split into training and
+test sets before training begins?
+
+- [ ] To reduce memory usage during training
+- [ ] To give the model two chances to learn
+- [X] To preserve unseen data for an honest evaluation of generalization
+- [ ] Because ML algorithms require exactly two inputs
+
+8. After evaluating a model and finding its performance below the
+threshold, what does "tuning" the model mean?
+
+- [ ] Deleting the model and collecting new data
+- [ ] Publishing the model to production
+- [X] Adjusting model options or features and retraining
+- [ ] Replacing the model with a neural network
+
+9. Which best describes a machine learning model?
+
+- [ ] A spreadsheet that stores training data
+- [ ] A hand-written set of if-then rules
+- [X] A statistical representation of a real-world process, built from data
+- [ ] A Python script that fetches data from the internet
+
+10. ML is described as powerful because computers "learn without being explicitly programmed." What does this mean?
+
+- [ ] The computer writes its own source code
+- [ ] No programming language is needed
+- [X] The model learns patterns from data rather than following explicit instructions
+- [ ] The model never makes errors
+
+11. Which of the following is a classification problem?
+
+- [ ] Predicting tomorrow's high temperature in degrees Celsius
+- [ ] Estimating the sale price of an apartment
+- [X] Predicting whether a skin mole is cancerous or benign
+- [ ] Forecasting quarterly revenue for a company
+
+12. A linear regression model is trained to predict temperature from
+humidity. What does the model produce for a new humidity reading?
+
+- [ ] A category label such as "hot," "mild," or "cold"
+- [X] A continuous numerical value representing the predicted temperature
+- [ ] A probability that the temperature falls in each category
+- [ ] A cluster assignment based on similar humidity readings
+
+13. In the college admissions example, switching the SVM kernel from
+"linear" to "polynomial" had what effect?
+
+- [ ] It made the model train faster on large datasets
+- [ ] It allowed the model to handle more than two classes
+- [X] It allowed a curved decision boundary that correctly classified more observations
+- [ ] It converted the problem from classification to regression
+
+14. A model scores 99% accuracy on the training set but only 61% on the
+test set. What problem does this describe?
+
+- [ ] Underfitting — the model is too simple to capture patterns
+- [X] Overfitting — the model memorized training data and cannot generalize
+- [ ] Data leakage — test data was included in training
+- [ ] Class imbalance — one label dominates the training set
+
+15. A fraud model scores 97% accuracy but misses most actual fraud cases. Why is high accuracy misleading here?
+
+- [ ] The model was trained on too few examples
+- [X] Fraud is rare; predicting "not fraud" for everything yields high accuracy while catching zero fraud
+- [ ] Accuracy is only reliable above 99%
+- [ ] The model is overfitting the test data
+
+16. Sensitivity = TP / (TP + FN). In disease screening, what does a very low sensitivity score indicate?
+
+- [ ] The model flags too many healthy patients as sick
+- [ ] The model correctly identifies most healthy patients
+- [X] The model is missing most actual disease cases (many false negatives)
+- [ ] The model has no false positives at all
+
+17. A team runs K-Means on customer data and gets four clusters. What fundamental challenge follows?
+
+- [ ] K-Means always produces the wrong number of clusters
+- [ ] The clusters cannot be visualized with more than two features
+- [X] The algorithm does not explain what differentiates the clusters; the team must investigate and label them
+- [ ] K-Means requires labeled data to validate the clusters
+
+18. A cybersecurity company wants to identify transactions that behave
+very differently from all others in their dataset — possible breaches
+they have never seen before. Which unsupervised technique is most
+appropriate?
+
+- [ ] Clustering
+- [ ] Association rules
+- [X] Anomaly detection
+- [ ] Linear regression
+
+19. Height and shoe size are highly correlated. What justifies dropping shoe size as a feature?
+
+- [ ] Shoe size is never relevant to any prediction task
+- [X] Correlated features carry redundant information; keeping both adds noise without improving the model
+- [ ] Fewer features always improve the model regardless of correlation
+- [ ] Shoe size cannot be represented as a number
+
+20. Three models predict delivery times for a package: Model A says 3
+days, Model B says 5 days, Model C says 4 days. How does a regression
+ensemble combine these predictions?
+
+- [ ] It selects the prediction with the highest confidence score
+- [ ] It takes a majority vote and picks 4 days
+- [X] It averages the three predictions: (3 + 5 + 4) / 3 = 4 days
+- [ ] It uses the first model's prediction and ignores the others
+
+21. What is the basic computational unit of a neural network?
+
+- [ ] A weight matrix
+- [ ] A layer of transformations
+- [X] A neuron (also called a node)
+- [ ] A gradient descent step
+
+22. Which scenario is the best fit for deep learning over traditional ML?
+
+- [ ] Predicting loan defaults from a 10-column tabular dataset
+- [ ] Classifying 1,000 customer feedback items as positive or negative
+- [X] Detecting defects in 2 million product photos on an assembly line
+- [ ] Predicting house prices from square footage and neighborhood
+
+23. In a face recognition network, what do neurons in the earliest hidden layers typically learn?
+
+- [ ] The identity of the person in the image
+- [ ] High-level shapes such as faces and heads
+- [X] Low-level features such as edges and color gradients
+- [ ] The pixel coordinates of facial landmarks
+
+24. Compared to a grayscale image, how much more storage does a color RGB image require?
+
+- [ ] Twice as much, for two additional color channels
+- [X] Three times as much, one value per channel (R, G, B) per pixel
+- [ ] Four times as much, due to an alpha transparency channel
+- [ ] The same amount — color is stored as metadata, not pixel data
+
+25. A grayscale image has a resolution of 512 × 512 pixels. How many
+features will be passed into a neural network processing this image?
+
+- [ ] 512
+- [ ] 1,024
+- [ ] 65,536
+- [X] 262,144
+
+26. The bag-of-words technique converts text into numerical features by:
+
+- [ ] Translating words into a target language before counting
+- [ ] Generating dense vector embeddings using a neural network
+- [X] Counting how often each word appears in each piece of text
+- [ ] Removing all short words
+
+27. A bag-of-words model counts "great" in "This book was not great." What limitation does this reveal, and how do n-grams address it?
+
+- [ ] Bag of words cannot handle long words; n-grams filter them out
+- [X] Single-word counts ignore negation; counting two-word sequences ("not great") captures the correct sentiment
+- [ ] Bag of words counts too slowly; n-grams speed up processing
+- [ ] Bag of words requires labeled data; n-grams do not
+
+28. Word embeddings improve on bag of words by addressing which key
+limitation?
+
+- [ ] Bag of words cannot process long texts
+- [ ] Bag of words requires a GPU
+- [X] Bag of words treats synonyms as unrelated; word embeddings group similar words into similar representations
+- [ ] Bag of words produces too few features for deep learning
+
+29. Amazon's résumé model (2014–2017) downranked female applicants. What was the root cause?
+
+- [ ] The model used deep learning, which amplifies existing biases
+- [X] The model learned from historically biased hiring data and treated that bias as a legitimate pattern
+- [ ] Amazon's engineers deliberately programmed the bias into the model
+- [ ] The model had too many features and overfitted to male résumés
+
+30. A deep learning model predicts sepsis with 94% accuracy, but the physician refuses: "I cannot tell nurses why the alarm fired." Which limitation does this illustrate?
+
+- [ ] Deep learning cannot achieve clinical-grade accuracy
+- [ ] Deep learning requires more labeled data than hospitals typically have
+- [X] Deep learning models are black boxes that do not explain which inputs drove a prediction
+- [ ] Deep learning models cannot process time-series sensor data

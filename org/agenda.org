@@ -428,14 +428,6 @@ app. It's a mockup - no real data are used (all is in the one file):
 
 ** SOMEDAY Open discussion: "Magnifica Humanitas" by Pope Leo XIV
 
-Your views:
--
--
--
--
--
--
-
 - My questions:
 
   1. In [[https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_15051891_rerum-novarum.html][Rerum Novarum (1891)]], Leo XIII argued that the industrial
@@ -841,32 +833,31 @@ You can later see the completed notebook here:
 
 ** Take-aways from this session
 
-
-* Week 6 - Local install / End-to-end ML project Part 2
+* DONE Week 6 - Local install / scikit-learn API / midterm projects
 
 | Segment                      |   |
 |------------------------------+---|
-| Opening prayer               |   |
-| Updates                      |   |
-| Midterm project discussion   |   |
-| Detour: Information theory   |   |
+| Opening prayer               | x |
+| Updates                      | x |
+| Midterm project discussion   | x |
+| Detour: Information theory   | x |
 | End-to-End ML Project Part 2 |   |
-| Round: one takeaway each     |   |
-| Closing prayer               |   |
+| Round: one takeaway each     | x |
+| Closing prayer               | x |
 
 ** Updates
 
 - All remaining DataCamp lessons assigned (July 8-Aug 26):
   1) Unsupervised learning in Python
   2) Introduction to Deep Learning with PyTorch
-  
+     
 ** Local Python/Jupyter install
 
 Sam asked:
 #+begin_quote
 I'm interested in using a dataset that I would prefer to not host
-publicly on the internet- wondering if there are tips/ preferences for
-a python desktop setup to run on my machine locally? thanks!
+publicly on the internet - wondering if there are tips/preferences
+for a python desktop setup to run on my machine locally? thanks!
 #+end_quote
 
 There are two things here: Getting Python, and setting up the IDE
@@ -894,6 +885,10 @@ jupyter.org. Then you can work like in Colab on your computer.
 
 Let me know if you have further questions! 
 
+** Midterm project discussion
+
+- Briefly introduce your planned project
+
 ** scikit-learn API
 
 - [[https://arxiv.org/pdf/1309.0238][This is the original paper]] that described the library's API.
@@ -903,30 +898,82 @@ Let me know if you have further questions!
 
 - More about the design of the programming interface [[https://github.com/birkenkrahe/cs540/blob/main/org/4_scikit-learn.org][in my lecture]].
 
-** Midterm project discussion
-
-- Briefly introduce your planned project
-
 ** End-to-End Machine Learning Project (part 2)
 
 1) [X] Look at the big picture
 2) [X] Get the data
 3) [X] Explore and visualize the data
-4) [ ] Create the test data
-5) [ ] Prepare data for learning
+4) [ ] *Create the test data*
+5) [ ] *Prepare data for learning*
 6) [ ] Select a model and train
 7) [ ] Fine tune a model
 8) [ ] Present your solution
 9) [ ] Launch, monitor, maintain production system
 
 Open the starter notebook now to code along (this is the last
-completed version): [[https://tinyurl.com/end-to-end-ml-ipynb][tinyurl.com/end-to-end-ml-part-1-ipynb]] 
+completed version): [[https://tinyurl.com/continue-part-1-June-24][tinyurl.com/continue-part-1-June-24]]
 
 You can see the completed notebook (part 1) here:
 [[https://tinyurl.com/end-to-end-ml-1-full-ipynb][tinyurl.com/end-to-end-ml-1-full-ipynb]]
 
 For the second part, open this starter notebook to code along:
-tinyurl.com/end-to-end-ml-ipynb-2
+[[https://tinyurl.com/end-to-end-ml-ipynb-2][tinyurl.com/end-to-end-ml-ipynb-2]]
+
+You can see the completed notebook (part 2) here:
+[[https://tinyurl.com/end-to-end-ml-2-full-ipynb][tinyurl.com/end-to-end-ml-2-full-ipynb]]
+
+** Take aways (food for thought)
+
+- Stratification
+- Linear and non-linear correlation
+- Scikit-learn design and interface
+- Chapter 3 in Magnificat Humanitas
+- Color map
+
+* Week 7 - Confusion matrix and classification metrics / End-to-end ML project Part 2
+
+** Updates - housekeeping
+
+- The July 7 deadline is for an (ungraded) prototype.
+
+- Rather than submit this for my eyes only, submit to the General
+  Channel so that everyone can see your results and comment on them.
+
+- *Any questions on the projects?*
+
+- The last week will be *presentation* week. You have max 10-15 minutes
+  to present followed by 5 minutes discussion. 10-15 minutes is very
+  tight. You have to rehearse your presentation well. Please reserve 2
+  hours for the last class so that we can accommodate everyone.
+
+- *"Magnificat Humanitas"* discussion: Only Justina has indicated an
+  interest. If you want to do this until we're done with the current
+  job, you need to REPLY in General Messages.
+
+** When you use AI...
+
+- You need to say so at the top of your submission and specify in a
+  paragraph (or more) how exactly you used it.
+
+** Magnificat Humanitas (again?)
+
+[Posted to General Messages]
+
+Hi, Since you still seem to have hunger to discuss "Magnificat
+Humanitas", let me know (in the REPLY to this message) what it is you
+would like to discuss. I had already posted [[https://github.com/birkenkrahe/cs540/blob/main/org/agenda.org#someday-open-discussion-magnifica-humanitas-by-pope-leo-xiv][a few questions]] weeks ago
+when the encyclical came out, but we never took the time to reflect on
+these or on others.
+
+Depending on the interest, this could be a whole session. Let me know
+what you'd prefer. It's definitely a watershed moment for AI and
+perhaps for the Church, too, and we should honor and use that.
+
+
+** Review: Confusion matrix
+
+- Open the notebook and solve the challenge:
+  https://tinyurl.com/confusion-matrix-ipynb
 
 * Footnotes
 
