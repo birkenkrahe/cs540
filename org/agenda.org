@@ -932,7 +932,19 @@ You can see the completed notebook (part 2) here:
 
 * Week 7 - Confusion matrix and classification metrics / End-to-end ML project Part 2
 
-** Updates - housekeeping
+| Segment                                     | Time   |   |
+|---------------------------------------------+--------+---|
+| Opening prayer                              | 1 min  |   |
+| Project deadline and expectations           | 1 min  |   |
+| Magnificat Humanitas                        | 1 min  |   |
+| When you use AI                             | 1 min  |   |
+| Review: Confusion matrix (Colab code-along) | 45 min |   |
+| Next assignments                            | 1 min  |   |
+| End-to-end ML Part 2: Prepare the data      | 35 min |   |
+| Take aways                                  | 1 min  |   |
+| Closing prayer                              | 1 min  |   |
+
+** Project deadline and expectations
 
 - The July 7 deadline is for an (ungraded) prototype.
 
@@ -946,6 +958,8 @@ You can see the completed notebook (part 2) here:
   tight. You have to rehearse your presentation well. Please reserve 2
   hours for the last class so that we can accommodate everyone.
 
+** Magnificat Humanitas - yay or nay?
+
 - *"Magnificat Humanitas"* discussion: Only Justina has indicated an
   interest. If you want to do this until we're done with the current
   job, you need to REPLY in General Messages.
@@ -954,6 +968,13 @@ You can see the completed notebook (part 2) here:
 
 - You need to say so at the top of your submission and specify in a
   paragraph (or more) how exactly you used it.
+
+- This is not a policing but a teaching issue: If you don't do this
+  then there is a danger that I won't know what you don't know.
+
+- The golden rule should always be: Solve problems without AI
+  first. Then use it sparingly, never ask for the answer, always ask
+  for guiding questions. Dominate the conversation, lead the AI.
 
 ** Magnificat Humanitas (again?)
 
@@ -972,8 +993,31 @@ perhaps for the Church, too, and we should honor and use that.
 
 ** Review: Confusion matrix
 
+- We're looping back to fine-tuning the model. In DataCamp, you learnt
+  about the "confusion matrix", which often generates some confusion.
+
+- Here is a diagram with the "full story" of classification metrics:
+  #+attr_html: :width 800px :float nil: 
+  [[../img/classification_metrics.png]]  
+
+- How should one read and remember this confusing matrix?
+
 - Open the notebook and solve the challenge:
   https://tinyurl.com/confusion-matrix-ipynb
+
+** End-to-end ML project Part 2
+
+For the second part, open this starter notebook to code along:
+[[https://tinyurl.com/end-to-end-ml-ipynb-2][tinyurl.com/end-to-end-ml-ipynb-2]]
+
+You can see the completed notebook (part 2) here:
+[[https://tinyurl.com/end-to-end-ml-2-full-ipynb][tinyurl.com/end-to-end-ml-2-full-ipynb]]
+
+** Next assignments
+
+1) Quiz on what we covered today + DataCamp chapter 4 (July 8).
+2) Submit what you got on your project (July 7 deadline).
+3) Home assignment: Confusion matrix (like class - different scenario)
 
 * Footnotes
 

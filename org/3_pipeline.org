@@ -1096,9 +1096,10 @@ Note: automate as much as possible so you can easily get fresh data.
   
 * Prepare the data
 
-- Preparing the data is something you'll have to do again and again.
+** Revert to a clean training set
 
-- You will write functions for this to build a reusable library.
+- Preparing the data is something you'll have to do again and
+  again. It is worth drilling yourself in these methods.
 
 - Let's first see our objects again:
   
@@ -1607,6 +1608,7 @@ Note: automate as much as possible so you can easily get fresh data.
   DE                  83000000      46000          
   IN                  1380000000    2000           
   #+end_example
+
 
 ** Feature scaling and transformation
 

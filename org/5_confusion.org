@@ -2,6 +2,101 @@
 #+AUTHOR: Marcus Birkenkrahe
 #+PROPERTY: header-args:python :session *cm-review* :results output
 #+STARTUP: overview hideblocks indent entitiespretty:
+* Review of Classification Metrics
+#+attr_html: :width 700px :float nil: 
+#+caption: Source: rmartinshort.jimdofree.com/2019/02/10/intro-to-classification-metrics/
+[[../img/classification_metrics.png]]
+
+** The confusion matrix explained
+
+How should one read and remember this "confusion matrix"? Personally,
+don't remember it but instead derive it from first principles and
+illustrate it with an example - cancer prediction:
+
+1. We are taking observations from a total population (that's everybody).
+2. In the total population, we're predicting for a condition (a target
+   label) - for example cancer. Some people have it (positive), others
+   don't (negative). 
+3. The target/condition is positively and accurately predicted for
+   some people - this number is the *power* of the method (*True Positive*
+   = TP) - for example patients who actually have cancer when
+   diagnosed.
+4. For other people, the model predicts falsely positively - they
+   don't have cancer but the model says they do: This is a statistical
+   *Type I error*. When diagnosed, it turns out there is no cancer
+   (*False positive* - FP).
+5. The model also predicts accurately that some patients do not have
+   cancer (*True negative* - TN).
+6. The worst category is a false negative prediction: The model says
+   that the patient does not have cancer but the patient actually
+   does. In this case, it may never be diagnosed, but it's there. This
+   is also called a statistical *Type II* error (*False Negative* - FN).
+7. When deciding on a model and a metric, one needs to take into
+   account what the failure of the model will cost - this cannot be
+   determined a priori. For example, in the case of spam/ham, FP is a
+   message that's not spam but that was flagged as spam - it lands in
+   the spam folder from where it can be retrieved. FN is a spam
+   message that you have to deal with. But in the case of cancer, FP
+   means extra diagnosis, which costs money, but FN could be a case of
+   undetected cancer that is predicted as healthy and could mean
+   death. So in the spam example, cost of FP > FN, but for cancer, FN
+   > FP.
+
+** The most important metrics: Accuracy, Precision, Recall
+
+The image shows a large number of different metrics - ways to evaluate
+the value of the prediction. The most important ones are discussed by DataCamp:
+
+1) *Accuracy:* The total number of positives (meeting the
+   condition/target) divided by the total number of examples. This
+   will always be a number between 0 (TP = FP = 0) and 1 (FP = FN =
+   0).
+
+   Accuracy works well if the classes are *balanced* (there are roughly
+   equal numbers of examples in each class). *Stratified sampling*
+   preserves the class proportions of the target label in both train
+   and test sets — which matters most when classes are imbalanced, to
+   ensure the rare class is represented in both splits.
+
+2) *Precision*: TP/(TP+FP) - Total precision means there are no false
+   positives. The more false positives - patients with cancer
+   predictions who don't have cancer - the less precise the
+   prediction. Also called the *positive predictive value*.
+
+3) *Recall*: TP/(TP+FN) - Totall recall means there are no false
+   negatives. The more false negatives - patients with cancer who are
+   predicted to be cancer-free - the lower the recall, or *sensitivity*
+   of the prediction. Also called the *true positive rate* or the
+   *probability of detection*.
+
+** Three more metrics - Fall-out, Specificity, F_1 score
+
+There are three additional measures that you'll see often:
+1) *Fall-out*: FP/(FP+TN) is the probability of a false alarm. There's
+   little fall-out when the condition negative prediction is dominated
+   by true negatives. Also called the *probability of false alarm.*
+
+2) *Specificity*: High TN/(TN+FP) or high selectivity means that there
+   are few false positives. It's precision for condition negatives
+   cases.
+
+3) F_1 score: It is the harmonic mean of two numbers, R and P:
+   \[
+   F_1 = \frac{1}{\frac{1}{2}(\frac{1}{R}+\frac
+
+   You can also express it as:
+   \[
+   F_1 =  2 \frac{precision * recall}{precision + recall}
+   \]
+
+   The first version shows the harmonic form. You take the mean of
+   their reciprocals, and then take the mean of that. This is the
+   natural average when you work with ratios or rates: Precision is
+   the rate of positive prediction (measured with 1/FP), and recall is
+   the rate of true positives (measured with 1/FN).
+
+   Because it's a harmonic mean, for perfect recall and zero
+   precision, F1=0 (instead of 0.5 for the arithmetic mean).
 
 * The Scenario
 
@@ -431,6 +526,17 @@ only shots that are both tightly grouped AND centered on the bullseye
 produce a high F1.
 #+end_quote
 
+* Challenge 8 — Which Metric Would You Choose?
+
+| Scenario                                               | Metric    | Why                                              |
+|--------------------------------------------------------+-----------+--------------------------------------------------|
+| Cancer screening — missing a case is devastating       | Recall    | FN is catastrophic; catch every real case        |
+| Spam filter — losing a real email is annoying          | Precision | FP (lost real email) is the costly error         |
+| Fraud detection — false alarms waste investigator time | Precision | FP wastes scarce investigator capacity           |
+| Malware detection — undetected malware causes damage   | Recall    | FN lets malware execute; catch every threat      |
+| Hospital follow-up with serious side effects           | Precision | FP exposes healthy patients to risky procedure   |
+| Content moderation — both errors have real costs       | F1        | FP harms users; FN causes damage — need balance |
+
 * Summary
 
 | Metric    | Formula       | Denominator            | Answers                                   |
@@ -475,4 +581,5 @@ truly positive instances.
 
 #+attr_html: :width 750px :float nil:
 [[../../img/target_diagrams.png]]
+
 	
