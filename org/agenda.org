@@ -850,7 +850,7 @@ You can later see the completed notebook here:
 - All remaining DataCamp lessons assigned (July 8-Aug 26):
   1) Unsupervised learning in Python
   2) Introduction to Deep Learning with PyTorch
-     
+
 ** Local Python/Jupyter install
 
 Sam asked:
@@ -883,7 +883,7 @@ An alternative that many developers use is to get Python + VS Code
 Or you could also just get Python standalone and download Jupyter from
 jupyter.org. Then you can work like in Colab on your computer.
 
-Let me know if you have further questions! 
+Let me know if you have further questions!
 
 ** Midterm project discussion
 
@@ -930,19 +930,19 @@ You can see the completed notebook (part 2) here:
 - Chapter 3 in Magnificat Humanitas
 - Color map
 
-* Week 7 - Confusion matrix and classification metrics / End-to-end ML project Part 2
+* DONE Week 7 - Confusion matrix and classification metrics / End-to-end ML project Part 2
 
 | Segment                                     | Time   |   |
 |---------------------------------------------+--------+---|
-| Opening prayer                              | 1 min  |   |
-| Project deadline and expectations           | 1 min  |   |
-| Magnificat Humanitas                        | 1 min  |   |
-| When you use AI                             | 1 min  |   |
-| Review: Confusion matrix (Colab code-along) | 45 min |   |
-| Next assignments                            | 1 min  |   |
-| End-to-end ML Part 2: Prepare the data      | 35 min |   |
-| Take aways                                  | 1 min  |   |
-| Closing prayer                              | 1 min  |   |
+| Opening prayer                              | 1 min  | x |
+| Project deadline and expectations           | 1 min  | x |
+| Magnificat Humanitas                        | 1 min  | x |
+| When you use AI                             | 1 min  | x |
+| Review: Confusion matrix (Colab code-along) | 30 min | x |
+| End-to-end ML Part 2: Prepare the data      | 50 min |   |
+| Next assignments                            | 1 min  | x |
+| Take aways                                  | 1 min  | x |
+| Closing prayer                              | 1 min  | x |
 
 ** Project deadline and expectations
 
@@ -951,30 +951,18 @@ You can see the completed notebook (part 2) here:
 - Rather than submit this for my eyes only, submit to the General
   Channel so that everyone can see your results and comment on them.
 
-- *Any questions on the projects?*
-
 - The last week will be *presentation* week. You have max 10-15 minutes
   to present followed by 5 minutes discussion. 10-15 minutes is very
   tight. You have to rehearse your presentation well. Please reserve 2
   hours for the last class so that we can accommodate everyone.
+
+- *Any questions on the projects?*
 
 ** Magnificat Humanitas - yay or nay?
 
 - *"Magnificat Humanitas"* discussion: Only Justina has indicated an
   interest. If you want to do this until we're done with the current
   job, you need to REPLY in General Messages.
-
-** When you use AI...
-
-- You need to say so at the top of your submission and specify in a
-  paragraph (or more) how exactly you used it.
-
-- This is not a policing but a teaching issue: If you don't do this
-  then there is a danger that I won't know what you don't know.
-
-- The golden rule should always be: Solve problems without AI
-  first. Then use it sparingly, never ask for the answer, always ask
-  for guiding questions. Dominate the conversation, lead the AI.
 
 ** Magnificat Humanitas (again?)
 
@@ -990,20 +978,34 @@ Depending on the interest, this could be a whole session. Let me know
 what you'd prefer. It's definitely a watershed moment for AI and
 perhaps for the Church, too, and we should honor and use that.
 
+** When you use AI...
+
+- You need to say so at the top of your submission and specify in a
+  paragraph (or more) how exactly you used it.
+
+- This is not a policing but a teaching issue: If you don't do this
+  then there is a danger that I won't know what you don't know.
+
+- The golden rule should always be: Solve problems without AI
+  first. Then use it sparingly, never ask for the answer, always ask
+  for guiding questions. Dominate the conversation, lead the AI.
 
 ** Review: Confusion matrix
 
-- We're looping back to fine-tuning the model. In DataCamp, you learnt
-  about the "confusion matrix", which often generates some confusion.
+- We're looping back to "fine-tuning the model". In DataCamp, you
+  learnt about the "confusion matrix", which often generates some
+  confusion.
 
 - Here is a diagram with the "full story" of classification metrics:
-  #+attr_html: :width 800px :float nil: 
-  [[../img/classification_metrics.png]]  
+  #+attr_html: :width 800px :float nil:
+  [[../img/classification_metrics.png]]
 
 - How should one read and remember this confusing matrix?
 
 - Open the notebook and solve the challenge:
   https://tinyurl.com/confusion-matrix-ipynb
+
+- The complete example is in GitHub (5_confusion.org)
 
 ** End-to-end ML project Part 2
 
@@ -1018,6 +1020,303 @@ You can see the completed notebook (part 2) here:
 1) Quiz on what we covered today + DataCamp chapter 4 (July 8).
 2) Submit what you got on your project (July 7 deadline).
 3) Home assignment: Confusion matrix (like class - different scenario)
+4) DataCamp assignment: Unsupervised learning in Python - Clustering
+
+** Take aways
+
+- FNs can be deadly (ask yourself: what incurs the highest cost)
+- Precision is linked to FPs
+- Type I and Type II (underestimated)
+- The problem determines the quality of the model (the choice of metric)
+- F1 score is a "harmonic" mean (useful for imbalanced datasets)
+* Week 8 - DataCamp mop-up / End-to-End Part 2 (finally!)
+
+|  # | Section                                             | min |   |
+|----+-----------------------------------------------------+-----+---|
+|  1 | [[*Opening prayer][Opening prayer]]                                      |   1 |   |
+|  2 | [[*Review: DataCamp supervised learning with scikit-learn][Review: DataCamp supervised learning w/scikit-learn]] |   5 |   |
+|  3 | [[*What to do next in supervised learning with scikit-learn][What to do next in supervised learning]]              |   1 |   |
+|  4 | [[*Hindsight is 20/20 - what I could/should have done instead of DataCamp][Hindsight is 20/20]]                                  |   1 |   |
+|  5 | [[*Review: Project prototype submissions][Review: Project prototype submissions]]               |   1 |   |
+|  6 | [[*Review: End-to-end ML project Part 1][Review: End-to-end ML project Part 1]]                |   5 |   |
+|  7 | [[*End-to-end ML project Part 2][End-to-end ML project Part 2]]                        |  60 |   |
+|  8 | [[*Next assignments][Next assignments]]                                    |   1 |   |
+|  9 | [[*Take aways][Take aways]]                                          |   1 |   |
+| 10 | [[*Closing prayer][Closing prayer]]                                      |   1 |   |
+
+** Opening prayer
+
+** Review: DataCamp supervised learning with scikit-learn
+
+Supervised Learning with scikit-learn - Reflection Questions
+
+1. How do you decide whether a problem is regression or
+   classification, and what changes in your code once you've decided?
+
+   #+BEGIN_QUOTE
+   Task type is diagnosed from the *target variable*: continuous numeric
+   target -> regression; discrete/categorical target ->
+   classification. This changes the choice of *estimator*
+   (e.g. ~LinearRegression()~ vs ~LogisticRegression()~), the *evaluation*
+   metric (R^2/MAE/RMSE vs accuracy/precision/recall/F1/AUC), and
+   sometimes the data preprocessing (e.g. encoding the target for
+   classification with ~OneHotEncoder()~).
+   #+END_QUOTE
+
+2. Your model gets 0.95 on train, 0.60 on test. Name what's wrong,
+   name the fix, and say one sentence about why ~Lasso()~ and ~Ridge()~
+   fix it differently.
+
+   #+BEGIN_QUOTE
+   This gap is *overfitting*: the model has memorized noise/structure
+   specific to the training set that doesn't generalize. The fix is
+   *regularization* (Ridge or Lasso), which penalizes large coefficients
+   to reduce model complexity. Ridge (L2) shrinks all coefficients
+   toward zero but rarely to exactly zero, because its constraint
+   region is a circle; Lasso (L1) can set coefficients to exactly
+   zero, because its constraint region is a diamond with corners where
+   the loss ellipse is likely to first touch - giving Lasso built-in
+   feature selection that Ridge doesn't have.
+   #+END_QUOTE
+
+3. You're evaluating a regression model and a classification
+   model. Why can't you use R^2 for both, and what would you use
+   instead for the classifier?
+
+   #+BEGIN_QUOTE
+   R^2 measures how much variance in a continuous target is explained
+   by the model - it's defined in terms of squared differences from a
+   mean, which only makes sense for continuous, ordered outputs. A
+   classifier's target is categorical (discrete classes), so "variance
+   explained" doesn't apply. Instead, classifiers are evaluated with
+   metrics like accuracy, precision, recall, F1, or AUC - chosen based
+   on what matters for the problem (e.g. accuracy for balanced
+   classes, precision/recall/F1/AUC when classes are imbalanced or the
+   cost of false positives/negatives differs).
+   #+END_QUOTE
+
+4. What's the difference between what ~cross_val_score~ does and what
+   ~GridSearchCV~ does - aren't they both just running the model
+   multiple times?
+
+   #+BEGIN_QUOTE
+   ~cross_val_score~ evaluates a single, already-chosen model /
+   hyperparameter setting by running k-fold cross-validation and
+   returning k scores (usually averaged) - it answers "how good is
+   this one configuration?" ~GridSearchCV~ performs model selection: it
+   tries every combination of hyperparameters in a specified grid,
+   runs cross-validation on each combination, and returns the
+   combination with the best average CV score (via .best_params_ and
+   .best_score_). So cross_val_score is an evaluation tool;
+   GridSearchCV is a search tool that uses cross-validation internally
+   as its evaluation step for each candidate.
+
+   One catch: ~GridSearchCV~'s cost grows fast - total fits = (number of
+   hyperparameters) x (values per hyperparameter) x (CV folds), which
+   can hit the hundreds even for a modest grid. ~RandomizedSearchCV~
+   fixes this by sampling a fixed number of random combinations
+   instead of trying all of them, trading exhaustiveness for speed.
+   #+END_QUOTE
+
+5. Why wrap preprocessing and the model together in a ~Pipeline~ instead
+   of just calling ~.fit_transform()~ on your data and then fitting the
+   model separately?
+
+   #+BEGIN_QUOTE
+   A Pipeline guarantees the exact same preprocessing steps
+   (imputation, encoding, scaling, etc.) are applied consistently to
+   training and test data, fit only on training data and then just
+   transformed on test data - preventing *data leakage*
+   (e.g. accidentally fitting a scaler on the full dataset, which lets
+   test-set statistics leak into training). It also means calling
+   ~.predict()~ or ~.score()~ on raw, untransformed data automatically
+   pushes it through the full transform chain before it reaches the
+   model, so there's no risk of forgetting a step or applying steps in
+   the wrong order.
+   #+END_QUOTE
+
+** Updates (see General Messages)
+*** What to do next in supervised learning with scikit-learn
+
+What do do now in *DataCamp:*
+- Use =practice= mode on desktop/mobile.
+- Upload the slides to AI and ask it to drill you on the content.
+- Work through one or more machine learning project in DataCamp:
+  + [[https://app.datacamp.com/learn/projects/1908][Predicting Credit Card Approvals]]
+  + [[https://app.datacamp.com/learn/projects/1772][Predictive Modeling for Agriculture]]
+- You can do any of the DataCamp =projects= and submit them as your
+  final project if you create a proper notebook for the project.
+- This includes finding/downloading the data and explaining the code a
+  lot more than it is done in DataCamp.
+- The projects come with the respective lessons (ML), cheatsheets (for
+  Python), and additional tutorials.
+
+In the *textbook* by Géron
+- Chapter 3 is built around the MNIST dataset,a set of 70,000 small
+  images of digits handwritten by high school students and employees
+  of the US Census Bureau, each labeled with the digit it
+  represents.
+- Géron describes it as the "hello world" of machine learning:
+  whenever people come up with a new classification algorithm they are
+  curious to see how it will perform on MNIST.
+
+I threw you a little under the bus - these were the *prerequisite
+courses*:
+1. Introduction to Python (data structures)
+2. Intermediate Python (visualization, NumPy, dictionary, pandas)
+3. Data Manipulation with pandas (working with DataFrame tables)
+4. Introduction to statistics in Python (already assumes stats)
+
+
+One course is already no longer freely available, in a regrettable
+change of DataCamp for classroom policy, because the platform is
+joining the path of the rest of the tech companies who want to
+exchange AI for riches - and I am sure others will follow. This is
+probably the last time that I will work with them.
+
+*** Hindsight is 20/20 - what I could/should have done instead of DataCamp
+
+- I wish I had substituted the DataCamp lessons with my own videos or
+  with self-study instructions for mathematical foundations.
+
+- Two good books, if you wish to do this yourself, are ISL, or, a
+  little more modern and more demanding, MML.
+
+  1. Mathematics for machine learning (MML), by Deisenroth et al (CUP
+     2020): https://mml-book.github.io/ Foundations: first 200 pages.
+
+  2. An introduction to statistical learning with Applications in
+     Python (ISL), by James et al (Springer 2023):
+     https://www.statlearning.com/ [more statistical]
+
+- This would be a good read for the rest of the summer if you're
+  interested in deepening your knowledge of machine learning.
+
+- Alternatively, you could also complete Luis Serrano's free courses
+  on Coursera (Mathematics for ML and Data Science - 3 courses)
+
+- I'm reading MML right now to refresh my memory and skills for Fall,
+  and if you're up to it, you can discuss it with me if you like.
+
+- Other books that I am (very slowly) reading: by Simon Prince,
+  [[https://udlbook.github.io/udlbook/][Understanding Deep Learning]], and Concrete Mathematics by Knuth et al
+  (discrete math - for algorithms in general - [[https://youtu.be/8bM9gDJataM?si=g8RfO4790XcQSYEO][see this video]]).
+
+- As an example for how the underlying math changes the picture from
+  "just do it" to "this is why", check out my explanation of the Lasso
+  vs. Ridge performance of one of the exercises in the fourth chapter
+  of the DataCamp course (~LinearRegression~ and ~Ridge~ performed great
+  but ~Lasso~ did not at all). See here: [[https://github.com/birkenkrahe/cs540/blob/main/pdf/LassoRidge.pdf][LassoRidge.pdf]].
+
+- Personally, I cannot work with math books online - I have to have
+  the paper book next to me so that I can excerpt, take notes,
+  annotate etc. Just in case you find yourself reluctant to read
+  them - consider that this may be because math books want to be held!
+
+- By the way, this is the math we are talking about: It isn't actually
+  all that deep but it spans a wide region. Many areas of math that
+  are harder (topology, number theory, complex analysis) have no place
+  here (yet):
+  #+attr_html: :width 600px :float nil:
+  [[../img/mathforml.png]]
+
+** Review: Project prototype submissions
+
+Not yet. I will give you individual (personal) feedback over the next
+couple of weeks. Remember to post your results to the General
+Messages.
+
+** Review: End-to-end ML project Part 1
+
+- *Frame the problem and sketch solution*
+  + Goal: predict California district median housing prices for an
+    investment-decision pipeline
+  + Framed as supervised, univariate multiple regression, batch
+    learning (static 1.42 MB data)
+  + Performance metric: RMSE — same units as target (dollars),
+    penalizes large errors more than MAE
+  + L1/L2 geometry: MAE ↔ Lasso (diamond), RMSE ↔ Ridge (circle) —
+    same shape argument applies
+
+- *Get and view the data*
+  + Loaded from compressed tarball; 20,640 rows, 10 features (9
+    numeric, 1 object =ocean_proximity=)
+  + =total_bedrooms= has 207 missing values; =ocean_proximity= has 5
+    categories
+  + Key observations from =describe()= and histograms: right skew,
+    capped values, bi-modal geography
+  + Features needing transformation: =total_rooms=, =total_bedrooms=,
+    =population=, =households= (log)
+
+- *Create a test set and beat data snooping bias*
+
+  + 80/20 random split with =train_test_split= and fixed =random_state=42=
+    → 16,512 / 4,128
+  + Problem: random sampling can misrepresent rare income strata;
+    re-running with a new seed leaks data
+  + Fix: *stratified sampling* on =median_income= (discretized into 5 bins
+    with =pd.cut=)
+  + Verified test-set proportions match the full dataset; dropped the
+    =income_cat= helper column
+
+- *Explore and visualize data*
+  + Geographic scatter plot: =longitude= / =latitude= with =alpha=
+    transparency reveals density
+  + Third/fourth dimensions added via dot size (=population=) and color
+    (=median_house_value=, jet colormap)
+  + Pearson =corr()= on all numeric attributes: =median_income= has the
+    strongest positive correlation
+  + =scatter_matrix()= on 4 key attributes; zoomed scatterplot confirms
+    strong income–price trend and exposes cap artifacts and suspicious
+    horizontal lines
+
+- *Code*:
+  #+begin_example python
+  import numpy as np
+  import pandas as pd
+  import matplotlib.pyplot as plt
+  from sklearn.model_selection import train_test_split
+
+  housing_full = pd.read_csv("https://tinyurl.com/housing-csv")
+
+  housing_full["income_cat"] = pd.cut(
+      housing_full["median_income"],
+      bins=[0, 1.5, 3.0, 4.5, 6.0, np.inf],
+      labels=[1, 2, 3, 4, 5])
+
+  strat_train, strat_test = train_test_split(
+      housing_full, test_size=0.2,
+      stratify=housing_full["income_cat"],
+      random_state=42)
+
+  for df in (strat_train, strat_test):
+      df.drop("income_cat", axis=1, inplace=True)
+
+  print("Training set:", strat_train.shape)
+  print("Test set:    ", strat_test.shape)
+  #+end_example
+
+** End-to-end ML project Part 2
+
+Outstanding:
+- *Prepare the data*
+- *Select and train*
+- *Fine-tune the system*
+- *Present your solution*
+
+For the second part, open this starter notebook to code along:
+[[https://tinyurl.com/end-to-end-ml-ipynb-2][tinyurl.com/end-to-end-ml-ipynb-2]]
+
+You can see the completed notebook (part 2) here:
+[[https://tinyurl.com/end-to-end-ml-2-full-ipynb][tinyurl.com/end-to-end-ml-2-full-ipynb]]
+
+** Next assignments
+
+- DataCamp "Unsupervised learning in Python - Clustering"
+
+** Take aways
+** Closing prayer
+
 
 * Footnotes
 
