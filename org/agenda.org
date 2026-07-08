@@ -930,7 +930,7 @@ You can see the completed notebook (part 2) here:
 - Chapter 3 in Magnificat Humanitas
 - Color map
 
-* DONE Week 7 - Confusion matrix and classification metrics / End-to-end ML project Part 2
+* DONE Week 7 - Confusion matrix and classification metrics
 
 | Segment                                     | Time   |   |
 |---------------------------------------------+--------+---|
@@ -1029,7 +1029,7 @@ You can see the completed notebook (part 2) here:
 - Type I and Type II (underestimated)
 - The problem determines the quality of the model (the choice of metric)
 - F1 score is a "harmonic" mean (useful for imbalanced datasets)
-* Week 8 - DataCamp mop-up / End-to-End Part 2 (finally!)
+* Week 8 - DataCamp mop-up / End-to-End Part 2
 
 |  # | Section                                             | min |   |
 |----+-----------------------------------------------------+-----+---|
@@ -1047,6 +1047,8 @@ You can see the completed notebook (part 2) here:
 ** Opening prayer
 
 ** Review: DataCamp supervised learning with scikit-learn
+#+attr_html: :width 400px :float nil:
+[[../img/datacamp_certificate_supervised_scikit.png]]
 
 Supervised Learning with scikit-learn - Reflection Questions
 
@@ -1307,16 +1309,31 @@ Outstanding:
 For the second part, open this starter notebook to code along:
 [[https://tinyurl.com/end-to-end-ml-ipynb-2][tinyurl.com/end-to-end-ml-ipynb-2]]
 
+Copy the notebook then =Run all= code cells to =Prepare the Data=.
+
 You can see the completed notebook (part 2) here:
 [[https://tinyurl.com/end-to-end-ml-2-full-ipynb][tinyurl.com/end-to-end-ml-2-full-ipynb]]
 
 ** Next assignments
 
-- DataCamp "Unsupervised learning in Python - Clustering"
+- *DataCamp lesson* "Unsupervised learning in Python - Clustering"
+- *Home assignment* on imputing and one-hot-encoding (parish data)
+- *Short quiz* on the DataCamp chapter Unsupervised ML - clustering
+- Continue working on your *project* (take next step)
 
+** Next sessions
+
+- Training models: Gradient descent, logistic regression, sigmoid,
+  log-loss functions.
+  
+- Unsupervised machine learning: clustering/PCA
+
+- Neural nets and PyTorch
+
+- Project presentations
+  
 ** Take aways
 ** Closing prayer
-
 
 * Footnotes
 
