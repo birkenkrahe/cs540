@@ -1033,7 +1033,7 @@ You can see the completed notebook (part 2) here:
 
 |  # | Section                                             | min |   |
 |----+-----------------------------------------------------+-----+---|
-|  1 | [[*Opening prayer][Opening prayer]]                                      |   1 |   |
+|  1 | [[*Opening prayer][Opening prayer]]                                      |   1 | x |
 |  2 | [[*Review: DataCamp supervised learning with scikit-learn][Review: DataCamp supervised learning w/scikit-learn]] |   5 |   |
 |  3 | [[*What to do next in supervised learning with scikit-learn][What to do next in supervised learning]]              |   1 |   |
 |  4 | [[*Hindsight is 20/20 - what I could/should have done instead of DataCamp][Hindsight is 20/20]]                                  |   1 |   |
@@ -1045,7 +1045,6 @@ You can see the completed notebook (part 2) here:
 | 10 | [[*Closing prayer][Closing prayer]]                                      |   1 |   |
 
 ** Opening prayer
-
 ** Review: DataCamp supervised learning with scikit-learn
 #+attr_html: :width 400px :float nil:
 [[../img/datacamp_certificate_supervised_scikit.png]]
@@ -1169,7 +1168,6 @@ courses*:
 3. Data Manipulation with pandas (working with DataFrame tables)
 4. Introduction to statistics in Python (already assumes stats)
 
-
 One course is already no longer freely available, in a regrettable
 change of DataCamp for classroom policy, because the platform is
 joining the path of the rest of the tech companies who want to
@@ -1228,6 +1226,27 @@ Not yet. I will give you individual (personal) feedback over the next
 couple of weeks. Remember to post your results to the General
 Messages.
 
+** Next assignments
+
+- *DataCamp lesson* "Unsupervised learning in Python - chapter 2"
+- *Home assignment* on imputing and one-hot-encoding (parish data)
+- *Short quiz* on the DataCamp chapter Unsupervised ML - clustering
+- Continue working on your *project* (take next step)
+
+** Next sessions
+
+- *Training models:* Gradient descent, logistic regression, sigmoid,
+  log-loss functions.
+  
+- *Unsupervised* machine learning: clustering/PCA
+
+- *Neural nets and PyTorch*
+
+- *Project presentations*: All the rules as for the mid-term, and you
+  can continue your mid-term project. Format: free-form (15 min).
+
+- The project should not be "Scheisse".
+
 ** Review: End-to-end ML project Part 1
 
 - *Frame the problem and sketch solution*
@@ -1251,7 +1270,6 @@ Messages.
     =population=, =households= (log)
 
 - *Create a test set and beat data snooping bias*
-
   + 80/20 random split with =train_test_split= and fixed =random_state=42=
     → 16,512 / 4,128
   + Problem: random sampling can misrepresent rare income strata;
@@ -1301,7 +1319,7 @@ Messages.
 ** End-to-end ML project Part 2
 
 Outstanding:
-- *Prepare the data*
+- *Prepare the data* (imputation, encoding, selection, transform)
 - *Select and train*
 - *Fine-tune the system*
 - *Present your solution*
@@ -1314,25 +1332,15 @@ Copy the notebook then =Run all= code cells to =Prepare the Data=.
 You can see the completed notebook (part 2) here:
 [[https://tinyurl.com/end-to-end-ml-2-full-ipynb][tinyurl.com/end-to-end-ml-2-full-ipynb]]
 
-** Next assignments
-
-- *DataCamp lesson* "Unsupervised learning in Python - Clustering"
-- *Home assignment* on imputing and one-hot-encoding (parish data)
-- *Short quiz* on the DataCamp chapter Unsupervised ML - clustering
-- Continue working on your *project* (take next step)
-
-** Next sessions
-
-- Training models: Gradient descent, logistic regression, sigmoid,
-  log-loss functions.
-  
-- Unsupervised machine learning: clustering/PCA
-
-- Neural nets and PyTorch
-
-- Project presentations
-  
 ** Take aways
+
+- Importance of data shape (esp. scikit-learn)
+- One-Hot-Encoder is a binary transformer
+- Ordinal encoding only for naturally ordered features
+- Pipelines important for automated workflows (protect test data)
+- Making sure data have no missing values & imputing
+- Learned parameters end with an underscore
+
 ** Closing prayer
 
 * Footnotes

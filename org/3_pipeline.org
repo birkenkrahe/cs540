@@ -6,6 +6,7 @@
 #+PROPERTY: header-args:python :session *Python* :results output :exports both :noweb yes
 * Objectives
 
+Split up over several code-along lectures:
 1) Look at the big picture
 2) Get the data
 3) Explore and visualize the data
@@ -158,7 +159,7 @@ yourself: [[https://colab.research.google.com/github/ageron/handson-mlp/blob/mai
   :    -117.05     32.91                  35         1274         570           4.58              185000
   :    -121.32     38.44                  18         1627         595           2.94              310000
   :    -119.78     36.21                  30         2519        1049           5.12               97500
-  : 
+  :
   : RMSE: $11,464
 
 - Shorter in scikit-learn (from v1.4):
@@ -261,7 +262,7 @@ Note: automate as much as possible so you can easily get fresh data.
   : 2    -122.24     37.85                52.0  ...         7.2574            352100.0         NEAR BAY
   : 3    -122.25     37.85                52.0  ...         5.6431            341300.0         NEAR BAY
   : 4    -122.25     37.85                52.0  ...         3.8462            342200.0         NEAR BAY
-  : 
+  :
   : [5 rows x 10 columns]
 
 - There is one district per row. Get info on the data structure:
@@ -274,8 +275,8 @@ Note: automate as much as possible so you can easily get fresh data.
   <class 'pandas.core.frame.DataFrame'>
   RangeIndex: 20640 entries, 0 to 20639
   Data columns (total 10 columns):
-   #   Column              Non-Null Count  Dtype  
-  ---  ------              --------------  -----  
+   #   Column              Non-Null Count  Dtype
+  ---  ------              --------------  -----
    0   longitude           20640 non-null  float64
    1   latitude            20640 non-null  float64
    2   housing_median_age  20640 non-null  float64
@@ -285,7 +286,7 @@ Note: automate as much as possible so you can easily get fresh data.
    6   households          20640 non-null  float64
    7   median_income       20640 non-null  float64
    8   median_house_value  20640 non-null  float64
-   9   ocean_proximity     20640 non-null  object 
+   9   ocean_proximity     20640 non-null  object
   dtypes: float64(9), object(1)
   memory usage: 1.6+ MB
   None
@@ -903,7 +904,7 @@ Note: automate as much as possible so you can easily get fresh data.
 
 - We compute Pearson's coefficient against =median_house_value= - these
   values express how other features fall and grow linearly with it:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     corr_matrix = housing.corr(numeric_only=True) # full correlation matrix
     print(corr_matrix["median_house_value"].sort_values(ascending=False))
   #+end_src
@@ -939,7 +940,7 @@ Note: automate as much as possible so you can easily get fresh data.
   features resulting in 81 panel plots. Focusing on the most promising
   ones (the Pearson coefficient helps):
 
-  #+begin_src python :file ../img/HousingPlot4.png :results file graphics output :exports both :session *Python* :python python3 
+  #+begin_src python :file ../img/HousingPlot4.png :results file graphics output :exports both :session *Python* :python python3
     from pandas.plotting import scatter_matrix
     attributes = ["median_house_value",
                   "median_income",
@@ -964,7 +965,7 @@ Note: automate as much as possible so you can easily get fresh data.
 - Which plots are available on the diagonal besides the histogram? If
   you don't get an answer, remember that pandas was aliased as =pd= and
   that ~scatter_matrix~ is a method in ~pandas.plotting~:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     help(pd.plotting.scatter_matrix)
   #+end_src
 
@@ -1026,7 +1027,7 @@ Note: automate as much as possible so you can easily get fresh data.
 
 - Change the diagonal plots to 'kde' (density plots, essentially a
   smoothed histogram):
-  #+begin_src python :file ../img/HousingPlot5.png :results file graphics output :exports both :session *Python* :python python3 
+  #+begin_src python :file ../img/HousingPlot5.png :results file graphics output :exports both :session *Python* :python python3
     from pandas.plotting import scatter_matrix
     attributes = ["median_house_value",
                   "median_income",
@@ -1038,14 +1039,14 @@ Note: automate as much as possible so you can easily get fresh data.
     plt.savefig("../img/HousingPlot5.png")
   #+end_src
 
-  #+RESULTS:	
+  #+RESULTS:
   [[file:../img/HousingPlot5.png]]
 
   It's interesting how much longer the computation takes! But the
   insight isn't overwhelming.
 
 - Zoom in on the most promising scatterplot:
-  #+begin_src python :file ../img/HousingPlot6.png :results file graphics output :exports both :session *Python* :python python3 
+  #+begin_src python :file ../img/HousingPlot6.png :results file graphics output :exports both :session *Python* :python python3
     plt.clf()
     housing.plot(kind="scatter",
                  x="median_income",
@@ -1057,7 +1058,7 @@ Note: automate as much as possible so you can easily get fresh data.
 
   #+RESULTS:
   [[file:../img/HousingPlot6.png]]
-  
+
 - What do you learn?
   #+begin_quote
   + The correlation is strong. Despite noisy data, the trend is
@@ -1080,7 +1081,7 @@ Note: automate as much as possible so you can easily get fresh data.
 
 - Lastly, look at the illustration of standard correlation
   coefficients of different datasets:
-  #+attr_html: :width 600px :float nil: 
+  #+attr_html: :width 600px :float nil:
   [[../img/correlation.png]]
 
   1) All plots in the bottom row have a (linear) coefficient of 0:
@@ -1093,7 +1094,7 @@ Note: automate as much as possible so you can easily get fresh data.
 
      The reason for this is that the measure is normalized by standard
      deviations, so scaling cancels out completely.
-  
+
 * Prepare the data
 
 ** Revert to a clean training set
@@ -1102,8 +1103,8 @@ Note: automate as much as possible so you can easily get fresh data.
   again. It is worth drilling yourself in these methods.
 
 - Let's first see our objects again:
-  
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+
+  #+begin_src python :results output :exports both :session *Python* :python python3
     for _ in dir():
         if not _.startswith('_'):
             print(_)
@@ -1111,19 +1112,34 @@ Note: automate as much as possible so you can easily get fresh data.
 
   #+RESULTS:
   #+begin_example
+  OneHotEncoder
+  OrdinalEncoder
+  SimpleImputer
+  X
   actual
   attributes
+  cat_encoder
+  cat_encoder_strict
   corr_matrix
   data
   df
+  df_test
+  df_test_unknown
   f
   histogram_intersection
   housing
+  housing_cat
+  housing_cat_1hot
+  housing_cat_encoded
   housing_full
   housing_labels
+  housing_num
+  housing_tr
+  imputer
   main
   matplotlib
   np
+  ordinal_encoder
   pd
   plt
   predicted
@@ -1134,7 +1150,6 @@ Note: automate as much as possible so you can easily get fresh data.
   scatter_matrix
   strat_test_set
   strat_train_set
-  tar
   tarfile
   test_set
   train_set
@@ -1148,23 +1163,23 @@ Note: automate as much as possible so you can easily get fresh data.
      set target label into =housing_labels=
   3) Check dimensions of these datasets
 
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     housing = strat_train_set.drop("median_house_value",axis=1)
     housing_labels = strat_train_set["median_house_value"].copy()
     print(housing.shape)
-    print(housing_labels.shape)    
+    print(housing_labels.shape)
   #+end_src
 
   #+RESULTS:
   : (16512, 9)
   : (16512,)
-    
+
 ** Clean the data
 
 - Most ML algorithms cannot work with missing features. Options:
   1. Get rid of the corresponding districts[fn:2]
      #+begin_example python
-     housing.dropna(subset=["total_bedrooms"]) 
+     housing.dropna(subset=["total_bedrooms"])
      #+end_example
   2. Get rid of the whole attribute
      #+begin_example python
@@ -1188,7 +1203,7 @@ Note: automate as much as possible so you can easily get fresh data.
 - Instead of coding this by hand, we use a transformer class from
   scikit-learn, ~SimpleImputer~. We're telling it to replace the missing
   values with the median:
-  #+begin_src python :results none :exports both :session *Python* :python python3 
+  #+begin_src python :results none :exports both :session *Python* :python python3
     from sklearn.impute import SimpleImputer
 
     imputer = SimpleImputer(strategy="median")
@@ -1196,7 +1211,7 @@ Note: automate as much as possible so you can easily get fresh data.
 
 - A median can only be computed on numerical features. To apply
   =imputer=, we must remove the text attribute (=ocean_proximity=):
-  #+begin_src python :results none :exports both :session *Python* :python python3 
+  #+begin_src python :results none :exports both :session *Python* :python python3
     housing_num = housing.select_dtypes(include=[np.number])
   #+end_src
 
@@ -1205,17 +1220,17 @@ Note: automate as much as possible so you can easily get fresh data.
   categorical ones.
 
 - Check the resulting ~DataFrame~:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     housing_num.info()
-  #+end_src  
+  #+end_src
 
   #+RESULTS:
   #+begin_example
   <class 'pandas.core.frame.DataFrame'>
   Index: 16512 entries, 13096 to 19888
   Data columns (total 8 columns):
-   #   Column              Non-Null Count  Dtype  
-  ---  ------              --------------  -----  
+   #   Column              Non-Null Count  Dtype
+  ---  ------              --------------  -----
    0   longitude           16512 non-null  float64
    1   latitude            16512 non-null  float64
    2   housing_median_age  16512 non-null  float64
@@ -1232,13 +1247,13 @@ Note: automate as much as possible so you can easily get fresh data.
   instance is now fitted to the training data using ~fit()~: The ~fit()~
   call learns from the data (computes the median). Any object with
   ~fit()~ is acting as an estimator.
-  #+begin_src python :results none :exports both :session *Python* :python python3 
+  #+begin_src python :results none :exports both :session *Python* :python python3
     imputer.fit(housing_num)
   #+end_src
 
   The result of this fit is a learned parameter - the medians are
   stored in ~imputer.statistics_~ (no data is changed yet)[fn:3]:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     print(imputer.statistics_)
     print(housing_num.median().values)
   #+end_src
@@ -1250,9 +1265,9 @@ Note: automate as much as possible so you can easily get fresh data.
   :     3.5385]
 
   The output is a NumPy array:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     print(type(imputer.statistics_))
-    print(imputer.statistics_.shape)    
+    print(imputer.statistics_.shape)
   #+end_src
 
   #+RESULTS:
@@ -1261,7 +1276,7 @@ Note: automate as much as possible so you can easily get fresh data.
 
 - Now we use the fitted ("trained") imputer to transform the training
   set itself by replacing missing values with the learned medians:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     X = imputer.transform(housing_num)
     print(X.shape) # NumPy array
     print(type(X))
@@ -1272,7 +1287,7 @@ Note: automate as much as possible so you can easily get fresh data.
   : <class 'numpy.ndarray'>
 
 - Scikit-Learn transformers output NumPy arrays even when they are fed
-  pandas DataFrames as input[fn:4]. 
+  pandas DataFrames as input[fn:4].
 
 - What does this mean?
   #+begin_quote
@@ -1281,7 +1296,7 @@ Note: automate as much as possible so you can easily get fresh data.
 
 - Wrap =X= into a ~DataFrame~ and recover column names and index from
   =housing_num=:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     housing_tr = pd.DataFrame(X,
                               columns=housing_num.columns,
                               index=housing_num.index)
@@ -1293,8 +1308,8 @@ Note: automate as much as possible so you can easily get fresh data.
   <class 'pandas.core.frame.DataFrame'>
   Index: 16512 entries, 13096 to 19888
   Data columns (total 8 columns):
-   #   Column              Non-Null Count  Dtype  
-  ---  ------              --------------  -----  
+   #   Column              Non-Null Count  Dtype
+  ---  ------              --------------  -----
    0   longitude           16512 non-null  float64
    1   latitude            16512 non-null  float64
    2   housing_median_age  16512 non-null  float64
@@ -1314,7 +1329,7 @@ Note: automate as much as possible so you can easily get fresh data.
 ** Handling text and categorical attributes
 
 - This dataset has only one categorical feature, =ocean_proximity=:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     housing_cat = housing[["ocean_proximity"]]
     print(housing_cat.shape)
     print(housing_cat[:8])
@@ -1345,7 +1360,7 @@ Note: automate as much as possible so you can easily get fresh data.
 
 - We convert the categories from text to numbers using Scikit-Learn's
   ~OrdinalEncoder~ class:
-  #+begin_src python :results none :exports both :session *Python* :python python3 
+  #+begin_src python :results none :exports both :session *Python* :python python3
     from sklearn.preprocessing import OrdinalEncoder
 
     ordinal_encoder = OrdinalEncoder()
@@ -1359,9 +1374,9 @@ Note: automate as much as possible so you can easily get fresh data.
   2. ~transform()~ replaces the strings with those integers
 
 - The first few values of the encoded array look like this:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     print(housing_cat_encoded[:8])
-  #+end_src     
+  #+end_src
 
   #+RESULTS:
   : [[3.]
@@ -1374,7 +1389,7 @@ Note: automate as much as possible so you can easily get fresh data.
   :  [3.]]
 
 - The ~categories_~ instance variable returns a list of categories:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     print(ordinal_encoder.categories_)
   #+end_src
 
@@ -1399,7 +1414,7 @@ Note: automate as much as possible so you can easily get fresh data.
 
 - Scikit-Learn provides the ~OneHotEncoder~ class to convert categorical
   values into one-hot vectors:
-  #+begin_src python :results none :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     from sklearn.preprocessing import OneHotEncoder
 
     cat_encoder = OneHotEncoder()
@@ -1413,11 +1428,19 @@ Note: automate as much as possible so you can easily get fresh data.
       0         0       0        1          0
   #+end_example
 
+- =housing_cat= is a DataFrame
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    print(type(housing_cat))
+  #+end_src
+
+  #+RESULTS:
+  : <class 'pandas.core.frame.DataFrame'>
+
 ** Sparse matrices
 
 - The output of a ~OneHotEncoder~ is always a sparse SciPy matrix:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
-    print(housing_cat_1hot.shape) # matrix dimension
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(housing_cat_1hot.shape) # matrix dimension -  5 categories
     print(housing_cat_1hot.nnz)   # number of non-zero elements (no. of districs)
   #+end_src
 
@@ -1428,7 +1451,7 @@ Note: automate as much as possible so you can easily get fresh data.
 - A sparse matrix is an efficient representation for matrices that
   contain mostly zeros because only nonzero values and their positions
   are stored:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     print(housing_cat_1hot)
   #+end_src
 
@@ -1436,65 +1459,65 @@ Note: automate as much as possible so you can easily get fresh data.
   #+begin_example
   <Compressed Sparse Row sparse matrix of dtype 'float64'
           with 16512 stored elements and shape (16512, 5)>
-    Coords	Values
-    (0, 3)	1.0
-    (1, 0)	1.0
-    (2, 1)	1.0
-    (3, 1)	1.0
-    (4, 4)	1.0
-    (5, 1)	1.0
-    (6, 0)	1.0
-    (7, 3)	1.0
-    (8, 0)	1.0
-    (9, 0)	1.0
-    (10, 1)	1.0
-    (11, 0)	1.0
-    (12, 0)	1.0
-    (13, 1)	1.0
-    (14, 4)	1.0
-    (15, 0)	1.0
-    (16, 1)	1.0
-    (17, 3)	1.0
-    (18, 1)	1.0
-    (19, 0)	1.0
-    (20, 0)	1.0
-    (21, 4)	1.0
-    (22, 1)	1.0
-    (23, 3)	1.0
-    (24, 1)	1.0
-    :	:
-    (16487, 1)	1.0
-    (16488, 0)	1.0
-    (16489, 0)	1.0
-    (16490, 3)	1.0
-    (16491, 1)	1.0
-    (16492, 4)	1.0
-    (16493, 4)	1.0
-    (16494, 1)	1.0
-    (16495, 0)	1.0
-    (16496, 1)	1.0
-    (16497, 0)	1.0
-    (16498, 0)	1.0
-    (16499, 4)	1.0
-    (16500, 0)	1.0
-    (16501, 0)	1.0
-    (16502, 0)	1.0
-    (16503, 0)	1.0
-    (16504, 0)	1.0
-    (16505, 0)	1.0
-    (16506, 1)	1.0
-    (16507, 0)	1.0
-    (16508, 1)	1.0
-    (16509, 4)	1.0
-    (16510, 0)	1.0
-    (16511, 4)	1.0
+    Coords      Values
+    (0, 3)      1.0
+    (1, 0)      1.0
+    (2, 1)      1.0
+    (3, 1)      1.0
+    (4, 4)      1.0
+    (5, 1)      1.0
+    (6, 0)      1.0
+    (7, 3)      1.0
+    (8, 0)      1.0
+    (9, 0)      1.0
+    (10, 1)     1.0
+    (11, 0)     1.0
+    (12, 0)     1.0
+    (13, 1)     1.0
+    (14, 4)     1.0
+    (15, 0)     1.0
+    (16, 1)     1.0
+    (17, 3)     1.0
+    (18, 1)     1.0
+    (19, 0)     1.0
+    (20, 0)     1.0
+    (21, 4)     1.0
+    (22, 1)     1.0
+    (23, 3)     1.0
+    (24, 1)     1.0
+    :   :
+    (16487, 1)  1.0
+    (16488, 0)  1.0
+    (16489, 0)  1.0
+    (16490, 3)  1.0
+    (16491, 1)  1.0
+    (16492, 4)  1.0
+    (16493, 4)  1.0
+    (16494, 1)  1.0
+    (16495, 0)  1.0
+    (16496, 1)  1.0
+    (16497, 0)  1.0
+    (16498, 0)  1.0
+    (16499, 4)  1.0
+    (16500, 0)  1.0
+    (16501, 0)  1.0
+    (16502, 0)  1.0
+    (16503, 0)  1.0
+    (16504, 0)  1.0
+    (16505, 0)  1.0
+    (16506, 1)  1.0
+    (16507, 0)  1.0
+    (16508, 1)  1.0
+    (16509, 4)  1.0
+    (16510, 0)  1.0
+    (16511, 4)  1.0
   #+end_example
 
 - If you want to convert it to a dense NumPy array:
   #+begin_src python :results output :exports both :session *Python* :python python3
     print(type(housing_cat_1hot))
     print(housing_cat_1hot.toarray())
-  #+end_src  
+  #+end_src
 
   #+RESULTS:
   : <class 'scipy.sparse._csr.csr_matrix'>
@@ -1508,10 +1531,10 @@ Note: automate as much as possible so you can easily get fresh data.
 
 - Alternatively, you can set ~sparse_output=False~ and a dense NumPy
   array will directly be created:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     cat_encoder = OneHotEncoder(sparse_output=False)
     housing_cat_1hot = cat_encoder.fit_transform(housing_cat)
-    print(type(housing_cat_1hot))    
+    print(type(housing_cat_1hot))
     print(housing_cat_1hot)
   #+end_src
 
@@ -1526,7 +1549,7 @@ Note: automate as much as possible so you can easily get fresh data.
   :  [0. 0. 0. 0. 1.]]
 
 - All transformers keep the list of categories in ~.categories_~
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     print(cat_encoder.categories_)
   #+end_src
 
@@ -1538,7 +1561,7 @@ Note: automate as much as possible so you can easily get fresh data.
   library for DataFrame manipulation, has a function ~pd.get_dummies()~
   that also converts each categorical feature into a one-hot
   representation:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     df_test = pd.DataFrame({"ocean_proximity": ["INLAND","NEAR BAY"]})
     print(pd.get_dummies(df_test))
   #+end_src
@@ -1558,41 +1581,60 @@ Note: automate as much as possible so you can easily get fresh data.
   #+end_quote
 
 - Check the difference by transforming the DataFrame rather than the
-  OneHotEncoder output and then feeding an unknown category to it:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  OneHotEncoder output and then feeding an unknown category (="<2H
+  OCEAN"=) to it:
+
+- Transform =df_test= through the encoder (only two categories, but five known):
+  #+begin_src python :results output :exports both :session *Python* :python python3
     print(cat_encoder.transform(df_test)) # only two categories remembered
+  #+end_src
+
+  #+RESULTS:
+  : <Compressed Sparse Row sparse matrix of dtype 'float64'
+  : 	with 2 stored elements and shape (2, 5)>
+  :   Coords	Values
+  :   (0, 1)	1.0
+  :   (1, 3)	1.0
+
+- Feed an unkown catagory (="<2H OCEAN"=) to it:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
     df_test_unknown = pd.DataFrame({"ocean_proximity":["<2H OCEAN","ISLAND"]})
     print(pd.get_dummies(df_test_unknown)) # new column generated - not learnt!
   #+end_src
 
   #+RESULTS:
-  : [[0. 1. 0. 0. 0.]
-  :  [0. 0. 0. 1. 0.]]
   :    ocean_proximity_<2H OCEAN  ocean_proximity_ISLAND
   : 0                       True                   False
   : 1                      False                    True
 
+- The two ~.get_dummies~ calls at different points generate two
+  completely unrelated sets shaped only what happened to be in that
+  frame.
+  
 - ~OneHotEncoder~ detects the unknown category and raise an
   exception. You can set the hyperparameter ~handle_unknown="ignore"~
   and the unknown categories will be represented with zeros:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     cat_encoder.handle_unknown = "ignore"
-    print(cat_encoder.transform(df_test_unknown))
+    print(cat_encoder.transform(df_test_unknown)) # "<2H OCEAN" is unknown
   #+end_src
 
   #+RESULTS:
-  : [[0. 0. 0. 0. 0.]
-  :  [0. 0. 1. 0. 0.]]
+  : <Compressed Sparse Row sparse matrix of dtype 'float64'
+  : 	with 1 stored elements and shape (2, 5)>
+  :   Coords	Values
+  :   (1, 2)	1.0
 
-- This is how that looks like:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+- This is how that looks like when installed with a ~try...except~
+  guardrail:
+  #+begin_src python :results output :exports both :session *Python* :python python3
     # What happens without handle_unknown="ignore"?
     try:
         cat_encoder_strict = OneHotEncoder()
         cat_encoder_strict.fit(housing_cat)
         print(cat_encoder_strict.transform(df_test_unknown))
     except ValueError as e:
-        print(f"ValueError: {e}")    
+        print(f"ValueError: {e}")
   #+end_src
 
   #+RESULTS:
@@ -1603,15 +1645,146 @@ Note: automate as much as possible so you can easily get fresh data.
   with numerical features related to the categories, e.g. instead of
   "country code", you use "population" and "GDP per capita":
   #+begin_example
-  country_code     -> population    gdp_per_capita 
-  US                  331000000     63000          
-  DE                  83000000      46000          
-  IN                  1380000000    2000           
+  country_code     -> population    gdp_per_capita
+  US                  331000000     63000
+  DE                  83000000      46000
+  IN                  1380000000    2000
   #+end_example
 
+- Transformers provide a ~get_feature_names_out()~ method:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    print(cat_encoder.feature_names_in_)
+    print(cat_encoder.get_feature_names_out())    
+  #+end_src  
+
+  #+RESULTS:
+  : ['ocean_proximity']
+  : ['ocean_proximity_<1H OCEAN' 'ocean_proximity_INLAND'
+  :  'ocean_proximity_ISLAND' 'ocean_proximity_NEAR BAY'
+  :  'ocean_proximity_NEAR OCEAN']
 
 ** Feature scaling and transformation
 
+- Algorithms that compute distances across features - regression, knn,
+  neural networks etc. - care about scales: a feature with range
+  0-40,000 will dominate a feature with range 0-15 independent of
+  predictive importance.
+
+- Is this relevant in our case? How would you find out? Compare for
+  example the spread of values for =total_rooms= and =median_income=:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    print(housing.describe()[["total_rooms","median_income"]])
+  #+end_src
+
+  #+RESULTS:
+  :         total_rooms  median_income
+  : count  16512.000000   16512.000000
+  : mean    2639.402798       3.870428
+  : std     2185.287466       1.891936
+  : min        2.000000       0.499900
+  : 25%     1447.000000       2.562500
+  : 50%     2125.000000       3.538500
+  : 75%     3154.000000       4.750000
+  : max    39320.000000      15.000100
+
+- *Answer:*
+  #+begin_quote
+  The =total_rooms= spread is in [2,39320] while the =median_income=
+  spread is contained in (0,15]. The scales are vastly different.
+  #+end_quote
+
+- Common ways to scale all values to the same scale, are:
+
+  1) *Min-max scaling* ("normalization"): shift all values, for all
+     attributes, so that they range from 0 to 1. Subtract the min from
+     all values (left shift), then divide by difference between min
+     and max (normalize to [0,1]). It is strongly affected by outliers
+
+  2) *Standardization* ("z-score normalization"): transform to a
+     distribution with mean = 0 and a standard deviation = 1), without
+     restricting the range. Subtract the mean (mean becomes zero),
+     then divide result by the standard deviation (std becomes one).
+
+- Should scalers be fit to all the data, the training data, or the
+  test data?
+  #+begin_quote
+  Scalers (~fit()~ or ~fit_transform~) should only be fitted to the
+  training data. Once you have a trained scaler, you can use it to
+  ~transform()~ any other set.
+  #+end_quote
+
+** Min-max scaling (normalization)
+
+- Import the function from the ~preprocessing~ module:
+  #+begin_src python :results none :exports both :session *Python* :python python3 
+    from sklearn.preprocessing import MinMaxScaler
+  #+end_src     
+
+- Create a ~MinMaxScaler~ and specify the desired feature range:
+  #+begin_src python :results none :exports both :session *Python* :python python3 
+    min_max_scaler = MinMaxScaler(feature_range=(-1,1))
+    housing_num_min_max_scaled = min_max_scaler.fit_transform(housing_num)
+  #+end_src
+
+- Check it out:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    col = "total_rooms"
+    idx = housing_num.columns.get_loc(col)
+    before = housing_num[col].describe()
+    after = pd.Series(housing_num_min_max_scaled[:,idx]).describe()
+    print("Before:\n", before)
+    print("After:\n", after)
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  Before:
+   count    16512.000000
+  mean      2639.402798
+  std       2185.287466
+  min          2.000000
+  25%       1447.000000
+  50%       2125.000000
+  75%       3154.000000
+  max      39320.000000
+  Name: total_rooms, dtype: float64
+  After:
+   count    16512.000000
+  mean        -0.865842
+  std          0.111160
+  min         -1.000000
+  25%         -0.926497
+  50%         -0.892009
+  75%         -0.839666
+  max          1.000000
+  dtype: float64
+  #+end_example
+
+- Visually with matplotlib, with two histograms next to one another:
+  #+begin_src python :file ../img/minmax.png :results file graphics output :exports both :session *Python* :python python3 
+    fig,axes=plt.subplots(1,2,figsize=(10,4))
+    housing_num[col].hist(ax=axes[0], bins=50)
+    axes[0].set_title(f"{col} - original")
+    pd.Series(housing_num_min_max_scaled[:,idx]).hist(ax=axes[1],bins=50)
+    axes[1].set_title(f"{col} - min-max scaled")
+    plt.tight_layout()
+    plt.savefig("../img/minmax.png")
+  #+end_src  
+
+  #+RESULTS:
+  [[file:../img/minmax.png]]
+
+
+** NEXT Standardization (z-score normalization)
+
+- Standardization is much less affected by outliers. For example, if a
+  district has a median income equal to 100 (by mistake), instead of
+  0-15. Min-max scaling maps it to 1 - all other values will be put
+  into the 0-0.15 interval (and become irrelevant).
+
+  For standardization, the outlier shifts the mean slightly, but one
+  bad value does not move the statistics - the z-scores of all the
+  other values remain almost unchanged. 
 
 
 * TODO Select and train
