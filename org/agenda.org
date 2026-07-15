@@ -1029,20 +1029,20 @@ You can see the completed notebook (part 2) here:
 - Type I and Type II (underestimated)
 - The problem determines the quality of the model (the choice of metric)
 - F1 score is a "harmonic" mean (useful for imbalanced datasets)
-* Week 8 - DataCamp mop-up / End-to-End Part 2
+* DONE Week 8 - DataCamp mop-up / End-to-End Part 2
 
 |  # | Section                                             | min |   |
 |----+-----------------------------------------------------+-----+---|
 |  1 | [[*Opening prayer][Opening prayer]]                                      |   1 | x |
-|  2 | [[*Review: DataCamp supervised learning with scikit-learn][Review: DataCamp supervised learning w/scikit-learn]] |   5 |   |
-|  3 | [[*What to do next in supervised learning with scikit-learn][What to do next in supervised learning]]              |   1 |   |
-|  4 | [[*Hindsight is 20/20 - what I could/should have done instead of DataCamp][Hindsight is 20/20]]                                  |   1 |   |
-|  5 | [[*Review: Project prototype submissions][Review: Project prototype submissions]]               |   1 |   |
-|  6 | [[*Review: End-to-end ML project Part 1][Review: End-to-end ML project Part 1]]                |   5 |   |
-|  7 | [[*End-to-end ML project Part 2][End-to-end ML project Part 2]]                        |  60 |   |
-|  8 | [[*Next assignments][Next assignments]]                                    |   1 |   |
-|  9 | [[*Take aways][Take aways]]                                          |   1 |   |
-| 10 | [[*Closing prayer][Closing prayer]]                                      |   1 |   |
+|  2 | [[*Review: DataCamp supervised learning with scikit-learn][Review: DataCamp supervised learning w/scikit-learn]] |   5 | x |
+|  3 | [[*What to do next in supervised learning with scikit-learn][What to do next in supervised learning]]              |   1 | x |
+|  4 | [[*Hindsight is 20/20 - what I could/should have done instead of DataCamp][Hindsight is 20/20]]                                  |   1 | x |
+|  5 | [[*Review: Project prototype submissions][Review: Project prototype submissions]]               |   1 | x |
+|  6 | [[*Review: End-to-end ML project Part 1][Review: End-to-end ML project Part 1]]                |   5 | x |
+|  7 | [[*End-to-end ML project Part 2][End-to-end ML project Part 2]]                        |  60 | x |
+|  8 | [[*Next assignments][Next assignments]]                                    |   1 | x |
+|  9 | [[*Take aways][Take aways]]                                          |   1 | x |
+| 10 | [[*Closing prayer][Closing prayer]]                                      |   1 | x |
 
 ** Opening prayer
 ** Review: DataCamp supervised learning with scikit-learn
@@ -1343,6 +1343,83 @@ You can see the completed notebook (part 2) here:
 
 ** Closing prayer
 
+* Week 9 - End-to-End Part 3
+
+| # | Section                      |
+|---+------------------------------|
+|   | Opening prayer               |
+|   | Magnificat Humanitas Panel   |
+|   | End-to-end ML project Part 3 |
+|   | Take aways                   |
+|   | Closing prayer               |
+
+** Opening prayer
+** Magnificat Humanitas Panel 
+
+- The panel is set for Monday, July 27 at 5 PM PST
+- With professors Reidy & Sonnier and guest speakers
+- A recording will be available afterwards
+
+** End-to-end ML project Part 3
+
+*** *Summary*
+
+- *Revert to a clean training set*: drop the target into =housing=. Copy
+  it into =housing_labels=.
+
+- *Clean the data*: drop rows, drop the attribute, or impute. Imputing
+  is best — no data lost, median resists outliers.
+
+- ~SimpleImputer~: ~fit()~ stores medians in =.statistics_=. ~transform()~
+  fills gaps and returns a NumPy array. Rewrap it as a DataFrame.
+
+- *Text and categories*: ML needs numbers. Arithmetic has no meaning
+  on strings like ="NEAR BAY"=.
+
+- ~OrdinalEncoder~: turns categories into integers. Implies a false
+  order. Only fits truly ordered categories.
+
+- ~OneHotEncoder~: one binary column per category. No false order.
+  Safer default for unordered data.
+
+- *Sparse matrices*: ~OneHotEncoder~ output is sparse by default — only
+  nonzero values stored. Use =.toarray()= or =sparse_output=False= for a
+  dense array. Also *stateful*: remembers categories, can flag unknown
+  ones. =pd.get_dummies()= is stateless.
+
+*** Still outstanding:*
+- Feature scaling and transformation
+- Custom transformers
+- Transformation pipelines
+- Training and evaluation
+- Cross validation
+- Fine-tuning
+- Random search
+- Ensemble methods
+- Launch, monitor, maintain
+- Exercise
+
+*** Part 3: Feature selection, transformation, pipelines
+
+For the third part, open this starter notebook to code along:
+[[https://tinyurl.com/end-to-end-ml-ipynb-3][tinyurl.com/end-to-end-ml-ipynb-3]]
+
+Copy the notebook then =Run all= code cells to =Feature Scaling=
+
+You can see the completed notebook (part 3) here:
+[[https://tinyurl.com/end-to-end-ml-3-full-ipynb][tinyurl.com/end-to-end-ml-3-full-ipynb]]
+
+** Take aways
+** Closing prayer
+
+
+* Week 10 - End-to-end ML model part 4
+
+* Week 11 - Foundations for deep learning (gradient descent)
+* Week 12 - Unsupervised learning (k-means clustering)
+* Week 13 - Neural nets architecture
+* Week 14 - Neural nets with PyTorch
+* Week 15 - Final project presentations
 * Footnotes
 
 [fn:1] Alfred Korzybski, Science and Sanity: An Introduction to
