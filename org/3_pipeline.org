@@ -256,12 +256,12 @@ Note: automate as much as possible so you can easily get fresh data.
   #+end_src
 
   #+RESULTS:
-  :    longitude  latitude  housing_median_age  ...  median_income  median_house_value  ocean_proximity
-  : 0    -122.23     37.88                41.0  ...         8.3252            452600.0         NEAR BAY
-  : 1    -122.22     37.86                21.0  ...         8.3014            358500.0         NEAR BAY
-  : 2    -122.24     37.85                52.0  ...         7.2574            352100.0         NEAR BAY
-  : 3    -122.25     37.85                52.0  ...         5.6431            341300.0         NEAR BAY
-  : 4    -122.25     37.85                52.0  ...         3.8462            342200.0         NEAR BAY
+  :    longitude  latitude  ...  median_house_value  ocean_proximity
+  : 0    -122.23     37.88  ...            452600.0         NEAR BAY
+  : 1    -122.22     37.86  ...            358500.0         NEAR BAY
+  : 2    -122.24     37.85  ...            352100.0         NEAR BAY
+  : 3    -122.25     37.85  ...            341300.0         NEAR BAY
+  : 4    -122.25     37.85  ...            342200.0         NEAR BAY
   :
   : [5 rows x 10 columns]
 
@@ -1112,40 +1112,25 @@ Note: automate as much as possible so you can easily get fresh data.
 
   #+RESULTS:
   #+begin_example
-  OneHotEncoder
-  OrdinalEncoder
-  SimpleImputer
-  X
   actual
   attributes
-  cat_encoder
-  cat_encoder_strict
   corr_matrix
   data
   df
-  df_test
-  df_test_unknown
   f
   histogram_intersection
-  housing
-  housing_cat
-  housing_cat_1hot
-  housing_cat_encoded
   housing_full
-  housing_labels
-  housing_num
-  housing_tr
-  imputer
   main
   matplotlib
+  move
   np
-  ordinal_encoder
   pd
   plt
   predicted
   readline
   rmse
   rmse2
+  room
   root_mean_squared_error
   scatter_matrix
   strat_test_set
@@ -1421,6 +1406,8 @@ Note: automate as much as possible so you can easily get fresh data.
     housing_cat_1hot = cat_encoder.fit_transform(housing_cat)
   #+end_src
 
+  #+RESULTS:
+
 - This encoding gives you 5 binary columns, one per category. For a
   district near the bay it would look like this (no ordering implied):
   #+begin_example
@@ -1429,13 +1416,12 @@ Note: automate as much as possible so you can easily get fresh data.
   #+end_example
 
 - =housing_cat= is a DataFrame
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     print(type(housing_cat))
   #+end_src
 
   #+RESULTS:
   : <class 'pandas.core.frame.DataFrame'>
-
 ** Sparse matrices
 
 - The output of a ~OneHotEncoder~ is always a sparse SciPy matrix:
@@ -1590,14 +1576,11 @@ Note: automate as much as possible so you can easily get fresh data.
   #+end_src
 
   #+RESULTS:
-  : <Compressed Sparse Row sparse matrix of dtype 'float64'
-  : 	with 2 stored elements and shape (2, 5)>
-  :   Coords	Values
-  :   (0, 1)	1.0
-  :   (1, 3)	1.0
+  : [[0. 1. 0. 0. 0.]
+  :  [0. 0. 0. 1. 0.]]
 
 - Feed an unkown catagory (="<2H OCEAN"=) to it:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     df_test_unknown = pd.DataFrame({"ocean_proximity":["<2H OCEAN","ISLAND"]})
     print(pd.get_dummies(df_test_unknown)) # new column generated - not learnt!
   #+end_src
@@ -1610,7 +1593,7 @@ Note: automate as much as possible so you can easily get fresh data.
 - The two ~.get_dummies~ calls at different points generate two
   completely unrelated sets shaped only what happened to be in that
   frame.
-  
+
 - ~OneHotEncoder~ detects the unknown category and raise an
   exception. You can set the hyperparameter ~handle_unknown="ignore"~
   and the unknown categories will be represented with zeros:
@@ -1620,10 +1603,8 @@ Note: automate as much as possible so you can easily get fresh data.
   #+end_src
 
   #+RESULTS:
-  : <Compressed Sparse Row sparse matrix of dtype 'float64'
-  : 	with 1 stored elements and shape (2, 5)>
-  :   Coords	Values
-  :   (1, 2)	1.0
+  : [[0. 0. 0. 0. 0.]
+  :  [0. 0. 1. 0. 0.]]
 
 - This is how that looks like when installed with a ~try...except~
   guardrail:
@@ -1652,10 +1633,10 @@ Note: automate as much as possible so you can easily get fresh data.
   #+end_example
 
 - Transformers provide a ~get_feature_names_out()~ method:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     print(cat_encoder.feature_names_in_)
-    print(cat_encoder.get_feature_names_out())    
-  #+end_src  
+    print(cat_encoder.get_feature_names_out())
+  #+end_src
 
   #+RESULTS:
   : ['ocean_proximity']
@@ -1672,7 +1653,7 @@ Note: automate as much as possible so you can easily get fresh data.
 
 - Is this relevant in our case? How would you find out? Compare for
   example the spread of values for =total_rooms= and =median_income=:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     print(housing.describe()[["total_rooms","median_income"]])
   #+end_src
 
@@ -1702,32 +1683,32 @@ Note: automate as much as possible so you can easily get fresh data.
 
   2) *Standardization* ("z-score normalization"): transform to a
      distribution with mean = 0 and a standard deviation = 1), without
-     restricting the range. Subtract the mean (mean becomes zero),
-     then divide result by the standard deviation (std becomes one).
+     restricting the range. Subtract the mean (~mean~ becomes 0), then
+     divide result by the standard deviation (~stddev~ becomes 1).
 
 - Should scalers be fit to all the data, the training data, or the
   test data?
   #+begin_quote
   Scalers (~fit()~ or ~fit_transform~) should only be fitted to the
-  training data. Once you have a trained scaler, you can use it to
-  ~transform()~ any other set.
+  training data (avoid data leakage from the test set). Once you have
+  a trained scaler, you can use it to ~transform()~ any other set.
   #+end_quote
 
 ** Min-max scaling (normalization)
 
 - Import the function from the ~preprocessing~ module:
-  #+begin_src python :results none :exports both :session *Python* :python python3 
+  #+begin_src python :results none :exports both :session *Python* :python python3
     from sklearn.preprocessing import MinMaxScaler
-  #+end_src     
+  #+end_src
 
 - Create a ~MinMaxScaler~ and specify the desired feature range:
-  #+begin_src python :results none :exports both :session *Python* :python python3 
+  #+begin_src python :results none :exports both :session *Python* :python python3
     min_max_scaler = MinMaxScaler(feature_range=(-1,1))
     housing_num_min_max_scaled = min_max_scaler.fit_transform(housing_num)
   #+end_src
 
 - Check it out:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     col = "total_rooms"
     idx = housing_num.columns.get_loc(col)
     before = housing_num[col].describe()
@@ -1761,7 +1742,7 @@ Note: automate as much as possible so you can easily get fresh data.
   #+end_example
 
 - Visually with matplotlib, with two histograms next to one another:
-  #+begin_src python :file ../img/minmax.png :results file graphics output :exports both :session *Python* :python python3 
+  #+begin_src python :file ../img/minmax.png :results file graphics output :exports both :session *Python* :python python3
     fig,axes=plt.subplots(1,2,figsize=(10,4))
     housing_num[col].hist(ax=axes[0], bins=50)
     axes[0].set_title(f"{col} - original")
@@ -1769,13 +1750,12 @@ Note: automate as much as possible so you can easily get fresh data.
     axes[1].set_title(f"{col} - min-max scaled")
     plt.tight_layout()
     plt.savefig("../img/minmax.png")
-  #+end_src  
+  #+end_src
 
   #+RESULTS:
   [[file:../img/minmax.png]]
 
-
-** NEXT Standardization (z-score normalization)
+** Standardization (z-score normalization)
 
 - Standardization is much less affected by outliers. For example, if a
   district has a median income equal to 100 (by mistake), instead of
@@ -1784,8 +1764,639 @@ Note: automate as much as possible so you can easily get fresh data.
 
   For standardization, the outlier shifts the mean slightly, but one
   bad value does not move the statistics - the z-scores of all the
-  other values remain almost unchanged. 
+  other values remain almost unchanged. It is more concerned about the
+  overall spread.
 
+- Scikit-learn provides the ~StandardScaler~ transformer:
+  #+begin_src python :results none :exports both :session *Python* :python python3
+    from sklearn.preprocessing import StandardScaler
+  #+end_src
+
+- We create a ~StandardScaler~, ~fit~ and ~transform~ the unscaled
+  =housing_num= feature:
+  #+begin_src python :results none :exports both :session *Python* :python python3
+    std_scaler = StandardScaler()
+    housing_num_std_scaled = std_scaler.fit_transform(housing_num)
+  #+end_src
+
+- Let's look at the before/after again:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    after = pd.Series(housing_num_std_scaled[:,idx]).describe()
+    print("Before:\n", before)
+    print("After:\n", after)
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  Before:
+   count    16512.000000
+  mean      2639.402798
+  std       2185.287466
+  min          2.000000
+  25%       1447.000000
+  50%       2125.000000
+  75%       3154.000000
+  max      39320.000000
+  Name: total_rooms, dtype: float64
+  After:
+   count    1.651200e+04
+  mean    -5.916886e-17
+  std      1.000030e+00
+  min     -1.206927e+00
+  25%     -5.456668e-01
+  50%     -2.354008e-01
+  75%      2.354897e-01
+  max      1.678576e+01
+  dtype: float64
+  #+end_example
+
+- What do you notice?
+  #+begin_quote
+  + The ~mean~ is essentially zero
+  + The standard deviation is essentially 1[fn:5]
+  + The max sits 16 standard deviations above the ~mean~: that's the
+    outlier district with 39,320 rooms from =before= - not removed
+  #+end_quote
+
+- Visualize the distribution for an additional shape check:
+  #+begin_src python :file ../img/stdscaler.png :results file graphics output :exports both :session *Python* :python python3
+    fig,axes=plt.subplots(1,2,figsize=(10,4))
+    housing_num[col].hist(ax=axes[0], bins=50)
+    axes[0].set_title(f"{col} - original")
+    pd.Series(housing_num_std_scaled[:,idx]).hist(ax=axes[1],bins=50)
+    axes[1].set_title(f"{col} - std scaled")
+    plt.tight_layout()
+    plt.savefig("../img/stdscaled.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/stdscaler.png]]
+
+- The original distribution has a so-called *heavy tail*: The spread
+  between the ~mean~ and the ~max~ is huge. This justifies a
+  transformation to shrink the heavy tail and make the distribution
+  more symmetrical. This distributes the model's attention which helps
+  its performance.
+
+- As an illustration, let's transform the =population= feature: very
+  similar heavy tail.
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(housing_num["population"].describe())
+  #+end_src
+
+  #+RESULTS:
+  : count    16512.000000
+  : mean      1425.513929
+  : std       1094.795467
+  : min          3.000000
+  : 25%        787.000000
+  : 50%       1167.000000
+  : 75%       1726.000000
+  : max      16305.000000
+  : Name: population, dtype: float64
+
+- To transform the distribution, you can replace the feature with its
+  square root, raise the feature to a power between 0 and 1, or
+  replace it with its logarithm.
+
+- The =population= feature follows a power law: the histogram drops off
+  slowly to the right rather than exponentially.
+  #+begin_src python :file ../img/popHist.png :results file graphics output :exports both :session *Python* :python python3
+    housing_num["population"].hist(bins=50)
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/popHist.png]]
+
+- In a log-log plot (both axis logarithmically transformed), a power
+  law shows as a straight line:
+  #+begin_src python :file ../img/loglog_population.png :results file graphics output :exports both :session *Python* :python python3
+    pop = housing_num["population"].values
+    counts, bin_edges = np.histogram(pop, bins=50)
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+
+    plt.figure(figsize=(8, 4))
+    plt.loglog(bin_centers, counts + 1)  # +1 to avoid log(0)
+    plt.xlabel("Population (log scale)")
+    plt.ylabel("Count (log scale)")
+    plt.title("Log-log plot of population distribution")
+    plt.grid(True)
+    plt.savefig("../img/loglog_population.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/loglog_population.png]]
+
+- In the figure, you see a hump around 1,000 (most districts), then a
+  linear drop-off on the right tail to 10,000 - that's power law
+  behavior.
+
+- Let's compare the original with the semi-logarithmic transformation
+  of the =population=:
+  #+begin_src python :file ../img/log_pop.png :results file graphics output :exports both :session *Python* :python python3
+    fig,axes=plt.subplots(1,2,figsize=(12,4))
+
+    housing_num[col].hist(ax=axes[0], bins=50)
+    axes[0].set_title(f"{col} - original")
+    axes[0].set_xlabel("Population")
+
+    np.log(housing_num["population"]).hist(ax=axes[1], bins=50)
+    axes[1].set_title("Log of population")
+    axes[1].set_xlabel("Log of Population")
+
+    plt.tight_layout()
+    plt.savefig("../img/log_pop.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/log_pop.png]]
+
+- The right hand side is roughly bell-shaped after the log transform.
+
+- *Bucketizing* the feature is another approach: You cut the
+  distribution into roughly equal-sized buckets, and replace the
+  feature value with the bucket index (similar to stratified
+  sampling). Then you get a uniform-style distribution and no further
+  scaling is needed.
+
+- For *multimodal* distributions (like =housing_median_age=), you can
+  treat the bucket IDs as categories (then they must be encoded
+  numerically). Or you can add a feature for each of the modes,
+  representing the similarity between the housing median age and that
+  particular mode (e.g. houses aged 35 years).  This similarity is
+  then measured using a radial basis function (RBF) that depends only
+  on the distance between the input value and a fixed point, like the
+  Gaussian RBF.
+
+- For example, between housing age x and 35, it would be
+  exp(-\gamma(x-35)^{2}). The hyperparameter \gamma determins how quickly the
+  similarity measure decays as x moves away from 35.
+
+  #+begin_src python :results none :session *Python* :python python3
+    from sklearn.metrics.pairwise import rbf_kernel
+  #+end_src
+
+- In the plot, the new age similarity feature peaks at 35 right around
+  the spike in the median age distribution. If this age group is well
+  correlated with lower prices then the feature might help.
+
+  #+begin_src python :file ../img/rbf_age.png :results file graphics output :exports both :session *Python* :python python3
+    age_simil_35 = rbf_kernel(housing[["housing_median_age"]], [[35]], gamma=0.1)
+    age_simil_35_low = rbf_kernel(housing[["housing_median_age"]], [[35]], gamma=0.03)
+
+    fig, ax1 = plt.subplots(figsize=(10, 5))
+
+    # histogram on left axis
+    housing["housing_median_age"].hist(ax=ax1, bins=50, color="steelblue")
+    ax1.set_xlabel("Housing median age")
+    ax1.set_ylabel("Number of districts")
+
+    # RBF curves on right axis
+    ax2 = ax1.twinx()
+    ages = housing[["housing_median_age"]].sort_values("housing_median_age")
+    ax2.plot(ages, rbf_kernel(ages, [[35]], gamma=0.1), "b-", label="gamma = 0.10")
+    ax2.plot(ages, rbf_kernel(ages, [[35]], gamma=0.03), "b--", label="gamma = 0.03")
+    ax2.set_ylabel("Age similarity", color="blue")
+    ax2.legend(loc="upper left")
+
+    plt.title("Gaussian RBF feature measuring similarity to age 35")
+    plt.savefig("../img/rbf_age.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/rbf_age.png]]
+
+- Besides input features,, the target values may also have to be
+  transformed if it has a heavy tail. If you log transform it, the
+  model will predict the log of the median house value. Most
+  Scikit-Learn transformers have an ~inverse_transform()~ method.
+
+- If the transformation you seek is not available, you have to write
+  your own custom transformer.
+
+** Transformation Pipelines
+
+- The ~Pipeline~ class supports sequences of transformations.
+
+- Small example: two numeric features, each missing one value:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    toy = pd.DataFrame({
+        "age":    [25, 32, np.nan, 40, 28],
+        "income": [50000, 64000, 58000, np.nan, 72000],
+    })
+    print(toy)
+    print(toy.describe())
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+      age   income
+  0  25.0  50000.0
+  1  32.0  64000.0
+  2   NaN  58000.0
+  3  40.0      NaN
+  4  28.0  72000.0
+           age        income
+  count   4.00      4.000000
+  mean   31.25  61000.000000
+  std     6.50   9309.493363
+  min    25.00  50000.000000
+  25%    27.25  56000.000000
+  50%    30.00  61000.000000
+  75%    34.00  66000.000000
+  max    40.00  72000.000000
+  #+end_example
+
+- What do you see?
+  #+begin_quote
+  - Massive scale differences
+  - Missing values
+  #+end_quote
+
+- Chain an imputer and a scaler into one ~Pipeline~ - each step is a
+  (name, transformer) pair, applied in order:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    from sklearn.pipeline import Pipeline
+    from sklearn.impute import SimpleImputer
+    from sklearn.preprocessing import StandardScaler
+
+    num_pipeline = Pipeline([
+        ("impute", SimpleImputer(strategy="median")),
+        ("scale", StandardScaler()),
+    ])
+
+    toy_prepared = num_pipeline.fit_transform(toy)
+    print(toy_prepared.round(2))
+  #+end_src
+
+  #+RESULTS:
+  : [[-1.19 -1.53]
+  :  [ 0.2   0.42]
+  :  [-0.2  -0.42]
+  :  [ 1.78  0.  ]
+  :  [-0.59  1.53]]
+
+- ~fit_transform()~ does both steps at once: first the imputer fills the
+  missing =age= and =income= values with each column's median, then the
+  scaler standardizes the (now complete) result. Calling
+  ~num_pipeline.fit_transform(toy)~ is equivalent to calling ~fit_transform~
+  on each step in turn and passing the output forward - the ~Pipeline~
+  just saves you from writing that out by hand.
+
+- Check that the result is the same if you do the steps by hand:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    imputer = SimpleImputer(strategy="median")
+    toy_imputed = imputer.fit_transform(toy)
+    print(toy_imputed)
+
+    scaler = StandardScaler()
+    toy_scaled = scaler.fit_transform(toy_imputed)
+    print(np.round(toy_scaled,2))
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  [[2.5e+01 5.0e+04]
+   [3.2e+01 6.4e+04]
+   [3.0e+01 5.8e+04]
+   [4.0e+01 6.1e+04]
+   [2.8e+01 7.2e+04]]
+  [[-1.19 -1.53]
+   [ 0.2   0.42]
+   [-0.2  -0.42]
+   [ 1.78  0.  ]
+   [-0.59  1.53]]
+  #+end_example
+
+- The constructor takes a list of name/estimator pairs (2-tuples) to
+  define a sequence of steps. The estimators must all be transformers
+  (i.e. they have a ~.fit_transform()~ method) except for the last one
+  that can be anything.
+
+- A natural non-transformer last step is a predictor, an estimator
+  that ends the pipeline with ~.fit()~ and ~.predict()~ instead of
+  ~.transform()~. For example, we could use =toy.age= as feature, and
+  =income= as target:
+
+- Let's use linear regression:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    from sklearn.linear_model import LinearRegression
+    from sklearn.metrics import root_mean_squared_error
+
+    print(toy)
+    train = toy.dropna(subset=["income"]) # extract clean feature
+    X = train[["age"]] # create training set (2d array!)
+    y = train["income"]
+
+    full_pipeline = Pipeline([
+        ("impute", SimpleImputer(strategy="median")),
+        ("scale", StandardScaler()),
+        ("predict", LinearRegression())
+    ])
+
+    full_pipeline.fit(X,y)
+    predictions = full_pipeline.predict(X)
+    print(np.round(predictions,0))
+    print(f"RMSE: {root_mean_squared_error(y,predictions):,.0f}")
+
+    # Colab only:
+    import sklearn
+    sklearn.set_config(display="diagram")
+    full_pipeline
+  #+end_src
+
+  #+RESULTS:
+  :     age   income
+  : 0  25.0  50000.0
+  : 1  32.0  64000.0
+  : 2   NaN  58000.0
+  : 3  40.0      NaN
+  : 4  28.0  72000.0
+  : [55091. 67818. 60545. 60545.]
+  : RMSE: 6,674
+
+- Lousy prediction of course - relative error of > 10% - why?
+  #+begin_quote
+  We evaluated on the same 4 rows the model was trained on (no
+  train/test split), and the sample was too small to begin with.
+  #+end_quote
+
+- If you don't want to name the transformers, you can ~import~
+  ~make_pipeline~:
+  #+begin_src python :results none :session *Python* :python python3
+    from sklearn.pipeline import make_pipeline
+
+    pipeline = make_pipeline(SimpleImputer(strategy="median"),
+                             StandardScaler(),
+                             LinearRegression())
+  #+end_src
+
+- Different ways to look at your pipeline:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(pipeline)           # whole pipeline
+    print(pipeline.steps)     # just the steps
+    print(len(pipeline))      # just the length
+    print(pipeline[0])        # element using index
+    print(pipeline[-1])
+  #+end_src
+
+  #+RESULTS:
+  : Pipeline(steps=[('simpleimputer', SimpleImputer(strategy='median')),
+  :                 ('standardscaler', StandardScaler()),
+  :                 ('linearregression', LinearRegression())])
+  : [('simpleimputer', SimpleImputer(strategy='median')), ('standardscaler', StandardScaler()), ('linearregression', LinearRegression())]
+  : 3
+  : SimpleImputer(strategy='median')
+  : LinearRegression()
+
+** Interactive Pipeline diagram in Jupyter notebooks
+
+- In a Jupyter notebook (e.g. Colab), you can visualize a ~Pipeline~ as
+  an interactive diagram - one box per step, clickable to reveal that
+  step's parameters:
+  #+begin_src python :eval no :exports code
+    import sklearn
+    sklearn.set_config(display="diagram")
+
+    num_pipeline
+  #+end_src
+
+- ~num_pipeline~ must be the *last line of the cell* (not wrapped in
+  ~print()~) - that's what triggers Jupyter's rich HTML display, the
+  same mechanism that renders a bare DataFrame as a styled table
+  instead of plain text.
+
+- This only works in a notebook: in this Emacs ~*Python*~ session,
+  ~:results output~ would just capture the raw text repr (or raw HTML
+  tags), not a rendered diagram - so this block is marked ~:eval no~ and
+  shown for reference only.
+
+- Example:
+  #+attr_html: :width 550px :float nil:
+  [[../img/pipeline_diagram.png]]
+
+
+** Pipelines for housing dataset
+
+- Coming back to our dataset:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(housing_num.info())
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  <class 'pandas.core.frame.DataFrame'>
+  Index: 16512 entries, 13096 to 19888
+  Data columns (total 8 columns):
+   #   Column              Non-Null Count  Dtype
+  ---  ------              --------------  -----
+   0   longitude           16512 non-null  float64
+   1   latitude            16512 non-null  float64
+   2   housing_median_age  16512 non-null  float64
+   3   total_rooms         16512 non-null  float64
+   4   total_bedrooms      16344 non-null  float64
+   5   population          16512 non-null  float64
+   6   households          16512 non-null  float64
+   7   median_income       16512 non-null  float64
+  dtypes: float64(8)
+  memory usage: 1.1 MB
+  None
+  #+end_example
+
+- We fit and transform using ~make_pipeline~:
+  #+begin_src python :results none :session *Python* :python python3
+    from sklearn.pipeline import make_pipeline
+
+    num_pipeline = make_pipeline(SimpleImputer(strategy="median"),
+                                 StandardScaler())
+  #+end_src
+
+- Look at the output's first two rows rounded to two decimal planes:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    housing_num_prepared = num_pipeline.fit_transform(housing_num)
+    print(housing_num_prepared[:2].round(2))
+    print(type(housing_num_prepared))
+  #+end_src
+
+  #+RESULTS:
+  : [[-1.42  1.01  1.86  0.31  1.37  0.14  1.39 -0.94]
+  :  [ 0.6  -0.7   0.91 -0.31 -0.44 -0.69 -0.37  1.17]]
+  : <class 'numpy.ndarray'>
+
+- Just like for our encoders, these transformers output NumPy
+  arrays. Use ~get_feature_names_out()~ to restore the DataFrame columns
+  and indices:
+  #+begin_src python :results none :session *Python* :python python3
+    df_housing_num_prepared = pd.DataFrame(
+        housing_num_prepared, # target array
+        columns = num_pipeline.get_feature_names_out(), # restore column names
+        index=housing_num.index) # restore indices
+  #+end_src
+
+- Look at the results:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    print(df_housing_num_prepared.info())
+    print(df_housing_num_prepared.describe())
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  <class 'pandas.core.frame.DataFrame'>
+  Index: 16512 entries, 13096 to 19888
+  Data columns (total 8 columns):
+   #   Column              Non-Null Count  Dtype
+  ---  ------              --------------  -----
+   0  16512 non-null  float64
+   1  16512 non-null  float64
+   2  16512 non-null  float64
+   3  16512 non-null  float64
+   4  16512 non-null  float64
+   5  16512 non-null  float64
+   6  16512 non-null  float64
+   7  16512 non-null  float64
+  dtypes: float64(8)
+  memory usage: 1.1 MB
+  None
+            longitude      latitude  ...    households  median_income
+  count  1.651200e+04  1.651200e+04  ...  1.651200e+04   1.651200e+04
+  mean  -4.837216e-15 -2.580838e-15  ...  1.463085e-17   7.611267e-17
+  std    1.000030e+00  1.000030e+00  ...  1.000030e+00   1.000030e+00
+  min   -2.387765e+00 -1.447452e+00  ... -1.303343e+00  -1.781577e+00
+  25%   -1.113124e+00 -8.005453e-01  ... -5.772176e-01  -6.913383e-01
+  50%    5.314128e-01 -6.458502e-01  ... -2.402747e-01  -1.754490e-01
+  75%    7.813423e-01  9.761041e-01  ...  2.690575e-01   4.649198e-01
+  max    2.540847e+00  2.959014e+00  ...  1.268893e+01   5.882868e+00
+
+  [8 rows x 8 columns]
+  #+end_example
+
+- Notice that we handled categorical columns and numberical columns
+  separately. The ~ColumnTransformer~ will apply =num_pipeline= to the
+  numerical, and =cat_pipeline= to the categorical attributes.
+
+- Define the categorical pipeline:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    from sklearn.compose import ColumnTransformer
+
+    num_attribs = ["longitude",
+                   "latitude",
+                   "housing_median_age",
+                   "total_rooms",
+                   "total_bedrooms",
+                   "population",
+                   "households",
+                   "median_income"]
+    cat_attribs = ["ocean_proximity"]
+
+    cat_pipeline = make_pipeline(
+        SimpleImputer(strategy="most_frequent"),
+        OneHotEncoder(handle_unknown="ignore"))
+
+    print(cat_pipeline.steps)
+  #+end_src
+
+  #+RESULTS:
+  : [('simpleimputer', SimpleImputer(strategy='most_frequent')), ('onehotencoder', OneHotEncoder(handle_unknown='ignore'))]
+
+- The ~ColumnTransformer~ constructor requires a list of 3-tuples, each
+  containing a name, a transformer, and a list of target column names:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    preprocessing = ColumnTransformer([
+        ("num",num_pipeline,num_attribs),
+        ("cat",cat_pipeline,cat_attribs)
+    ])
+
+    print(preprocessing)
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  ColumnTransformer(transformers=[('num',
+                                   Pipeline(steps=[('simpleimputer',
+                                                    SimpleImputer(strategy='median')),
+                                                   ('standardscaler',
+                                                    StandardScaler())]),
+                                   ['longitude', 'latitude', 'housing_median_age',
+                                    'total_rooms', 'total_bedrooms', 'population',
+                                    'households', 'median_income']),
+                                  ('cat',
+                                   Pipeline(steps=[('simpleimputer',
+                                                    SimpleImputer(strategy='most_frequent')),
+                                                   ('onehotencoder',
+                                                    OneHotEncoder(handle_unknown='ignore'))]),
+                                   ['ocean_proximity'])])
+  #+end_example
+
+- You can also just ~make_column_transformer~ to make the
+  ~ColumnTransformer~ and use ~make_column_selector~ to extract the column
+  names for you:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    from sklearn.compose import make_column_selector, make_column_transformer
+
+    preprocessing = make_column_transformer(
+        (num_pipeline,make_column_selector(dtype_include=np.number)),
+        (cat_pipeline,make_column_selector(dtype_include=object)),
+        )
+
+    print(preprocessing)
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  ColumnTransformer(transformers=[('pipeline-1',
+                                   Pipeline(steps=[('simpleimputer',
+                                                    SimpleImputer(strategy='median')),
+                                                   ('standardscaler',
+                                                    StandardScaler())]),
+                                   <sklearn.compose._column_transformer.make_column_selector object at 0x7a5d48062f80>),
+                                  ('pipeline-2',
+                                   Pipeline(steps=[('simpleimputer',
+                                                    SimpleImputer(strategy='most_frequent')),
+                                                   ('onehotencoder',
+                                                    OneHotEncoder(handle_unknown='ignore'))]),
+                                   <sklearn.compose._column_transformer.make_column_selector object at 0x7a5d480353f0>)])
+  #+end_example
+
+- Final step: apply this ~ColumnTransformer~ to the housing data:
+  #+begin_src python :results output :exports both :session *Python* :python python3 
+    housing_prepared = preprocessing.fit_transform(housing)
+
+    print(pd.DataFrame(housing_prepared,
+                       columns=preprocessing.get_feature_names_out(),
+                       index=housing.index).iloc[:,2:8].info())
+    print(pd.DataFrame(housing_prepared,
+                       columns=preprocessing.get_feature_names_out(),
+                       index=housing.index).iloc[:,2:8].describe())
+  #+end_src  
+
+  #+RESULTS:
+  #+begin_example
+  <class 'pandas.core.frame.DataFrame'>
+  Index: 16512 entries, 13096 to 19888
+  Data columns (total 6 columns):
+   #   Column                          Non-Null Count  Dtype  
+  ---  ------                          --------------  -----  
+   0   pipeline-1__housing_median_age  16512 non-null  float64
+   1   pipeline-1__total_rooms         16512 non-null  float64
+   2   pipeline-1__total_bedrooms      16512 non-null  float64
+   3   pipeline-1__population          16512 non-null  float64
+   4   pipeline-1__households          16512 non-null  float64
+   5   pipeline-1__median_income       16512 non-null  float64
+  dtypes: float64(6)
+  memory usage: 903.0 KB
+  None
+         pipeline-1__housing_median_age  ...  pipeline-1__median_income
+  count                    1.651200e+04  ...               1.651200e+04
+  mean                    -1.473843e-17  ...               7.611267e-17
+  std                      1.000030e+00  ...               1.000030e+00
+  min                     -2.191210e+00  ...              -1.781577e+00
+  25%                     -8.404335e-01  ...              -6.913383e-01
+  50%                      3.359809e-02  ...              -1.754490e-01
+  75%                      6.692575e-01  ...               4.649198e-01
+  max                      1.861119e+00  ...               5.882868e+00
+
+  [8 rows x 6 columns]
+  #+end_example
 
 * TODO Select and train
 
@@ -1808,3 +2419,9 @@ to all of them.
 
 [fn:4] Though you can change that with
 ~sklearn.set_config(transform_output="pandas")~
+
+[fn:5] The tiny correction comes from the fact that ~StandardScaler~
+uses *population* ~std~ (divides by n) while ~pandas~ use *sample* ~std~ (divide
+by n-1: this is called "Bessel's correction" because samples tend to
+underestimate the true spread). But n is large here, so little
+difference.

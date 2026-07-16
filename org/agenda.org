@@ -1359,7 +1359,7 @@ You can see the completed notebook (part 2) here:
 - The panel is set for Monday, July 27 at 5 PM PST
 - With professors Reidy & Sonnier and guest speakers
 - A recording will be available afterwards
-
+** No new assignments this week!
 ** End-to-end ML project Part 3
 
 *** *Summary*
@@ -1387,7 +1387,7 @@ You can see the completed notebook (part 2) here:
   dense array. Also *stateful*: remembers categories, can flag unknown
   ones. =pd.get_dummies()= is stateless.
 
-*** Still outstanding:*
+*** Still outstanding:
 - Feature scaling and transformation
 - Custom transformers
 - Transformation pipelines
@@ -1408,6 +1408,7 @@ Copy the notebook then =Run all= code cells to =Feature Scaling=
 
 You can see the completed notebook (part 3) here:
 [[https://tinyurl.com/end-to-end-ml-3-full-ipynb][tinyurl.com/end-to-end-ml-3-full-ipynb]]
+
 
 ** Take aways
 ** Closing prayer
