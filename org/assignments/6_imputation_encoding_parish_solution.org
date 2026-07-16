@@ -1,0 +1,298 @@
+#+TITLE: CS 540 — Assignment 6: Imputation & One-Hot Encoding (Parish Data)
+#+AUTHOR: Marcus Birkenkrahe
+#+PROPERTY: header-args:python :session *impute-encode-parish* :results output
+#+STARTUP: overview hideblocks indent entitiespretty:
+
+* The Scenario
+
+Every year, a diocese collects year-end reports from its parishes to
+plan clergy assignments, subsidy requests, and campus ministry
+funding. As usual, a couple of parish offices didn't get every field
+filled in before the deadline, and the ~setting~ column — how each
+community is administratively classified — is categorical. The exact
+same missing-data and categorical-encoding problems that showed up in
+the California housing dataset from class show up constantly in
+ordinary parish administrative data too.
+
+You will clean this up using the same tools from today's session
+(~SimpleImputer~, ~OneHotEncoder~) — but on your own, from scratch, on
+data you haven't seen transformed already.
+
+This assignment does not depend on the class notebook or its session
+state. Copy each code block below into a fresh Colab notebook (or run
+locally) in order, filling in the blanks marked ~YOUR TURN~.
+
+#+BEGIN_SRC python
+  import pandas as pd
+  import numpy as np
+
+  # annual_stewardship_giving is recorded in $10,000s
+  data = {
+      "parish": ["St. Ann", "Holy Family", "St. Joseph",
+                 "Our Lady of Sorrows", "Sacred Heart",
+                 "St. Thomas More", "Newman Center", "St. Francis"],
+      "annual_stewardship_giving": [3.2, 5.1, 2.8, np.nan, 4.4,
+                                     25.0, np.nan, 3.9],
+      "years_since_founding":      [25, 40, 15, 30, np.nan, 22, 38, 19],
+      "setting": ["RURAL", "SUBURBAN", "RURAL", "URBAN", "RURAL",
+                  "SUBURBAN", "CAMPUS", "RURAL"],
+  }
+  df = pd.DataFrame(data)
+  print(df)
+#+END_SRC
+
+#+RESULTS:
+:                 parish  annual_stewardship_giving  years_since_founding   setting
+: 0              St. Ann                        3.2                  25.0     RURAL
+: 1          Holy Family                        5.1                  40.0  SUBURBAN
+: 2           St. Joseph                        2.8                  15.0     RURAL
+: 3  Our Lady of Sorrows                        NaN                  30.0     URBAN
+: 4         Sacred Heart                        4.4                   NaN     RURAL
+: 5      St. Thomas More                       25.0                  22.0  SUBURBAN
+: 6        Newman Center                        NaN                  38.0    CAMPUS
+: 7          St. Francis                        3.9                  19.0     RURAL
+
+* Challenge 1 — Find the Missing Values
+
+Before fixing anything, confirm exactly where the gaps are — same
+principle as ~housing_full.info()~ in class.
+
+#+BEGIN_SRC python
+  missing_counts = df.isna().sum()
+
+  print(missing_counts)
+#+END_SRC
+
+#+RESULTS:
+: parish                       0
+: annual_stewardship_giving    2
+: years_since_founding         1
+: setting                      0
+: dtype: int64
+
+* Challenge 2 — Impute with the Median
+
+Only ~annual_stewardship_giving~ and ~years_since_founding~ are numeric
+and have gaps. Fit a ~SimpleImputer~ on *all* numeric columns (not
+just the ones missing data this year) and use it to fill in the
+blanks.
+
+#+BEGIN_SRC python
+  from sklearn.impute import SimpleImputer
+
+  num_cols = df.select_dtypes(include=[np.number])
+
+  imputer = SimpleImputer(strategy="median")
+
+  imputer.fit(num_cols)
+  print("Learned medians:", imputer.statistics_)
+
+  X = imputer.transform(num_cols)
+  df_num = pd.DataFrame(X, columns=num_cols.columns, index=df.index)
+  print(df_num)
+
+  # SANITY CHECK
+  assert not df_num.isna().any().any(), "Still missing values!"
+  print("All missing values filled.")
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Learned medians: [ 4.15 25.  ]
+   annual_stewardship_giving  years_since_founding
+0                       3.20                  25.0
+1                       5.10                  40.0
+2                       2.80                  15.0
+3                       4.15                  30.0
+4                       4.40                  25.0
+5                      25.00                  22.0
+6                       4.15                  38.0
+7                       3.90                  19.0
+All missing values filled.
+#+end_example
+
+* Challenge 3 — Median vs. Mean (Robustness to Outliers)
+
+St. Thomas More's ~annual_stewardship_giving~ ($250,000, driven by a
+one-time bequest) is far above the rest. Compare what a *mean*
+imputer would have learned instead.
+
+#+BEGIN_SRC python
+  mean_imputer = SimpleImputer(strategy="mean")
+  mean_imputer.fit(num_cols)
+
+  print("median strategy:", imputer.statistics_)
+  print("mean strategy:  ", mean_imputer.statistics_)
+#+END_SRC
+
+#+RESULTS:
+: median strategy: [ 4.15 25.  ]
+: mean strategy:   [ 7.4 27. ]
+
+*Discuss:* The two statistics for ~annual_stewardship_giving~ are
+noticeably different, but the two for ~years_since_founding~ are much
+closer. Why does St. Thomas More's bequest change one number so much
+more than the other?
+
+#+begin_quote
+St. Thomas More's giving ($250,000) is roughly 5-8x every other
+parish's total — a genuine, one-time outlier, not a data-entry
+error. The *mean* sums all values and divides by count, so one
+extreme value pulls the whole average toward it: the imputed giving
+figure jumps from what would be ~$44,000 to $74,000, a 68% increase.
+If that inflated $74,000 were used to fill in a missing parish's
+giving, it would overstate that parish's actual stewardship capacity
+— exactly the kind of error that could lead a diocesan office to set
+an unrealistic subsidy request or budget expectation for a small
+parish. The *median* only cares about the middle-ranked value once
+the data is sorted — the bequest just becomes the largest value in
+the list, and moving the largest value even further out (a $2.5M
+bequest instead of $250k) would not move the median at all.
+~years_since_founding~ has no such outlier (15-40 years, an ordinary
+range for parishes founded across a few generations), so mean and
+median land close together ($25 vs. $27) — this is what "robust to
+outliers" means concretely: the median ignores *how far* an outlier
+is, only *how many* values sit on each side of it.
+#+end_quote
+
+* Challenge 4 — One-Hot Encode a Categorical Feature
+
+~setting~ has no natural order — the ordinal-integer problem from
+class applies here too. (A campus ministry isn't "more" or "less"
+than a rural parish — RURAL, SUBURBAN, URBAN, and CAMPUS are just
+different, not ranked.) Encode it properly.
+
+#+BEGIN_SRC python
+  from sklearn.preprocessing import OneHotEncoder
+
+  cat_encoder = OneHotEncoder(sparse_output=False)
+
+  cat_1hot = cat_encoder.fit_transform(df[["setting"]])
+  print(cat_encoder.categories_)
+  print(cat_1hot)
+
+  # SANITY CHECK
+  assert cat_1hot.shape == (8, 4), f"Expected (8, 4), got {cat_1hot.shape}"
+  print("Shape is correct.")
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+[array(['CAMPUS', 'RURAL', 'SUBURBAN', 'URBAN'], dtype=object)]
+[[0. 1. 0. 0.]
+ [0. 0. 1. 0.]
+ [0. 1. 0. 0.]
+ [0. 0. 0. 1.]
+ [0. 1. 0. 0.]
+ [0. 0. 1. 0.]
+ [1. 0. 0. 0.]
+ [0. 1. 0. 0.]]
+Shape is correct.
+#+end_example
+
+Note that ~OneHotEncoder~ sorts learned categories alphabetically
+(~CAMPUS, RURAL, SUBURBAN, URBAN~), not in the order they first appear
+in the data (~RURAL~ was first in the DataFrame, but ~CAMPUS~ takes
+column 0). This is why you always read off ~.categories_~ rather than
+assuming column order matches row order in the source data.
+
+* Challenge 5 — Handle an Unseen Category
+
+Two new communities are being added to the diocese's records. One has
+a ~setting~ your encoder has never seen: a mission chapel, which is
+canonically and administratively distinct from a full parish.
+
+#+BEGIN_SRC python
+  new_parishes = pd.DataFrame({"setting": ["RURAL", "MISSION"]})
+
+  try:
+      print(cat_encoder.transform(new_parishes))
+  except ValueError as e:
+      print(f"ValueError: {e}")
+#+END_SRC
+
+#+RESULTS:
+: ValueError: Found unknown categories ['MISSION'] in column 0 during transform
+
+#+BEGIN_SRC python
+  cat_encoder.handle_unknown = "ignore"
+
+  print(cat_encoder.transform(new_parishes))
+#+END_SRC
+
+#+RESULTS:
+: [[0. 1. 0. 0.]
+:  [0. 0. 0. 0.]]
+
+* Challenge 6 — Reflection Questions
+
+1. In Challenge 2, you fit the imputer on *both* numeric columns even
+   though this year's report happens to have gaps in both. Suppose
+   next year every parish reports ~years_since_founding~ correctly,
+   but two are still missing their ~annual_stewardship_giving~ figures
+   — would you still fit the imputer on ~years_since_founding~? Why?
+
+   #+begin_quote
+   Yes. Fitting the imputer is cheap — it just computes and stores a
+   median per column, whether or not that column currently has gaps.
+   The point of fitting on every numeric column isn't about this
+   year's report, it's insurance for *next* year's report: you don't
+   know in advance which field a parish office will forget to fill
+   in. If the imputer had only ever been fit on
+   ~annual_stewardship_giving~ (the column that happens to be dirty
+   this year), it would have no learned median to fall back on the
+   year ~years_since_founding~ shows up incomplete instead — and you'd
+   have to retrain a whole new imputer mid-cycle just to handle a
+   field that was fine last year.
+   #+end_quote
+
+2. In Challenge 5, ~OneHotEncoder~ raised a ~ValueError~ for
+   ~"MISSION"~. If you had used ~pd.get_dummies(new_parishes)~
+   instead, no error would occur — but something would still be
+   wrong. What, specifically, and why is a silent failure worse than
+   an exception here? (Think about what a diocesan office actually
+   does with the ~setting~ column — subsidy formulas, clergy
+   assignments — and what happens if a mission gets silently
+   miscategorized rather than flagged.)
+
+   #+begin_quote
+   ~pd.get_dummies(new_parishes)~ would produce a column named
+   ~setting_MISSION~ that never existed when the encoder was fit — the
+   original data only had 4 columns (~CAMPUS~, ~RURAL~, ~SUBURBAN~,
+   ~URBAN~), so a downstream model or report built on that 4-column
+   shape would either break loudly on a shape mismatch, or — worse —
+   silently misalign if a fifth column happens not to trip an error.
+   In practice, a mission chapel has a genuinely different canonical
+   and financial status than a full parish (different subsidy
+   formula, no resident pastor, different sacramental faculties) — if
+   it gets silently folded into, say, the ~RURAL~ bucket instead of
+   being flagged as unrecognized, the diocesan office's subsidy
+   calculation and clergy-assignment planning would quietly treat a
+   mission as a full parish. The ~ValueError~ from ~OneHotEncoder~ is
+   the better failure: it stops the pipeline immediately and tells you
+   exactly what's wrong (an unclassified setting), right where the
+   mismatch happens — instead of a wrong resource allocation that
+   looks fine on the report and surfaces only when someone notices the
+   mission never got its subsidy check.
+   #+end_quote
+
+3. Could you fix a missing ~years_since_founding~ value by averaging
+   that *same parish's* ~annual_stewardship_giving~ and
+   ~years_since_founding~ together (a "row-wise" fix) instead of using
+   the column median? Why or why not — what does your answer say
+   about which axis (rows or columns) imputation has to operate on?
+
+   #+begin_quote
+   No — ~annual_stewardship_giving~ (in tens of thousands of dollars)
+   and ~years_since_founding~ (in years) are different units measuring
+   completely different things. Averaging a dollar figure with a year
+   count produces a number that isn't meaningfully "dollars" or
+   "years" — it's an arithmetic accident, not a statistic. Imputation
+   has to operate *down a column* (~axis=0~), because a column is the
+   set of values that are all the same kind of measurement across
+   different parishes; that's the only axis where "typical value"
+   means anything. A row mixes unrelated units together, so there is
+   no sensible median or mean across it.
+   #+end_quote
+
+Let me know if you have any problems!
