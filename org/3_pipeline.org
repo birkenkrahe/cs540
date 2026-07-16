@@ -2175,7 +2175,6 @@ Note: automate as much as possible so you can easily get fresh data.
   #+attr_html: :width 550px :float nil:
   [[../img/pipeline_diagram.png]]
 
-
 ** Pipelines for housing dataset
 
 - Coming back to our dataset:
@@ -2397,6 +2396,116 @@ Note: automate as much as possible so you can easily get fresh data.
 
   [8 rows x 6 columns]
   #+end_example
+
+
+** Three questions: trust in algorithms / new data: what to do / AI writes to binary
+*** Question 1: Where do these algorithms come from, and why should I trust them?
+
+This was Justin's question at the start of the show.
+
+Answer: don't trust blindly, go deep(er) if you can.
+
+The algorithms we use (linear regression, decision trees, k-means,
+etc.) come from scikit-learn — though you could always code them from
+scratch if you distrusted the library (Joel Grus's book /Data Science
+from Scratch/ takes that approach, for the curious/masochistic). This
+is also a good way to learn applied Python instead of wading through
+200 pages of basic programming instruction (that's what I did!).
+
+Strictly speaking, the only way to fully trust a library function is
+to code it yourself. Short of that, trust in scikit-learn rests on:
+- It ships with its own testing suite
+- It is used by a huge number of people, including many with the skill and
+  motivation to read the implementation code, not just call the interface
+- It is fully open source — anyone diligent (or suspicious) enough can read
+  the source and find mistakes. And mistakes do happen: the codebase runs to
+  millions of lines, and researchers have built reputations by spotting
+  errors in results that "didn't look right" and tracing them back to bugs
+  in the library
+
+scikit-learn is the most popular general-purpose ML library, but not
+the only one — many smaller, specialized libraries exist and can
+outperform scikit-learn on their narrow focus precisely because they
+don't try to do everything.
+
+References:
+- scikit-learn source code: https://github.com/scikit-learn/scikit-learn
+- Original scikit-learn paper (Pedregosa et al., 2011), /Journal of Machine
+  Learning Research/: https://jmlr.org/papers/v12/pedregosa11a.html
+- scikit-learn API design paper: https://arxiv.org/pdf/1309.0238
+
+*** Question 2: When I get new data after training/testing a model, do I have to retrain it?
+
+This was Tori's question at the end of the show.
+
+Answer: It depends on what kind of "new data" you mean.
+
+**** New observations (same features, same target)
+
+No, you generally do not retrain from scratch every time new rows come
+in.  Real-time systems like Netflix recommendations or the transformer
+models behind ChatGPT do not retrain overnight on every new
+observation — that would be enormously expensive.
+
+Adding observations is a statistics question, not an architecture
+question: more rows almost always improves statistical significance (a
+larger, more representative sample), but that is not the same as
+practical significance.  If your model is already good enough for its
+purpose, more data may not be worth the retraining cost. Whether to
+retrain is a judgment call based on the situation, not an automatic
+requirement.
+
+That said, "no rush" is not "never" — if the real-world relationship
+between your features and target shifts over time (tastes change,
+markets shift), a model trained on old data will eventually degrade
+even though nothing in the pipeline itself changed. This is the
+"concept drift" the linked article (below) describes, and it's the
+reason production models get periodically retrained even without
+adding new features.
+
+**** New features
+
+This is a fundamentally harder problem. Adding a feature means going
+back to the beginning of the pipeline: is it categorical or numerical?
+How should it be encoded or scaled? This changes the architecture of
+your model, not just its training data — there is no way to bolt a new
+feature onto an already-trained model. The whole pipeline (imputer,
+encoder, scaler, model) has to be rebuilt and refit.
+
+Reference: on when and why production models degrade and need
+retraining (the more general "concept drift" framing beyond what we
+covered in class):
+https://www.evidentlyai.com/ml-in-production/concept-drift
+
+*** Question 3: Elon Musk claimed AI would soon write all code straight into binary, with no need for human-readable code. What's your view, and what does this mean for CS study?
+
+I'm skeptical, for a specific reason: human-readable source code
+exists so that we — humans — can trust what the machine is
+doing. Cutting out the source code and going straight to binary would
+remove the only layer we have for verifying, auditing, and debugging
+what the system produces. That's not a minor convenience; it's close
+to removing the mechanism for trust itself.  This has been done
+already, but only in a small number of very specialized cases — not as
+a general practice.
+
+It's also worth weighing this claim against Musk's track record on
+technology timelines: he has been saying since 2016 that fully
+autonomous cars were imminent, and they still are not fully there
+today. I would not bet on this binary-code claim playing out on his
+stated timeline either.
+
+What this means for CS study: the more grounded version of this trend
+— AI increasingly writing and assisting with code — does have real
+implications.  It shifts emphasis away from syntax memorization and
+toward understanding what correct behavior looks like, system design,
+critical reading and debugging of generated code, and the theoretical
+foundations (algorithms, data structures, complexity) that don't
+change regardless of who writes the implementation.
+
+Reference: Saw this on X
+https://x.com/r0ck3t23/status/2075666107873062979?s=20
+
+
 
 * TODO Select and train
 

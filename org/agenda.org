@@ -1343,22 +1343,23 @@ You can see the completed notebook (part 2) here:
 
 ** Closing prayer
 
-* Week 9 - End-to-End Part 3
+* DONE Week 9 - End-to-End Part 3
 
-| # | Section                      |
-|---+------------------------------|
-|   | Opening prayer               |
-|   | Magnificat Humanitas Panel   |
-|   | End-to-end ML project Part 3 |
-|   | Take aways                   |
-|   | Closing prayer               |
+| # | Section                      |   |
+|---+------------------------------+---|
+|   | Opening prayer               | x |
+|   | Magnificat Humanitas Panel   | x |
+|   | End-to-end ML project Part 3 | x |
+|   | Take aways                   | x |
+|   | Closing prayer               | x |
 
 ** Opening prayer
-** Magnificat Humanitas Panel 
+** "Magnificat Humanitas" Panel 
 
 - The panel is set for Monday, July 27 at 5 PM PST
 - With professors Reidy & Sonnier and guest speakers
 - A recording will be available afterwards
+
 ** No new assignments this week!
 ** End-to-end ML project Part 3
 
@@ -1397,20 +1398,22 @@ You can see the completed notebook (part 2) here:
 - Random search
 - Ensemble methods
 - Launch, monitor, maintain
-- Exercise
+- Exercise?
 
 *** Part 3: Feature selection, transformation, pipelines
 
-For the third part, open this starter notebook to code along:
-[[https://tinyurl.com/end-to-end-ml-ipynb-3][tinyurl.com/end-to-end-ml-ipynb-3]]
-
-Copy the notebook then =Run all= code cells to =Feature Scaling=
-
-You can see the completed notebook (part 3) here:
-[[https://tinyurl.com/end-to-end-ml-3-full-ipynb][tinyurl.com/end-to-end-ml-3-full-ipynb]]
-
+For the third part, open the old notebook from last time, copy it and
+run all cells up to the end.
 
 ** Take aways
+
+- Pipeline (using Unix language)
+- Creating DataFrame (human-readable array data)
+- Different ways to scale (always same idea)
+- Creating graphs with multiple panels for comparison
+- Transformers go way beyond the films!
+- Getting overview of your session data: ~dir()~
+
 ** Closing prayer
 
 
