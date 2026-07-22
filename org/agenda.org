@@ -1362,7 +1362,6 @@ You can see the completed notebook (part 2) here:
 
 ** No new assignments this week!
 ** End-to-end ML project Part 3
-
 *** *Summary*
 
 - *Revert to a clean training set*: drop the target into =housing=. Copy
@@ -1390,7 +1389,7 @@ You can see the completed notebook (part 2) here:
 
 *** Still outstanding:
 - Feature scaling and transformation
-- Custom transformers
+-  Custom transformers
 - Transformation pipelines
 - Training and evaluation
 - Cross validation
@@ -1416,8 +1415,54 @@ run all cells up to the end.
 
 ** Closing prayer
 
-
 * Week 10 - End-to-end ML model part 4
+
+** Opening prayer
+#+attr_html: :width 400px :float nil:
+[[../img/pray_our_father.png]]
+
+** Reminder: Magnifica Humanitas panel on Monday 27-Jul 5 pm PST
+
+Share this URL:
+https://www.catholicpolytechnic.org/magnifica-humanitas-panel
+
+** Three questions: trust in algs / what to do with new data / AI writes to binary
+** End-to-end ML project
+
+*Done:*
+- Getting the data
+- Create test data
+- Create stratified training data
+- Clean the data (missing values)
+- Handle categorical data
+- Scale features
+- Create transformation pipeline
+
+*To be done:*
+- Training and evaluation
+- Cross validation
+- Fine-tuning
+- Random search
+- Ensemble methods
+- Launch, monitor, maintain
+
+*Code along:*
+- Open [[https://tinyurl.com/ml-part-3-starter-ipynb][tinyurl.com/ml-part-3-starter-ipynb]]
+- Make a copy
+- Code along with me
+- Full solution code in GitHub (3_pipeline.org)
+
+** Next assignments
+
+- *Next DataCamp lesson:* Discovering interpretable features
+- *Home assignment:* end-to-end ML on the Titanic dataset
+- *AI Quiz:* End-to-end ML project (all parts covered so far)
+
+** Take aways
+** Closing prayer
+#+attr_html: :width 400px :float nil:
+[[../img/pray_hail_mary.png]]
+  
 
 * Week 11 - Foundations for deep learning (gradient descent)
 * Week 12 - Unsupervised learning (k-means clustering)
