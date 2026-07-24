@@ -256,12 +256,12 @@ Note: automate as much as possible so you can easily get fresh data.
   #+end_src
 
   #+RESULTS:
-  :    longitude  latitude  ...  median_house_value  ocean_proximity
-  : 0    -122.23     37.88  ...            452600.0         NEAR BAY
-  : 1    -122.22     37.86  ...            358500.0         NEAR BAY
-  : 2    -122.24     37.85  ...            352100.0         NEAR BAY
-  : 3    -122.25     37.85  ...            341300.0         NEAR BAY
-  : 4    -122.25     37.85  ...            342200.0         NEAR BAY
+  :    longitude  latitude  housing_median_age  ...  median_income  median_house_value  ocean_proximity
+  : 0    -122.23     37.88                41.0  ...         8.3252            452600.0         NEAR BAY
+  : 1    -122.22     37.86                21.0  ...         8.3014            358500.0         NEAR BAY
+  : 2    -122.24     37.85                52.0  ...         7.2574            352100.0         NEAR BAY
+  : 3    -122.25     37.85                52.0  ...         5.6431            341300.0         NEAR BAY
+  : 4    -122.25     37.85                52.0  ...         3.8462            342200.0         NEAR BAY
   :
   : [5 rows x 10 columns]
 
@@ -609,6 +609,1277 @@ Note: automate as much as possible so you can easily get fresh data.
   #+end_src
 
   #+RESULTS:
+  #+begin_example
+  Help on PlotAccessor in module pandas.plotting._core object:
+
+  class PlotAccessor(pandas.core.base.PandasObject)
+   |  PlotAccessor(data: 'Series | DataFrame') -> 'None'
+   |
+   |  Make plots of Series or DataFrame.
+   |
+   |  Uses the backend specified by the
+   |  option ``plotting.backend``. By default, matplotlib is used.
+   |
+   |  Parameters
+   |  ----------
+   |  data : Series or DataFrame
+   |      The object for which the method is called.
+   |  x : label or position, default None
+   |      Only used if data is a DataFrame.
+   |  y : label, position or list of label, positions, default None
+   |      Allows plotting of one column versus another. Only used if data is a
+   |      DataFrame.
+   |  kind : str
+   |      The kind of plot to produce:
+   |
+   |      - 'line' : line plot (default)
+   |      - 'bar' : vertical bar plot
+   |      - 'barh' : horizontal bar plot
+   |      - 'hist' : histogram
+   |      - 'box' : boxplot
+   |      - 'kde' : Kernel Density Estimation plot
+   |      - 'density' : same as 'kde'
+   |      - 'area' : area plot
+   |      - 'pie' : pie plot
+   |      - 'scatter' : scatter plot (DataFrame only)
+   |      - 'hexbin' : hexbin plot (DataFrame only)
+   |  ax : matplotlib axes object, default None
+   |      An axes of the current figure.
+   |  subplots : bool or sequence of iterables, default False
+   |      Whether to group columns into subplots:
+   |
+   |      - ``False`` : No subplots will be used
+   |      - ``True`` : Make separate subplots for each column.
+   |      - sequence of iterables of column labels: Create a subplot for each
+   |        group of columns. For example `[('a', 'c'), ('b', 'd')]` will
+   |        create 2 subplots: one with columns 'a' and 'c', and one
+   |        with columns 'b' and 'd'. Remaining columns that aren't specified
+   |        will be plotted in additional subplots (one per column).
+   |
+   |        .. versionadded:: 1.5.0
+   |
+   |  sharex : bool, default True if ax is None else False
+   |      In case ``subplots=True``, share x axis and set some x axis labels
+   |      to invisible; defaults to True if ax is None otherwise False if
+   |      an ax is passed in; Be aware, that passing in both an ax and
+   |      ``sharex=True`` will alter all x axis labels for all axis in a figure.
+   |  sharey : bool, default False
+   |      In case ``subplots=True``, share y axis and set some y axis labels to invisible.
+   |  layout : tuple, optional
+   |      (rows, columns) for the layout of subplots.
+   |  figsize : a tuple (width, height) in inches
+   |      Size of a figure object.
+   |  use_index : bool, default True
+   |      Use index as ticks for x axis.
+   |  title : str or list
+   |      Title to use for the plot. If a string is passed, print the string
+   |      at the top of the figure. If a list is passed and `subplots` is
+   |      True, print each item in the list above the corresponding subplot.
+   |  grid : bool, default None (matlab style default)
+   |      Axis grid lines.
+   |  legend : bool or {'reverse'}
+   |      Place legend on axis subplots.
+   |  style : list or dict
+   |      The matplotlib line style per column.
+   |  logx : bool or 'sym', default False
+   |      Use log scaling or symlog scaling on x axis.
+   |
+   |  logy : bool or 'sym' default False
+   |      Use log scaling or symlog scaling on y axis.
+   |
+   |  loglog : bool or 'sym', default False
+   |      Use log scaling or symlog scaling on both x and y axes.
+   |
+   |  xticks : sequence
+   |      Values to use for the xticks.
+   |  yticks : sequence
+   |      Values to use for the yticks.
+   |  xlim : 2-tuple/list
+   |      Set the x limits of the current axes.
+   |  ylim : 2-tuple/list
+   |      Set the y limits of the current axes.
+   |  xlabel : label, optional
+   |      Name to use for the xlabel on x-axis. Default uses index name as xlabel, or the
+   |      x-column name for planar plots.
+   |
+   |      .. versionchanged:: 2.0.0
+   |
+   |          Now applicable to histograms.
+   |
+   |  ylabel : label, optional
+   |      Name to use for the ylabel on y-axis. Default will show no ylabel, or the
+   |      y-column name for planar plots.
+   |
+   |      .. versionchanged:: 2.0.0
+   |
+   |          Now applicable to histograms.
+   |
+   |  rot : float, default None
+   |      Rotation for ticks (xticks for vertical, yticks for horizontal
+   |      plots).
+   |  fontsize : float, default None
+   |      Font size for xticks and yticks.
+   |  colormap : str or matplotlib colormap object, default None
+   |      Colormap to select colors from. If string, load colormap with that
+   |      name from matplotlib.
+   |  colorbar : bool, optional
+   |      If True, plot colorbar (only relevant for 'scatter' and 'hexbin'
+   |      plots).
+   |  position : float
+   |      Specify relative alignments for bar plot layout.
+   |      From 0 (left/bottom-end) to 1 (right/top-end). Default is 0.5
+   |      (center).
+   |  table : bool, Series or DataFrame, default False
+   |      If True, draw a table using the data in the DataFrame and the data
+   |      will be transposed to meet matplotlib's default layout.
+   |      If a Series or DataFrame is passed, use passed data to draw a
+   |      table.
+   |  yerr : DataFrame, Series, array-like, dict and str
+   |      See :ref:`Plotting with Error Bars <visualization.errorbars>` for
+   |      detail.
+   |  xerr : DataFrame, Series, array-like, dict and str
+   |      Equivalent to yerr.
+   |  stacked : bool, default False in line and bar plots, and True in area plot
+   |      If True, create stacked plot.
+   |  secondary_y : bool or sequence, default False
+   |      Whether to plot on the secondary y-axis if a list/tuple, which
+   |      columns to plot on secondary y-axis.
+   |  mark_right : bool, default True
+   |      When using a secondary_y axis, automatically mark the column
+   |      labels with "(right)" in the legend.
+   |  include_bool : bool, default is False
+   |      If True, boolean values can be plotted.
+   |  backend : str, default None
+   |      Backend to use instead of the backend specified in the option
+   |      ``plotting.backend``. For instance, 'matplotlib'. Alternatively, to
+   |      specify the ``plotting.backend`` for the whole session, set
+   |      ``pd.options.plotting.backend``.
+   |  **kwargs
+   |      Options to pass to matplotlib plotting method.
+   |
+   |  Returns
+   |  -------
+   |  :class:`matplotlib.axes.Axes` or numpy.ndarray of them
+   |      If the backend is not the default matplotlib one, the return value
+   |      will be the object returned by the backend.
+   |
+   |  Notes
+   |  -----
+   |  - See matplotlib documentation online for more on this subject
+   |  - If `kind` = 'bar' or 'barh', you can specify relative alignments
+   |    for bar plot layout by `position` keyword.
+   |    From 0 (left/bottom-end) to 1 (right/top-end). Default is 0.5
+   |    (center)
+   |
+   |  Examples
+   |  --------
+   |  For Series:
+   |
+   |  .. plot::
+   |      :context: close-figs
+   |
+   |      >>> ser = pd.Series([1, 2, 3, 3])
+   |      >>> plot = ser.plot(kind='hist', title="My plot")
+   |
+   |  For DataFrame:
+   |
+   |  .. plot::
+   |      :context: close-figs
+   |
+   |      >>> df = pd.DataFrame({'length': [1.5, 0.5, 1.2, 0.9, 3],
+   |      ...                   'width': [0.7, 0.2, 0.15, 0.2, 1.1]},
+   |      ...                   index=['pig', 'rabbit', 'duck', 'chicken', 'horse'])
+   |      >>> plot = df.plot(title="DataFrame Plot")
+   |
+   |  For SeriesGroupBy:
+   |
+   |  .. plot::
+   |      :context: close-figs
+   |
+   |      >>> lst = [-1, -2, -3, 1, 2, 3]
+   |      >>> ser = pd.Series([1, 2, 2, 4, 6, 6], index=lst)
+   |      >>> plot = ser.groupby(lambda x: x > 0).plot(title="SeriesGroupBy Plot")
+   |
+   |  For DataFrameGroupBy:
+   |
+   |  .. plot::
+   |      :context: close-figs
+   |
+   |      >>> df = pd.DataFrame({"col1" : [1, 2, 3, 4],
+   |      ...                   "col2" : ["A", "B", "A", "B"]})
+   |      >>> plot = df.groupby("col2").plot(kind="bar", title="DataFrameGroupBy Plot")
+   |
+   |  Method resolution order:
+   |      PlotAccessor
+   |      pandas.core.base.PandasObject
+   |      pandas.core.accessor.DirNamesMixin
+   |      builtins.object
+   |
+   |  Methods defined here:
+   |
+   |  __call__(self, *args, **kwargs)
+   |      Make plots of Series or DataFrame.
+   |
+   |      Uses the backend specified by the
+   |      option ``plotting.backend``. By default, matplotlib is used.
+   |
+   |      Parameters
+   |      ----------
+   |      data : Series or DataFrame
+   |          The object for which the method is called.
+   |      x : label or position, default None
+   |          Only used if data is a DataFrame.
+   |      y : label, position or list of label, positions, default None
+   |          Allows plotting of one column versus another. Only used if data is a
+   |          DataFrame.
+   |      kind : str
+   |          The kind of plot to produce:
+   |
+   |          - 'line' : line plot (default)
+   |          - 'bar' : vertical bar plot
+   |          - 'barh' : horizontal bar plot
+   |          - 'hist' : histogram
+   |          - 'box' : boxplot
+   |          - 'kde' : Kernel Density Estimation plot
+   |          - 'density' : same as 'kde'
+   |          - 'area' : area plot
+   |          - 'pie' : pie plot
+   |          - 'scatter' : scatter plot (DataFrame only)
+   |          - 'hexbin' : hexbin plot (DataFrame only)
+   |      ax : matplotlib axes object, default None
+   |          An axes of the current figure.
+   |      subplots : bool or sequence of iterables, default False
+   |          Whether to group columns into subplots:
+   |
+   |          - ``False`` : No subplots will be used
+   |          - ``True`` : Make separate subplots for each column.
+   |          - sequence of iterables of column labels: Create a subplot for each
+   |            group of columns. For example `[('a', 'c'), ('b', 'd')]` will
+   |            create 2 subplots: one with columns 'a' and 'c', and one
+   |            with columns 'b' and 'd'. Remaining columns that aren't specified
+   |            will be plotted in additional subplots (one per column).
+   |
+   |            .. versionadded:: 1.5.0
+   |
+   |      sharex : bool, default True if ax is None else False
+   |          In case ``subplots=True``, share x axis and set some x axis labels
+   |          to invisible; defaults to True if ax is None otherwise False if
+   |          an ax is passed in; Be aware, that passing in both an ax and
+   |          ``sharex=True`` will alter all x axis labels for all axis in a figure.
+   |      sharey : bool, default False
+   |          In case ``subplots=True``, share y axis and set some y axis labels to invisible.
+   |      layout : tuple, optional
+   |          (rows, columns) for the layout of subplots.
+   |      figsize : a tuple (width, height) in inches
+   |          Size of a figure object.
+   |      use_index : bool, default True
+   |          Use index as ticks for x axis.
+   |      title : str or list
+   |          Title to use for the plot. If a string is passed, print the string
+   |          at the top of the figure. If a list is passed and `subplots` is
+   |          True, print each item in the list above the corresponding subplot.
+   |      grid : bool, default None (matlab style default)
+   |          Axis grid lines.
+   |      legend : bool or {'reverse'}
+   |          Place legend on axis subplots.
+   |      style : list or dict
+   |          The matplotlib line style per column.
+   |      logx : bool or 'sym', default False
+   |          Use log scaling or symlog scaling on x axis.
+   |
+   |      logy : bool or 'sym' default False
+   |          Use log scaling or symlog scaling on y axis.
+   |
+   |      loglog : bool or 'sym', default False
+   |          Use log scaling or symlog scaling on both x and y axes.
+   |
+   |      xticks : sequence
+   |          Values to use for the xticks.
+   |      yticks : sequence
+   |          Values to use for the yticks.
+   |      xlim : 2-tuple/list
+   |          Set the x limits of the current axes.
+   |      ylim : 2-tuple/list
+   |          Set the y limits of the current axes.
+   |      xlabel : label, optional
+   |          Name to use for the xlabel on x-axis. Default uses index name as xlabel, or the
+   |          x-column name for planar plots.
+   |
+   |          .. versionchanged:: 2.0.0
+   |
+   |              Now applicable to histograms.
+   |
+   |      ylabel : label, optional
+   |          Name to use for the ylabel on y-axis. Default will show no ylabel, or the
+   |          y-column name for planar plots.
+   |
+   |          .. versionchanged:: 2.0.0
+   |
+   |              Now applicable to histograms.
+   |
+   |      rot : float, default None
+   |          Rotation for ticks (xticks for vertical, yticks for horizontal
+   |          plots).
+   |      fontsize : float, default None
+   |          Font size for xticks and yticks.
+   |      colormap : str or matplotlib colormap object, default None
+   |          Colormap to select colors from. If string, load colormap with that
+   |          name from matplotlib.
+   |      colorbar : bool, optional
+   |          If True, plot colorbar (only relevant for 'scatter' and 'hexbin'
+   |          plots).
+   |      position : float
+   |          Specify relative alignments for bar plot layout.
+   |          From 0 (left/bottom-end) to 1 (right/top-end). Default is 0.5
+   |          (center).
+   |      table : bool, Series or DataFrame, default False
+   |          If True, draw a table using the data in the DataFrame and the data
+   |          will be transposed to meet matplotlib's default layout.
+   |          If a Series or DataFrame is passed, use passed data to draw a
+   |          table.
+   |      yerr : DataFrame, Series, array-like, dict and str
+   |          See :ref:`Plotting with Error Bars <visualization.errorbars>` for
+   |          detail.
+   |      xerr : DataFrame, Series, array-like, dict and str
+   |          Equivalent to yerr.
+   |      stacked : bool, default False in line and bar plots, and True in area plot
+   |          If True, create stacked plot.
+   |      secondary_y : bool or sequence, default False
+   |          Whether to plot on the secondary y-axis if a list/tuple, which
+   |          columns to plot on secondary y-axis.
+   |      mark_right : bool, default True
+   |          When using a secondary_y axis, automatically mark the column
+   |          labels with "(right)" in the legend.
+   |      include_bool : bool, default is False
+   |          If True, boolean values can be plotted.
+   |      backend : str, default None
+   |          Backend to use instead of the backend specified in the option
+   |          ``plotting.backend``. For instance, 'matplotlib'. Alternatively, to
+   |          specify the ``plotting.backend`` for the whole session, set
+   |          ``pd.options.plotting.backend``.
+   |      **kwargs
+   |          Options to pass to matplotlib plotting method.
+   |
+   |      Returns
+   |      -------
+   |      :class:`matplotlib.axes.Axes` or numpy.ndarray of them
+   |          If the backend is not the default matplotlib one, the return value
+   |          will be the object returned by the backend.
+   |
+   |      Notes
+   |      -----
+   |      - See matplotlib documentation online for more on this subject
+   |      - If `kind` = 'bar' or 'barh', you can specify relative alignments
+   |        for bar plot layout by `position` keyword.
+   |        From 0 (left/bottom-end) to 1 (right/top-end). Default is 0.5
+   |        (center)
+   |
+   |      Examples
+   |      --------
+   |      For Series:
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> ser = pd.Series([1, 2, 3, 3])
+   |          >>> plot = ser.plot(kind='hist', title="My plot")
+   |
+   |      For DataFrame:
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> df = pd.DataFrame({'length': [1.5, 0.5, 1.2, 0.9, 3],
+   |          ...                   'width': [0.7, 0.2, 0.15, 0.2, 1.1]},
+   |          ...                   index=['pig', 'rabbit', 'duck', 'chicken', 'horse'])
+   |          >>> plot = df.plot(title="DataFrame Plot")
+   |
+   |      For SeriesGroupBy:
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> lst = [-1, -2, -3, 1, 2, 3]
+   |          >>> ser = pd.Series([1, 2, 2, 4, 6, 6], index=lst)
+   |          >>> plot = ser.groupby(lambda x: x > 0).plot(title="SeriesGroupBy Plot")
+   |
+   |      For DataFrameGroupBy:
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> df = pd.DataFrame({"col1" : [1, 2, 3, 4],
+   |          ...                   "col2" : ["A", "B", "A", "B"]})
+   |          >>> plot = df.groupby("col2").plot(kind="bar", title="DataFrameGroupBy Plot")
+   |
+   |  __init__(self, data: 'Series | DataFrame') -> 'None'
+   |      Initialize self.  See help(type(self)) for accurate signature.
+   |
+   |  area(self, x: 'Hashable | None' = None, y: 'Hashable | None' = None, stacked: 'bool' = True, **kwargs) -> 'PlotAccessor'
+   |      Draw a stacked area plot.
+   |
+   |      An area plot displays quantitative data visually.
+   |      This function wraps the matplotlib area function.
+   |
+   |      Parameters
+   |      ----------
+   |      x : label or position, optional
+   |          Coordinates for the X axis. By default uses the index.
+   |      y : label or position, optional
+   |          Column to plot. By default uses all columns.
+   |      stacked : bool, default True
+   |          Area plots are stacked by default. Set to False to create a
+   |          unstacked plot.
+   |      **kwargs
+   |          Additional keyword arguments are documented in
+   |          :meth:`DataFrame.plot`.
+   |
+   |      Returns
+   |      -------
+   |      matplotlib.axes.Axes or numpy.ndarray
+   |          Area plot, or array of area plots if subplots is True.
+   |
+   |      See Also
+   |      --------
+   |      DataFrame.plot : Make plots of DataFrame using matplotlib / pylab.
+   |
+   |      Examples
+   |      --------
+   |      Draw an area plot based on basic business metrics:
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> df = pd.DataFrame({
+   |          ...     'sales': [3, 2, 3, 9, 10, 6],
+   |          ...     'signups': [5, 5, 6, 12, 14, 13],
+   |          ...     'visits': [20, 42, 28, 62, 81, 50],
+   |          ... }, index=pd.date_range(start='2018/01/01', end='2018/07/01',
+   |          ...                        freq='ME'))
+   |          >>> ax = df.plot.area()
+   |
+   |      Area plots are stacked by default. To produce an unstacked plot,
+   |      pass ``stacked=False``:
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> ax = df.plot.area(stacked=False)
+   |
+   |      Draw an area plot for a single column:
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> ax = df.plot.area(y='sales')
+   |
+   |      Draw with a different `x`:
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> df = pd.DataFrame({
+   |          ...     'sales': [3, 2, 3],
+   |          ...     'visits': [20, 42, 28],
+   |          ...     'day': [1, 2, 3],
+   |          ... })
+   |          >>> ax = df.plot.area(x='day')
+   |
+   |  bar(self, x: 'Hashable | None' = None, y: 'Hashable | None' = None, **kwargs) -> 'PlotAccessor'
+   |      Vertical bar plot.
+   |
+   |      A bar plot is a plot that presents categorical data with
+   |      rectangular bars with lengths proportional to the values that they
+   |      represent. A bar plot shows comparisons among discrete categories. One
+   |      axis of the plot shows the specific categories being compared, and the
+   |      other axis represents a measured value.
+   |
+   |      Parameters
+   |      ----------
+   |      x : label or position, optional
+   |          Allows plotting of one column versus another. If not specified,
+   |          the index of the DataFrame is used.
+   |      y : label or position, optional
+   |          Allows plotting of one column versus another. If not specified,
+   |          all numerical columns are used.
+   |      color : str, array-like, or dict, optional
+   |          The color for each of the DataFrame's columns. Possible values are:
+   |
+   |          - A single color string referred to by name, RGB or RGBA code,
+   |              for instance 'red' or '#a98d19'.
+   |
+   |          - A sequence of color strings referred to by name, RGB or RGBA
+   |              code, which will be used for each column recursively. For
+   |              instance ['green','yellow'] each column's bar will be filled in
+   |              green or yellow, alternatively. If there is only a single column to
+   |              be plotted, then only the first color from the color list will be
+   |              used.
+   |
+   |          - A dict of the form {column name : color}, so that each column will be
+   |              colored accordingly. For example, if your columns are called `a` and
+   |              `b`, then passing {'a': 'green', 'b': 'red'} will color bars for
+   |              column `a` in green and bars for column `b` in red.
+   |
+   |      **kwargs
+   |          Additional keyword arguments are documented in
+   |          :meth:`DataFrame.plot`.
+   |
+   |      Returns
+   |      -------
+   |      matplotlib.axes.Axes or np.ndarray of them
+   |          An ndarray is returned with one :class:`matplotlib.axes.Axes`
+   |          per column when ``subplots=True``.
+   |
+   |              See Also
+   |              --------
+   |              DataFrame.plot.barh : Horizontal bar plot.
+   |              DataFrame.plot : Make plots of a DataFrame.
+   |              matplotlib.pyplot.bar : Make a bar plot with matplotlib.
+   |
+   |              Examples
+   |              --------
+   |              Basic plot.
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  >>> df = pd.DataFrame({'lab':['A', 'B', 'C'], 'val':[10, 30, 20]})
+   |                  >>> ax = df.plot.bar(x='lab', y='val', rot=0)
+   |
+   |              Plot a whole dataframe to a bar plot. Each column is assigned a
+   |              distinct color, and each row is nested in a group along the
+   |              horizontal axis.
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  >>> speed = [0.1, 17.5, 40, 48, 52, 69, 88]
+   |                  >>> lifespan = [2, 8, 70, 1.5, 25, 12, 28]
+   |                  >>> index = ['snail', 'pig', 'elephant',
+   |                  ...          'rabbit', 'giraffe', 'coyote', 'horse']
+   |                  >>> df = pd.DataFrame({'speed': speed,
+   |                  ...                    'lifespan': lifespan}, index=index)
+   |                  >>> ax = df.plot.bar(rot=0)
+   |
+   |              Plot stacked bar charts for the DataFrame
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  >>> ax = df.plot.bar(stacked=True)
+   |
+   |              Instead of nesting, the figure can be split by column with
+   |              ``subplots=True``. In this case, a :class:`numpy.ndarray` of
+   |              :class:`matplotlib.axes.Axes` are returned.
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  >>> axes = df.plot.bar(rot=0, subplots=True)
+   |                  >>> axes[1].legend(loc=2)  # doctest: +SKIP
+   |
+   |              If you don't like the default colours, you can specify how you'd
+   |              like each column to be colored.
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  >>> axes = df.plot.bar(
+   |                  ...     rot=0, subplots=True, color={"speed": "red", "lifespan": "green"}
+   |                  ... )
+   |                  >>> axes[1].legend(loc=2)  # doctest: +SKIP
+   |
+   |              Plot a single column.
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  >>> ax = df.plot.bar(y='speed', rot=0)
+   |
+   |              Plot only selected categories for the DataFrame.
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  >>> ax = df.plot.bar(x='lifespan', rot=0)
+   |
+   |  barh(self, x: 'Hashable | None' = None, y: 'Hashable | None' = None, **kwargs) -> 'PlotAccessor'
+   |      Make a horizontal bar plot.
+   |
+   |      A horizontal bar plot is a plot that presents quantitative data with
+   |      rectangular bars with lengths proportional to the values that they
+   |      represent. A bar plot shows comparisons among discrete categories. One
+   |      axis of the plot shows the specific categories being compared, and the
+   |      other axis represents a measured value.
+   |
+   |      Parameters
+   |      ----------
+   |      x : label or position, optional
+   |          Allows plotting of one column versus another. If not specified,
+   |          the index of the DataFrame is used.
+   |      y : label or position, optional
+   |          Allows plotting of one column versus another. If not specified,
+   |          all numerical columns are used.
+   |      color : str, array-like, or dict, optional
+   |          The color for each of the DataFrame's columns. Possible values are:
+   |
+   |          - A single color string referred to by name, RGB or RGBA code,
+   |              for instance 'red' or '#a98d19'.
+   |
+   |          - A sequence of color strings referred to by name, RGB or RGBA
+   |              code, which will be used for each column recursively. For
+   |              instance ['green','yellow'] each column's bar will be filled in
+   |              green or yellow, alternatively. If there is only a single column to
+   |              be plotted, then only the first color from the color list will be
+   |              used.
+   |
+   |          - A dict of the form {column name : color}, so that each column will be
+   |              colored accordingly. For example, if your columns are called `a` and
+   |              `b`, then passing {'a': 'green', 'b': 'red'} will color bars for
+   |              column `a` in green and bars for column `b` in red.
+   |
+   |      **kwargs
+   |          Additional keyword arguments are documented in
+   |          :meth:`DataFrame.plot`.
+   |
+   |      Returns
+   |      -------
+   |      matplotlib.axes.Axes or np.ndarray of them
+   |          An ndarray is returned with one :class:`matplotlib.axes.Axes`
+   |          per column when ``subplots=True``.
+   |
+   |              See Also
+   |              --------
+   |              DataFrame.plot.bar: Vertical bar plot.
+   |              DataFrame.plot : Make plots of DataFrame using matplotlib.
+   |              matplotlib.axes.Axes.bar : Plot a vertical bar plot using matplotlib.
+   |
+   |              Examples
+   |              --------
+   |              Basic example
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  >>> df = pd.DataFrame({'lab': ['A', 'B', 'C'], 'val': [10, 30, 20]})
+   |                  >>> ax = df.plot.barh(x='lab', y='val')
+   |
+   |              Plot a whole DataFrame to a horizontal bar plot
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  >>> speed = [0.1, 17.5, 40, 48, 52, 69, 88]
+   |                  >>> lifespan = [2, 8, 70, 1.5, 25, 12, 28]
+   |                  >>> index = ['snail', 'pig', 'elephant',
+   |                  ...          'rabbit', 'giraffe', 'coyote', 'horse']
+   |                  >>> df = pd.DataFrame({'speed': speed,
+   |                  ...                    'lifespan': lifespan}, index=index)
+   |                  >>> ax = df.plot.barh()
+   |
+   |              Plot stacked barh charts for the DataFrame
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  >>> ax = df.plot.barh(stacked=True)
+   |
+   |              We can specify colors for each column
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  >>> ax = df.plot.barh(color={"speed": "red", "lifespan": "green"})
+   |
+   |              Plot a column of the DataFrame to a horizontal bar plot
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  >>> speed = [0.1, 17.5, 40, 48, 52, 69, 88]
+   |                  >>> lifespan = [2, 8, 70, 1.5, 25, 12, 28]
+   |                  >>> index = ['snail', 'pig', 'elephant',
+   |                  ...          'rabbit', 'giraffe', 'coyote', 'horse']
+   |                  >>> df = pd.DataFrame({'speed': speed,
+   |                  ...                    'lifespan': lifespan}, index=index)
+   |                  >>> ax = df.plot.barh(y='speed')
+   |
+   |              Plot DataFrame versus the desired column
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  >>> speed = [0.1, 17.5, 40, 48, 52, 69, 88]
+   |                  >>> lifespan = [2, 8, 70, 1.5, 25, 12, 28]
+   |                  >>> index = ['snail', 'pig', 'elephant',
+   |                  ...          'rabbit', 'giraffe', 'coyote', 'horse']
+   |                  >>> df = pd.DataFrame({'speed': speed,
+   |                  ...                    'lifespan': lifespan}, index=index)
+   |                  >>> ax = df.plot.barh(x='lifespan')
+   |
+   |  box(self, by: 'IndexLabel | None' = None, **kwargs) -> 'PlotAccessor'
+   |      Make a box plot of the DataFrame columns.
+   |
+   |      A box plot is a method for graphically depicting groups of numerical
+   |      data through their quartiles.
+   |      The box extends from the Q1 to Q3 quartile values of the data,
+   |      with a line at the median (Q2). The whiskers extend from the edges
+   |      of box to show the range of the data. The position of the whiskers
+   |      is set by default to 1.5*IQR (IQR = Q3 - Q1) from the edges of the
+   |      box. Outlier points are those past the end of the whiskers.
+   |
+   |      For further details see Wikipedia's
+   |      entry for `boxplot <https://en.wikipedia.org/wiki/Box_plot>`__.
+   |
+   |      A consideration when using this chart is that the box and the whiskers
+   |      can overlap, which is very common when plotting small sets of data.
+   |
+   |      Parameters
+   |      ----------
+   |      by : str or sequence
+   |          Column in the DataFrame to group by.
+   |
+   |          .. versionchanged:: 1.4.0
+   |
+   |             Previously, `by` is silently ignore and makes no groupings
+   |
+   |      **kwargs
+   |          Additional keywords are documented in
+   |          :meth:`DataFrame.plot`.
+   |
+   |      Returns
+   |      -------
+   |      :class:`matplotlib.axes.Axes` or numpy.ndarray of them
+   |
+   |      See Also
+   |      --------
+   |      DataFrame.boxplot: Another method to draw a box plot.
+   |      Series.plot.box: Draw a box plot from a Series object.
+   |      matplotlib.pyplot.boxplot: Draw a box plot in matplotlib.
+   |
+   |      Examples
+   |      --------
+   |      Draw a box plot from a DataFrame with four columns of randomly
+   |      generated data.
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> data = np.random.randn(25, 4)
+   |          >>> df = pd.DataFrame(data, columns=list('ABCD'))
+   |          >>> ax = df.plot.box()
+   |
+   |      You can also generate groupings if you specify the `by` parameter (which
+   |      can take a column name, or a list or tuple of column names):
+   |
+   |      .. versionchanged:: 1.4.0
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> age_list = [8, 10, 12, 14, 72, 74, 76, 78, 20, 25, 30, 35, 60, 85]
+   |          >>> df = pd.DataFrame({"gender": list("MMMMMMMMFFFFFF"), "age": age_list})
+   |          >>> ax = df.plot.box(column="age", by="gender", figsize=(10, 8))
+   |
+   |  density = kde(self, bw_method: "Literal['scott', 'silverman'] | float | Callable | None" = None, ind: 'np.ndarray | int | None' = None, **kwargs) -> 'PlotAccessor'
+   |
+   |  hexbin(self, x: 'Hashable', y: 'Hashable', C: 'Hashable | None' = None, reduce_C_function: 'Callable | None' = None, gridsize: 'int | tuple[int, int] | None' = None, **kwargs) -> 'PlotAccessor'
+   |      Generate a hexagonal binning plot.
+   |
+   |      Generate a hexagonal binning plot of `x` versus `y`. If `C` is `None`
+   |      (the default), this is a histogram of the number of occurrences
+   |      of the observations at ``(x[i], y[i])``.
+   |
+   |      If `C` is specified, specifies values at given coordinates
+   |      ``(x[i], y[i])``. These values are accumulated for each hexagonal
+   |      bin and then reduced according to `reduce_C_function`,
+   |      having as default the NumPy's mean function (:meth:`numpy.mean`).
+   |      (If `C` is specified, it must also be a 1-D sequence
+   |      of the same length as `x` and `y`, or a column label.)
+   |
+   |      Parameters
+   |      ----------
+   |      x : int or str
+   |          The column label or position for x points.
+   |      y : int or str
+   |          The column label or position for y points.
+   |      C : int or str, optional
+   |          The column label or position for the value of `(x, y)` point.
+   |      reduce_C_function : callable, default `np.mean`
+   |          Function of one argument that reduces all the values in a bin to
+   |          a single number (e.g. `np.mean`, `np.max`, `np.sum`, `np.std`).
+   |      gridsize : int or tuple of (int, int), default 100
+   |          The number of hexagons in the x-direction.
+   |          The corresponding number of hexagons in the y-direction is
+   |          chosen in a way that the hexagons are approximately regular.
+   |          Alternatively, gridsize can be a tuple with two elements
+   |          specifying the number of hexagons in the x-direction and the
+   |          y-direction.
+   |      **kwargs
+   |          Additional keyword arguments are documented in
+   |          :meth:`DataFrame.plot`.
+   |
+   |      Returns
+   |      -------
+   |      matplotlib.AxesSubplot
+   |          The matplotlib ``Axes`` on which the hexbin is plotted.
+   |
+   |      See Also
+   |      --------
+   |      DataFrame.plot : Make plots of a DataFrame.
+   |      matplotlib.pyplot.hexbin : Hexagonal binning plot using matplotlib,
+   |          the matplotlib function that is used under the hood.
+   |
+   |      Examples
+   |      --------
+   |      The following examples are generated with random data from
+   |      a normal distribution.
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> n = 10000
+   |          >>> df = pd.DataFrame({'x': np.random.randn(n),
+   |          ...                    'y': np.random.randn(n)})
+   |          >>> ax = df.plot.hexbin(x='x', y='y', gridsize=20)
+   |
+   |      The next example uses `C` and `np.sum` as `reduce_C_function`.
+   |      Note that `'observations'` values ranges from 1 to 5 but the result
+   |      plot shows values up to more than 25. This is because of the
+   |      `reduce_C_function`.
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> n = 500
+   |          >>> df = pd.DataFrame({
+   |          ...     'coord_x': np.random.uniform(-3, 3, size=n),
+   |          ...     'coord_y': np.random.uniform(30, 50, size=n),
+   |          ...     'observations': np.random.randint(1,5, size=n)
+   |          ...     })
+   |          >>> ax = df.plot.hexbin(x='coord_x',
+   |          ...                     y='coord_y',
+   |          ...                     C='observations',
+   |          ...                     reduce_C_function=np.sum,
+   |          ...                     gridsize=10,
+   |          ...                     cmap="viridis")
+   |
+   |  hist(self, by: 'IndexLabel | None' = None, bins: 'int' = 10, **kwargs) -> 'PlotAccessor'
+   |      Draw one histogram of the DataFrame's columns.
+   |
+   |      A histogram is a representation of the distribution of data.
+   |      This function groups the values of all given Series in the DataFrame
+   |      into bins and draws all bins in one :class:`matplotlib.axes.Axes`.
+   |      This is useful when the DataFrame's Series are in a similar scale.
+   |
+   |      Parameters
+   |      ----------
+   |      by : str or sequence, optional
+   |          Column in the DataFrame to group by.
+   |
+   |          .. versionchanged:: 1.4.0
+   |
+   |             Previously, `by` is silently ignore and makes no groupings
+   |
+   |      bins : int, default 10
+   |          Number of histogram bins to be used.
+   |      **kwargs
+   |          Additional keyword arguments are documented in
+   |          :meth:`DataFrame.plot`.
+   |
+   |      Returns
+   |      -------
+   |      class:`matplotlib.AxesSubplot`
+   |          Return a histogram plot.
+   |
+   |      See Also
+   |      --------
+   |      DataFrame.hist : Draw histograms per DataFrame's Series.
+   |      Series.hist : Draw a histogram with Series' data.
+   |
+   |      Examples
+   |      --------
+   |      When we roll a die 6000 times, we expect to get each value around 1000
+   |      times. But when we roll two dice and sum the result, the distribution
+   |      is going to be quite different. A histogram illustrates those
+   |      distributions.
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> df = pd.DataFrame(np.random.randint(1, 7, 6000), columns=['one'])
+   |          >>> df['two'] = df['one'] + np.random.randint(1, 7, 6000)
+   |          >>> ax = df.plot.hist(bins=12, alpha=0.5)
+   |
+   |      A grouped histogram can be generated by providing the parameter `by` (which
+   |      can be a column name, or a list of column names):
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> age_list = [8, 10, 12, 14, 72, 74, 76, 78, 20, 25, 30, 35, 60, 85]
+   |          >>> df = pd.DataFrame({"gender": list("MMMMMMMMFFFFFF"), "age": age_list})
+   |          >>> ax = df.plot.hist(column=["age"], by="gender", figsize=(10, 8))
+   |
+   |  kde(self, bw_method: "Literal['scott', 'silverman'] | float | Callable | None" = None, ind: 'np.ndarray | int | None' = None, **kwargs) -> 'PlotAccessor'
+   |      Generate Kernel Density Estimate plot using Gaussian kernels.
+   |
+   |      In statistics, `kernel density estimation`_ (KDE) is a non-parametric
+   |      way to estimate the probability density function (PDF) of a random
+   |      variable. This function uses Gaussian kernels and includes automatic
+   |      bandwidth determination.
+   |
+   |      .. _kernel density estimation:
+   |          https://en.wikipedia.org/wiki/Kernel_density_estimation
+   |
+   |      Parameters
+   |      ----------
+   |      bw_method : str, scalar or callable, optional
+   |          The method used to calculate the estimator bandwidth. This can be
+   |          'scott', 'silverman', a scalar constant or a callable.
+   |          If None (default), 'scott' is used.
+   |          See :class:`scipy.stats.gaussian_kde` for more information.
+   |      ind : NumPy array or int, optional
+   |          Evaluation points for the estimated PDF. If None (default),
+   |          1000 equally spaced points are used. If `ind` is a NumPy array, the
+   |          KDE is evaluated at the points passed. If `ind` is an integer,
+   |          `ind` number of equally spaced points are used.
+   |      **kwargs
+   |          Additional keyword arguments are documented in
+   |          :meth:`DataFrame.plot`.
+   |
+   |      Returns
+   |      -------
+   |      matplotlib.axes.Axes or numpy.ndarray of them
+   |
+   |      See Also
+   |      --------
+   |      scipy.stats.gaussian_kde : Representation of a kernel-density
+   |          estimate using Gaussian kernels. This is the function used
+   |          internally to estimate the PDF.
+   |
+   |      Examples
+   |      --------
+   |      Given a Series of points randomly sampled from an unknown
+   |      distribution, estimate its PDF using KDE with automatic
+   |      bandwidth determination and plot the results, evaluating them at
+   |      1000 equally spaced points (default):
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> s = pd.Series([1, 2, 2.5, 3, 3.5, 4, 5])
+   |          >>> ax = s.plot.kde()
+   |
+   |      A scalar bandwidth can be specified. Using a small bandwidth value can
+   |      lead to over-fitting, while using a large bandwidth value may result
+   |      in under-fitting:
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> ax = s.plot.kde(bw_method=0.3)
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> ax = s.plot.kde(bw_method=3)
+   |
+   |      Finally, the `ind` parameter determines the evaluation points for the
+   |      plot of the estimated PDF:
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> ax = s.plot.kde(ind=[1, 2, 3, 4, 5])
+   |
+   |      For DataFrame, it works in the same way:
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> df = pd.DataFrame({
+   |          ...     'x': [1, 2, 2.5, 3, 3.5, 4, 5],
+   |          ...     'y': [4, 4, 4.5, 5, 5.5, 6, 6],
+   |          ... })
+   |          >>> ax = df.plot.kde()
+   |
+   |      A scalar bandwidth can be specified. Using a small bandwidth value can
+   |      lead to over-fitting, while using a large bandwidth value may result
+   |      in under-fitting:
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> ax = df.plot.kde(bw_method=0.3)
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> ax = df.plot.kde(bw_method=3)
+   |
+   |      Finally, the `ind` parameter determines the evaluation points for the
+   |      plot of the estimated PDF:
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> ax = df.plot.kde(ind=[1, 2, 3, 4, 5, 6])
+   |
+   |  line(self, x: 'Hashable | None' = None, y: 'Hashable | None' = None, **kwargs) -> 'PlotAccessor'
+   |      Plot Series or DataFrame as lines.
+   |
+   |      This function is useful to plot lines using DataFrame's values
+   |      as coordinates.
+   |
+   |      Parameters
+   |      ----------
+   |      x : label or position, optional
+   |          Allows plotting of one column versus another. If not specified,
+   |          the index of the DataFrame is used.
+   |      y : label or position, optional
+   |          Allows plotting of one column versus another. If not specified,
+   |          all numerical columns are used.
+   |      color : str, array-like, or dict, optional
+   |          The color for each of the DataFrame's columns. Possible values are:
+   |
+   |          - A single color string referred to by name, RGB or RGBA code,
+   |              for instance 'red' or '#a98d19'.
+   |
+   |          - A sequence of color strings referred to by name, RGB or RGBA
+   |              code, which will be used for each column recursively. For
+   |              instance ['green','yellow'] each column's line will be filled in
+   |              green or yellow, alternatively. If there is only a single column to
+   |              be plotted, then only the first color from the color list will be
+   |              used.
+   |
+   |          - A dict of the form {column name : color}, so that each column will be
+   |              colored accordingly. For example, if your columns are called `a` and
+   |              `b`, then passing {'a': 'green', 'b': 'red'} will color lines for
+   |              column `a` in green and lines for column `b` in red.
+   |
+   |      **kwargs
+   |          Additional keyword arguments are documented in
+   |          :meth:`DataFrame.plot`.
+   |
+   |      Returns
+   |      -------
+   |      matplotlib.axes.Axes or np.ndarray of them
+   |          An ndarray is returned with one :class:`matplotlib.axes.Axes`
+   |          per column when ``subplots=True``.
+   |
+   |              See Also
+   |              --------
+   |              matplotlib.pyplot.plot : Plot y versus x as lines and/or markers.
+   |
+   |              Examples
+   |              --------
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  >>> s = pd.Series([1, 3, 2])
+   |                  >>> s.plot.line()  # doctest: +SKIP
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  The following example shows the populations for some animals
+   |                  over the years.
+   |
+   |                  >>> df = pd.DataFrame({
+   |                  ...    'pig': [20, 18, 489, 675, 1776],
+   |                  ...    'horse': [4, 25, 281, 600, 1900]
+   |                  ...    }, index=[1990, 1997, 2003, 2009, 2014])
+   |                  >>> lines = df.plot.line()
+   |
+   |              .. plot::
+   |                 :context: close-figs
+   |
+   |                 An example with subplots, so an array of axes is returned.
+   |
+   |                 >>> axes = df.plot.line(subplots=True)
+   |                 >>> type(axes)
+   |                 <class 'numpy.ndarray'>
+   |
+   |              .. plot::
+   |                 :context: close-figs
+   |
+   |                 Let's repeat the same example, but specifying colors for
+   |                 each column (in this case, for each animal).
+   |
+   |                 >>> axes = df.plot.line(
+   |                 ...     subplots=True, color={"pig": "pink", "horse": "#742802"}
+   |                 ... )
+   |
+   |              .. plot::
+   |                  :context: close-figs
+   |
+   |                  The following example shows the relationship between both
+   |                  populations.
+   |
+   |                  >>> lines = df.plot.line(x='pig', y='horse')
+   |
+   |  pie(self, **kwargs) -> 'PlotAccessor'
+   |      Generate a pie plot.
+   |
+   |      A pie plot is a proportional representation of the numerical data in a
+   |      column. This function wraps :meth:`matplotlib.pyplot.pie` for the
+   |      specified column. If no column reference is passed and
+   |      ``subplots=True`` a pie plot is drawn for each numerical column
+   |      independently.
+   |
+   |      Parameters
+   |      ----------
+   |      y : int or label, optional
+   |          Label or position of the column to plot.
+   |          If not provided, ``subplots=True`` argument must be passed.
+   |      **kwargs
+   |          Keyword arguments to pass on to :meth:`DataFrame.plot`.
+   |
+   |      Returns
+   |      -------
+   |      matplotlib.axes.Axes or np.ndarray of them
+   |          A NumPy array is returned when `subplots` is True.
+   |
+   |      See Also
+   |      --------
+   |      Series.plot.pie : Generate a pie plot for a Series.
+   |      DataFrame.plot : Make plots of a DataFrame.
+   |
+   |      Examples
+   |      --------
+   |      In the example below we have a DataFrame with the information about
+   |      planet's mass and radius. We pass the 'mass' column to the
+   |      pie function to get a pie plot.
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> df = pd.DataFrame({'mass': [0.330, 4.87 , 5.97],
+   |          ...                    'radius': [2439.7, 6051.8, 6378.1]},
+   |          ...                   index=['Mercury', 'Venus', 'Earth'])
+   |          >>> plot = df.plot.pie(y='mass', figsize=(5, 5))
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> plot = df.plot.pie(subplots=True, figsize=(11, 6))
+   |
+   |  scatter(self, x: 'Hashable', y: 'Hashable', s: 'Hashable | Sequence[Hashable] | None' = None, c: 'Hashable | Sequence[Hashable] | None' = None, **kwargs) -> 'PlotAccessor'
+   |      Create a scatter plot with varying marker point size and color.
+   |
+   |      The coordinates of each point are defined by two dataframe columns and
+   |      filled circles are used to represent each point. This kind of plot is
+   |      useful to see complex correlations between two variables. Points could
+   |      be for instance natural 2D coordinates like longitude and latitude in
+   |      a map or, in general, any pair of metrics that can be plotted against
+   |      each other.
+   |
+   |      Parameters
+   |      ----------
+   |      x : int or str
+   |          The column name or column position to be used as horizontal
+   |          coordinates for each point.
+   |      y : int or str
+   |          The column name or column position to be used as vertical
+   |          coordinates for each point.
+   |      s : str, scalar or array-like, optional
+   |          The size of each point. Possible values are:
+   |
+   |          - A string with the name of the column to be used for marker's size.
+   |
+   |          - A single scalar so all points have the same size.
+   |
+   |          - A sequence of scalars, which will be used for each point's size
+   |            recursively. For instance, when passing [2,14] all points size
+   |            will be either 2 or 14, alternatively.
+   |
+   |      c : str, int or array-like, optional
+   |          The color of each point. Possible values are:
+   |
+   |          - A single color string referred to by name, RGB or RGBA code,
+   |            for instance 'red' or '#a98d19'.
+   |
+   |          - A sequence of color strings referred to by name, RGB or RGBA
+   |            code, which will be used for each point's color recursively. For
+   |            instance ['green','yellow'] all points will be filled in green or
+   |            yellow, alternatively.
+   |
+   |          - A column name or position whose values will be used to color the
+   |            marker points according to a colormap.
+   |
+   |      **kwargs
+   |          Keyword arguments to pass on to :meth:`DataFrame.plot`.
+   |
+   |      Returns
+   |      -------
+   |      :class:`matplotlib.axes.Axes` or numpy.ndarray of them
+   |
+   |      See Also
+   |      --------
+   |      matplotlib.pyplot.scatter : Scatter plot using multiple input data
+   |          formats.
+   |
+   |      Examples
+   |      --------
+   |      Let's see how to draw a scatter plot using coordinates from the values
+   |      in a DataFrame's columns.
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> df = pd.DataFrame([[5.1, 3.5, 0], [4.9, 3.0, 0], [7.0, 3.2, 1],
+   |          ...                    [6.4, 3.2, 1], [5.9, 3.0, 2]],
+   |          ...                   columns=['length', 'width', 'species'])
+   |          >>> ax1 = df.plot.scatter(x='length',
+   |          ...                       y='width',
+   |          ...                       c='DarkBlue')
+   |
+   |      And now with the color determined by a column as well.
+   |
+   |      .. plot::
+   |          :context: close-figs
+   |
+   |          >>> ax2 = df.plot.scatter(x='length',
+   |          ...                       y='width',
+   |          ...                       c='species',
+   |          ...                       colormap='viridis')
+   |
+   |  ----------------------------------------------------------------------
+   |  Data and other attributes defined here:
+   |
+   |  __annotations__ = {}
+   |
+   |  ----------------------------------------------------------------------
+   |  Methods inherited from pandas.core.base.PandasObject:
+   |
+   |  __repr__(self) -> 'str'
+   |      Return a string representation for a particular object.
+   |
+   |  __sizeof__(self) -> 'int'
+   |      Generates the total memory usage for an object that returns
+   |      either a value or Series of values
+   |
+   |  ----------------------------------------------------------------------
+   |  Methods inherited from pandas.core.accessor.DirNamesMixin:
+   |
+   |  __dir__(self) -> 'list[str]'
+   |      Provide method name lookup and completion.
+   |
+   |      Notes
+   |      -----
+   |      Only provide 'public' methods.
+   |
+   |  ----------------------------------------------------------------------
+   |  Data descriptors inherited from pandas.core.accessor.DirNamesMixin:
+   |
+   |  __dict__
+   |      dictionary for instance variables (if defined)
+   |
+   |  __weakref__
+   |      list of weak references to the object (if defined)
+  #+end_example
 
 - Alas, the information needed is hidden in ~**kwargs~ - keyword
   arguments passed on to matplotlib under the hood, and we've been
@@ -830,6 +2101,74 @@ Note: automate as much as possible so you can easily get fresh data.
   #+end_src
 
   #+RESULTS:
+  #+begin_example
+  Help on method corr in module pandas.core.frame:
+
+  corr(method: 'CorrelationMethod' = 'pearson', min_periods: 'int' = 1, numeric_only: 'bool' = False) -> 'DataFrame' method of pandas.core.frame.DataFrame instance
+      Compute pairwise correlation of columns, excluding NA/null values.
+
+      Parameters
+      ----------
+      method : {'pearson', 'kendall', 'spearman'} or callable
+          Method of correlation:
+
+          ,* pearson : standard correlation coefficient
+          ,* kendall : Kendall Tau correlation coefficient
+          ,* spearman : Spearman rank correlation
+          ,* callable: callable with input two 1d ndarrays
+              and returning a float. Note that the returned matrix from corr
+              will have 1 along the diagonals and will be symmetric
+              regardless of the callable's behavior.
+      min_periods : int, optional
+          Minimum number of observations required per pair of columns
+          to have a valid result. Currently only available for Pearson
+          and Spearman correlation.
+      numeric_only : bool, default False
+          Include only `float`, `int` or `boolean` data.
+
+          .. versionadded:: 1.5.0
+
+          .. versionchanged:: 2.0.0
+              The default value of ``numeric_only`` is now ``False``.
+
+      Returns
+      -------
+      DataFrame
+          Correlation matrix.
+
+      See Also
+      --------
+      DataFrame.corrwith : Compute pairwise correlation with another
+          DataFrame or Series.
+      Series.corr : Compute the correlation between two Series.
+
+      Notes
+      -----
+      Pearson, Kendall and Spearman correlation are currently computed using pairwise complete observations.
+
+      ,* `Pearson correlation coefficient <https://en.wikipedia.org/wiki/Pearson_correlation_coefficient>`_
+      ,* `Kendall rank correlation coefficient <https://en.wikipedia.org/wiki/Kendall_rank_correlation_coefficient>`_
+      ,* `Spearman's rank correlation coefficient <https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient>`_
+
+      Examples
+      --------
+      >>> def histogram_intersection(a, b):
+      ...     v = np.minimum(a, b).sum().round(decimals=1)
+      ...     return v
+      >>> df = pd.DataFrame([(.2, .3), (.0, .6), (.6, .0), (.2, .1)],
+      ...                   columns=['dogs', 'cats'])
+      >>> df.corr(method=histogram_intersection)
+            dogs  cats
+      dogs   1.0   0.3
+      cats   0.3   1.0
+
+      >>> df = pd.DataFrame([(1, 1), (2, np.nan), (np.nan, 3), (4, 4)],
+      ...                   columns=['dogs', 'cats'])
+      >>> df.corr(min_periods=3)
+            dogs  cats
+      dogs   1.0   NaN
+      cats   NaN   1.0
+  #+end_example
 
 - Sometimes, running a docstring example is instructive:
   #+begin_src python :results output :exports both :session *Python* :python python3
@@ -1112,34 +2451,97 @@ Note: automate as much as possible so you can easily get fresh data.
 
   #+RESULTS:
   #+begin_example
+  ColumnTransformer
+  LinearRegression
+  MinMaxScaler
+  OneHotEncoder
+  OrdinalEncoder
+  Pipeline
+  SimpleImputer
+  StandardScaler
+  X
   actual
+  after
+  age_simil_35
+  age_simil_35_low
+  ages
   attributes
+  ax1
+  ax2
+  axes
+  before
+  bin_centers
+  bin_edges
+  cat_attribs
+  cat_encoder
+  cat_encoder_strict
+  cat_pipeline
+  col
   corr_matrix
+  counts
   data
   df
+  df_housing_num_prepared
+  df_test
+  df_test_unknown
   f
+  fig
+  full_pipeline
   histogram_intersection
+  housing
+  housing_cat
+  housing_cat_1hot
+  housing_cat_encoded
   housing_full
+  housing_labels
+  housing_num
+  housing_num_min_max_scaled
+  housing_num_prepared
+  housing_num_std_scaled
+  housing_prepared
+  housing_tr
+  idx
+  imputer
   main
+  make_column_selector
+  make_column_transformer
+  make_pipeline
   matplotlib
-  move
+  min_max_scaler
   np
+  num_attribs
+  num_pipeline
+  ordinal_encoder
   pd
+  pipeline
   plt
+  pop
   predicted
+  predictions
+  preprocessing
+  rbf_kernel
   readline
   rmse
   rmse2
-  room
   root_mean_squared_error
+  scaler
   scatter_matrix
+  sklearn
+  std_scaler
   strat_test_set
   strat_train_set
+  tar
   tarfile
   test_set
+  toy
+  toy_imputed
+  toy_prepared
+  toy_scaled
+  train
   train_set
   train_test_split
   tty
+  y
   #+end_example
 
 - Revert to a clean training set:
@@ -2245,31 +3647,31 @@ Note: automate as much as possible so you can easily get fresh data.
   Data columns (total 8 columns):
    #   Column              Non-Null Count  Dtype
   ---  ------              --------------  -----
-   0  16512 non-null  float64
-   1  16512 non-null  float64
-   2  16512 non-null  float64
-   3  16512 non-null  float64
-   4  16512 non-null  float64
-   5  16512 non-null  float64
-   6  16512 non-null  float64
-   7  16512 non-null  float64
+   0   longitude           16512 non-null  float64
+   1   latitude            16512 non-null  float64
+   2   housing_median_age  16512 non-null  float64
+   3   total_rooms         16512 non-null  float64
+   4   total_bedrooms      16512 non-null  float64
+   5   population          16512 non-null  float64
+   6   households          16512 non-null  float64
+   7   median_income       16512 non-null  float64
   dtypes: float64(8)
   memory usage: 1.1 MB
   None
-            longitude      latitude  ...    households  median_income
-  count  1.651200e+04  1.651200e+04  ...  1.651200e+04   1.651200e+04
-  mean  -4.837216e-15 -2.580838e-15  ...  1.463085e-17   7.611267e-17
-  std    1.000030e+00  1.000030e+00  ...  1.000030e+00   1.000030e+00
-  min   -2.387765e+00 -1.447452e+00  ... -1.303343e+00  -1.781577e+00
-  25%   -1.113124e+00 -8.005453e-01  ... -5.772176e-01  -6.913383e-01
-  50%    5.314128e-01 -6.458502e-01  ... -2.402747e-01  -1.754490e-01
-  75%    7.813423e-01  9.761041e-01  ...  2.690575e-01   4.649198e-01
-  max    2.540847e+00  2.959014e+00  ...  1.268893e+01   5.882868e+00
+            longitude      latitude  housing_median_age  ...    population    households  median_income
+  count  1.651200e+04  1.651200e+04        1.651200e+04  ...  1.651200e+04  1.651200e+04   1.651200e+04
+  mean  -4.837216e-15 -2.580838e-15       -1.473843e-17  ...  4.765783e-17  1.463085e-17   7.611267e-17
+  std    1.000030e+00  1.000030e+00        1.000030e+00  ...  1.000030e+00  1.000030e+00   1.000030e+00
+  min   -2.387765e+00 -1.447452e+00       -2.191210e+00  ... -1.299382e+00 -1.303343e+00  -1.781577e+00
+  25%   -1.113124e+00 -8.005453e-01       -8.404335e-01  ... -5.832443e-01 -5.772176e-01  -6.913383e-01
+  50%    5.314128e-01 -6.458502e-01        3.359809e-02  ... -2.361370e-01 -2.402747e-01  -1.754490e-01
+  75%    7.813423e-01  9.761041e-01        6.692575e-01  ...  2.744761e-01  2.690575e-01   4.649198e-01
+  max    2.540847e+00  2.959014e+00        1.861119e+00  ...  1.359152e+01  1.268893e+01   5.882868e+00
 
   [8 rows x 8 columns]
   #+end_example
 
-- Notice that we handled categorical columns and numberical columns
+- Notice that we handled categorical columns and numerical columns
   separately. The ~ColumnTransformer~ will apply =num_pipeline= to the
   numerical, and =cat_pipeline= to the categorical attributes.
 
@@ -2299,7 +3701,7 @@ Note: automate as much as possible so you can easily get fresh data.
 
 - The ~ColumnTransformer~ constructor requires a list of 3-tuples, each
   containing a name, a transformer, and a list of target column names:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     preprocessing = ColumnTransformer([
         ("num",num_pipeline,num_attribs),
         ("cat",cat_pipeline,cat_attribs)
@@ -2329,13 +3731,13 @@ Note: automate as much as possible so you can easily get fresh data.
 - You can also just ~make_column_transformer~ to make the
   ~ColumnTransformer~ and use ~make_column_selector~ to extract the column
   names for you:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     from sklearn.compose import make_column_selector, make_column_transformer
 
     preprocessing = make_column_transformer(
         (num_pipeline,make_column_selector(dtype_include=np.number)),
         (cat_pipeline,make_column_selector(dtype_include=object)),
-        )
+    )
 
     print(preprocessing)
   #+end_src
@@ -2347,17 +3749,17 @@ Note: automate as much as possible so you can easily get fresh data.
                                                     SimpleImputer(strategy='median')),
                                                    ('standardscaler',
                                                     StandardScaler())]),
-                                   <sklearn.compose._column_transformer.make_column_selector object at 0x7a5d48062f80>),
+                                   <sklearn.compose._column_transformer.make_column_selector object at 0x7d707195de70>),
                                   ('pipeline-2',
                                    Pipeline(steps=[('simpleimputer',
                                                     SimpleImputer(strategy='most_frequent')),
                                                    ('onehotencoder',
                                                     OneHotEncoder(handle_unknown='ignore'))]),
-                                   <sklearn.compose._column_transformer.make_column_selector object at 0x7a5d480353f0>)])
+                                   <sklearn.compose._column_transformer.make_column_selector object at 0x7d7070aaa1a0>)])
   #+end_example
 
 - Final step: apply this ~ColumnTransformer~ to the housing data:
-  #+begin_src python :results output :exports both :session *Python* :python python3 
+  #+begin_src python :results output :exports both :session *Python* :python python3
     housing_prepared = preprocessing.fit_transform(housing)
 
     print(pd.DataFrame(housing_prepared,
@@ -2366,15 +3768,15 @@ Note: automate as much as possible so you can easily get fresh data.
     print(pd.DataFrame(housing_prepared,
                        columns=preprocessing.get_feature_names_out(),
                        index=housing.index).iloc[:,2:8].describe())
-  #+end_src  
+  #+end_src
 
   #+RESULTS:
   #+begin_example
   <class 'pandas.core.frame.DataFrame'>
   Index: 16512 entries, 13096 to 19888
   Data columns (total 6 columns):
-   #   Column                          Non-Null Count  Dtype  
-  ---  ------                          --------------  -----  
+   #   Column                          Non-Null Count  Dtype
+  ---  ------                          --------------  -----
    0   pipeline-1__housing_median_age  16512 non-null  float64
    1   pipeline-1__total_rooms         16512 non-null  float64
    2   pipeline-1__total_bedrooms      16512 non-null  float64
@@ -2397,6 +3799,137 @@ Note: automate as much as possible so you can easily get fresh data.
   [8 rows x 6 columns]
   #+end_example
 
+** Custom similarity
+
+Also defining =ClusterSimilarity= here: this code uses KMeans clustering
+to identify the main clusters in the training data, and then uses a
+Gaussian RBF kernel to measure how similar each district is to each
+cluster's center — producing one new feature per cluster (Cluster 0
+similarity, Cluster 1 similarity, etc.), where a higher value means
+the district is closer to that cluster's centroid.
+
+#+begin_src python :results none :session *Python* :python python3
+  from sklearn.base import BaseEstimator, TransformerMixin
+  from sklearn.metrics.pairwise import rbf_kernel
+  from sklearn.cluster import KMeans
+
+  class ClusterSimilarity(BaseEstimator, TransformerMixin):
+    def __init__(self, n_clusters=10, gamma=1.0, random_state=None):
+      self.n_clusters = n_clusters
+      self.gamma = gamma
+      self.random_state = random_state
+
+    def fit(self, X, y=None, sample_weight=None):
+      self.kmeans_ = KMeans(self.n_clusters, random_state=self.random_state)
+      self.kmeans_.fit(X, sample_weight=sample_weight)
+        return self  # always return self!
+
+    def transform(self, X):
+        return rbf_kernel(X, self.kmeans_.cluster_centers_, gamma=self.gamma)
+
+    def get_feature_names_out(self, names=None):
+        return [f"Cluster {i} similarity" for i in range(self.n_clusters)]
+#+end_src
+
+** Final transformer
+
+- Recap of what the pipeline will do and why:
+  + Impute missing values in numerical features by replacing them with
+    the median.
+  + Impute missing values in categorical features by the more frequent
+    category.
+  + One-hot-encode the categorical feature to make it numeric.
+  + Compute and add additional ratio features: =bedrooms_ratio=,
+    =rooms_per_house=, =people_per_house= that correlate with
+    =median_house_value=.
+  + Add cluster similarity features (more useful than latitude and
+    longitude).
+  + Replace features with a long tail by their logarithm (make them
+    more symmetric).
+  + Standardize all numerical features.
+  + Exclude =housing_median_age= from all transformations.
+
+- The following code achieves all this and is also modularized (using
+  reusable functions):
+  #+name: final_transform
+  #+begin_src python :results none :session *Python* :python python3
+    from sklearn.preprocessing import FunctionTransformer
+    from sklearn.compose import make_column_selector
+
+    def column_ratio(X):
+      return X[:,[0]]/X[:,[1]]
+
+    def ratio_name(function_transformer, feature_names_in):
+      return ["ratio"] # feature names out
+
+    def ratio_pipeline():
+        return make_pipeline(
+          SimpleImputer(strategy="median"),
+          FunctionTransformer(column_ratio,feature_names_out=ratio_name),
+          StandardScaler())
+
+    log_pipeline = make_pipeline(
+      SimpleImputer(strategy="median"),
+      FunctionTransformer(np.log,feature_names_out="one-to-one"),
+      StandardScaler())
+
+    cluster_simil = ClusterSimilarity(n_clusters=10,gamma=1.,random_state=42)
+
+    default_num_pipeline = make_pipeline(SimpleImputer(strategy="median"),
+                                         StandardScaler())
+
+    preprocessing = ColumnTransformer([
+      ("bedrooms",ratio_pipeline(),["total_bedrooms","total_rooms"]),
+      ("rooms_per_house",ratio_pipeline(),["total_rooms","households"]),
+      ("people_per_house",ratio_pipeline(),["population","households"]),
+      ("log",log_pipeline,["total_bedrooms","total_rooms","population",
+                           "households","median_income"]),
+      ("geo",cluster_simil,["latitude","longitude"]),
+      ("cat",cat_pipeline,make_column_selector(dtype_include=object)),
+    ],remainder=default_num_pipeline) # remaining: housing_median_age
+  #+end_src
+
+- Why is =housing_median_age= excluded from all of these extra
+  transformations (except simple imputation and standard scaling)?
+  #+begin_quote
+  The other features are special-cased because of specific problems
+  they have: ratios (bedrooms/rooms, rooms/households,
+  population/households) are used because the raw counts alone aren't
+  very informative — it's the ratio that carries the signal. The log
+  transform is used for heavily skewed features like
+  ~population~. Cluster similarity is used for ~latitude~/~longitude~
+  because raw coordinates aren't linearly related to price — proximity
+  to specific clusters is what matters.
+
+  ~housing_median_age~ has none of these issues: it's not a raw count
+  that only makes sense as a ratio, it isn't heavily skewed, and it
+  isn't geographic. It's already a well-behaved numeric feature, so
+  plain median-impute + standard-scale (via =remainder=) is enough.
+  #+end_quote
+
+- Run this ~ColumnTransformer~ on the =housing= data and get a NumPy array
+  with 24 features:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    housing_prepared = preprocessing.fit_transform(housing)
+    print(housing_prepared.shape)
+    print(preprocessing.get_feature_names_out())
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  (16512, 24)
+  ['bedrooms__ratio' 'rooms_per_house__ratio' 'people_per_house__ratio'
+   'log__total_bedrooms' 'log__total_rooms' 'log__population'
+   'log__households' 'log__median_income' 'geo__Cluster 0 similarity'
+   'geo__Cluster 1 similarity' 'geo__Cluster 2 similarity'
+   'geo__Cluster 3 similarity' 'geo__Cluster 4 similarity'
+   'geo__Cluster 5 similarity' 'geo__Cluster 6 similarity'
+   'geo__Cluster 7 similarity' 'geo__Cluster 8 similarity'
+   'geo__Cluster 9 similarity' 'cat__ocean_proximity_<1H OCEAN'
+   'cat__ocean_proximity_INLAND' 'cat__ocean_proximity_ISLAND'
+   'cat__ocean_proximity_NEAR BAY' 'cat__ocean_proximity_NEAR OCEAN'
+   'remainder__housing_median_age']
+  #+end_example
 
 ** Three questions: trust in algorithms / new data: what to do / AI writes to binary
 *** Question 1: Where do these algorithms come from, and why should I trust them?
@@ -2505,13 +4038,289 @@ change regardless of who writes the implementation.
 Reference: Saw this on X
 https://x.com/r0ck3t23/status/2075666107873062979?s=20
 
+* Select and train a model
+
+- Problem framed
+- Data obtained
+- Data explored
+- Training and test set sampled
+- Preprocessing pipeline run
+
+** How do you know which model to pick?
+
+It's a good question. The honest answer would be: you don't know it in
+advance, strictly speaking. You can pick a model based on experience
+with a domain (the data, or other models that worked), or based on
+visual insights (your sample data look as if a linear function would
+approximate them), but you don't know - which is why we don't commit
+to one in advance!
+
+** Why linear regression first?
+
+It's a cheap baseline: No hyperparameters to tune, trains instantly,
+is fully interpretable (you get linear coefficients and you can read
+the effect of each feature straight off them), tells you something
+about the data (linear growth of features). If it does not work, it's
+a signal that the relationships are more complex (interactions,
+non-linearities), which is exactly why you might move to something
+like decision trees (which accounts for non-linear relationships).
+
+** What's the actual model selection process then?
+
+1. Quickly try a handful of different model families (linear,
+   tree-based, ensemble - like in the textbook example)
+2. Compare them with cross-validation (not the test set!)
+3. Shortlist promising candidates.
+4. Fine-tuning hyperparameters.
+
+The right model is picked empirically. There are also a few
+mathematical methods.
+
+The most relevant of these is the "no free lunch theorem". It's a
+formal, provable result ⁠[[https://www.cs.ubc.ca/~hutter/earg/papers07/00585893.pdf][(Wolpert & Macready, 1997)]], which says that no
+single model is universally best across all possible datasets,
+averaged over all possible data-generating processes. So there is no
+analytical shortcut to "the right model".
+
+I bet this is discussed somewhere in the textbook, too, I just haven't
+found it yet.
+
+** Train and evaluate on the training set (linear regression)
+
+- Train a linear regression model:
+  #+begin_src python :results none :session *Python* :python python3
+    from sklearn.linear_model import LinearRegression
+
+    lin_reg = make_pipeline(preprocessing,LinearRegression())
+    lin_reg.fit(housing,housing_labels) # X_train, y_train
+  #+end_src
+
+- Look at the first few predictions and compare them with the labels:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    housing_predictions = lin_reg.predict(housing) # y_pred
+    print(housing_predictions[:5].round(-2)) # -2: rounded to the nearest hundred
+    print(housing_labels.iloc[:5].values)
+  #+end_src
+
+  #+RESULTS:
+  : [246000. 372700. 135700.  91400. 330900.]
+  : [458300. 483800. 101700.  96100. 361800.]
+
+- To get a better idea, run RMSE on the whole training set:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    from sklearn.metrics import root_mean_squared_error
+    lin_rmse = root_mean_squared_error(housing_labels,housing_predictions) # y_train, y_pred
+    print(lin_rmse)
+  #+end_src
+
+  #+RESULTS:
+  : 68972.88910758478
+
+- Why are we not using the ~.score()~ method here, which returns the R^{2}
+  coefficient instead of RMSE?
+  #+begin_quote
+  1. RMSE comes out in dollars.
+  2. RMSE squares the error before averaging (reduces the impact of
+     wildly bad predictions).
+  3. R^{2} is defined relative to how much the target varies in *this*
+     dataset. That makes it awkward to compare across different data
+     slices or datasets — a model can look "good" (high R²) simply
+     because the target has high natural variance, even if its
+     dollar-error is large. RMSE doesn't have that confound.
+  4. Sticking to RMSE is consistent to what we've done (an absolute
+     metric, instead of a relative one). Relative metrics are harder
+     to interpret.
+  #+end_quote
+
+- The model seems to be *underfitting* the data: the housing values
+  range between $120k and $265k and a typical error of $68k is
+  unsatisfying - the model does not "get" the existing granularity.
+
+- The countermeasures:
+  1) Fit a more powerful (for this data) model
+  2) Feed training algorithm with better features
+  3) Reduce the constraints on the model = less regularization - lower
+     alpha = smaller penalty for higher order coefficients; add
+     polynomial features - makes the model adapt more flexibly.
+
+** Try another model (decision tree)
+
+- Try a decision tree[fn:6], which is known to find complex nonlinear
+  relationships in the data (ch 5 in Géron):
+  #+begin_src python :results none :session *Python* :python python3
+    from sklearn.tree import DecisionTreeRegressor
+
+    tree_reg = make_pipeline(preprocessing,
+                             DecisionTreeRegressor(random_state=42))
+    tree_reg.fit(housing,housing_labels) # X_train, y_train
+  #+end_src
+
+- The trained model is evaluated on the training set:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    housing_predictions = tree_reg.predict(housing)
+    tree_rmse = root_mean_squared_error(housing_labels,housing_predictions) # y_train,y_pred
+    print(tree_rmse)
+  #+end_src
+
+  #+RESULTS:
+  : 0.0
+
+- This model is either perfect or it overfits badly (perfectly learns
+  all the patterns). The problem: you cannot be 100% sure until you
+  run it on unseen data. But you only want to do that with a model
+  that you trust somewhat...otherwise "data leakage": you'd use the
+  test score to make decisions.
+
+- You could also split the training set into a smaller train-and-test
+  set and evaluate with that. An alternative is cross-validation.
+
+** Better evaluation using cross-validation (CV)
+
+- For k-fold cross-validation, you split the training set into k
+  non-overlapping subsets (folds), then you train and evaluate the
+  model k times, pick a different fold for evaluation every time and
+  use the other k-1 folds for training. This produces k evaluation
+  scores.
+  #+attr_html: :width 400px :float nil:
+  [[../img/cross_validation.png]]
+
+- Let's do it (this will take a little longer)[fn:7]:
+  #+begin_src python :results none :session *Python* :python python3
+    from sklearn.model_selection import cross_val_score
+
+    tree_rmses = cross_val_score(tree_reg,housing,housing_labels,
+                                 scoring="neg_root_mean_squared_error",
+                                 cv=10) # 10 folds
+
+    print(pd.Series(tree_rmses).describe())
+  #+end_src
+  #+begin_example
+  count       10.000000
+  mean    -66573.734600
+  std       1103.402323
+  min     -68532.210664
+  25%     -66826.257468
+  50%     -66388.272499
+  75%     -66204.731788
+  max     -64607.896046
+  #+end_example
+
+- Do the same thing for the Linear Regression model:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    lin_rmses = cross_val_score(lin_reg,housing,housing_labels,
+                                scoring="neg_root_mean_squared_error",
+                                cv=10) # 10 folds
+
+    print(pd.Series(lin_rmses).describe())
+  #+end_src
+
+  #+RESULTS:
+  : count       10.000000
+  : mean    -70003.404818
+  : std       4182.188328
+  : min     -81037.863741
+  : 25%     -70344.943988
+  : 50%     -68743.995249
+  : 75%     -68172.065831
+  : max     -65504.765753
+  : dtype: float64
+
+- The decision tree model performs slightly better but the difference
+  is minimal due to severe overfitting (we know that because the
+  training error is zero but the validation error is high - the model
+  memorizes, it does not generalize).
+
+** One last model (random forest ensemble)
+
+- One more model: ~RandomForestRegressor~ (more in ch. 6) - random
+  forests train many decision trees on random subsets of the feature,
+  then average out their predictions.
+
+- Models consisting of many other models are called *ensembles*. If the
+  underlying models are diverse, their errors are uncorrelated and
+  averaging will smooth out the errors, reduce overfitting, and
+  improve the performance.
+
+- Code is similar (this took several minutes on my workstation):
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    from sklearn.ensemble import RandomForestRegressor
+
+    forest_reg = make_pipeline(preprocessing,
+                               RandomForestRegressor(random_state=42))
+    forest_rmses = -cross_val_score(forest_reg, housing, housing_labels,
+                                    scoring="neg_root_mean_squared_error", cv=10)
+
+    print(pd.Series(forest_rmses).describe())
+  #+end_src
+
+  #+RESULTS:
+  : count       10.000000
+  : mean     47038.092799
+  : std       1021.491757
+  : min      45495.976649
+  : 25%      46510.418013
+  : 50%      47118.719249
+  : 75%      47480.519175
+  : max      49140.832210
+  : dtype: float64
+
+- Training a RandomForestRegressor on the training data and measuring
+  the RMSE will result in 17,551 - this is much better but overfitting
+  is still there.
+
+- Next models to try: Support Vector Machines (clever feature
+  selection), neural networks (unsupervised), etc.
+
+- But remember the "no free lunch" theorem! There's in principle
+  (provable) no shortcut to an empirical solution to the question what
+  is the best model.
 
 
-* TODO Select and train
+* Fine-tune the system
 
-* TODO Fine-tune the system
+- If you have a shortlist of promising models you need to fine-tune
+  your model, i.e. fiddle with the hyperparameters - settings you
+  choose before training (alpha for regression, maximum tree depth for
+  decision trees, and number of trees in the forest for random
+  forest).
 
-* TODO Present your solution
+- Grid Search Cross-Validation will do the search for the best
+  hyperparameter values for you. The Randomized Search CV is better
+  when the hyperparameter search space is large.
+
+- Another way to fine-tune the system (of models) is to combine the
+  best-performing models.
+
+- *With all these model combinations, does this not make ML very
+  intransparent - almost a black box?*
+
+  #+begin_quote
+  The pipeline itself stays transparent: every transformation -
+  ratios, log transforms, cluster similarity, scaling, one-hot
+  encoding - is explicit, named, and inspectable. You can always
+  answer "what happened to this raw column?" precisely.
+
+  The model itself is where opacity creeps in, and it scales with
+  model complexity. ~LinearRegression~ is fully transparent - each
+  coefficient tells you exactly how much a feature moves the
+  prediction.  ~DecisionTreeRegressor~ is still traceable - even a
+  fairly deep tree lets you follow the exact chain of splits behind
+  one prediction.  ~RandomForestRegressor~ is where it really becomes a
+  black box: a prediction is the average of many trees, each seeing
+  different bootstrapped data and feature subsets, so there's no
+  single "reason" for a prediction anymore.
+
+  This is a genuine tradeoff, not a side effect: more flexible models
+  fit more of the real pattern in the data, but their internal logic
+  becomes harder for a human to audit directly. That's why tools like
+  ~feature_importances_~, permutation importance, and partial dependence
+  plots exist for random forests - they attempt to open the box back
+  up after the fact, even though you can't read off a clean equation
+  the way you can with linear regression. The more powerful the model,
+  the more trust has to come from validation (cross-validation, test
+  error, importance analysis) rather than from being able to just read
+  the model.
+  #+end_quote
 
 * Footnotes
 
@@ -2534,3 +4343,10 @@ uses *population* ~std~ (divides by n) while ~pandas~ use *sample* ~std~ (divide
 by n-1: this is called "Bessel's correction" because samples tend to
 underestimate the true spread). But n is large here, so little
 difference.
+
+[fn:6] A decision tree predicts by repeatedly splitting the data on
+feature thresholds — asking a series of yes/no questions — until it
+reaches a leaf that gives the final prediction.
+
+[fn:7]Scikit-learn's CV features expect a utility function (not a cost
+function), so greater is better, which is why we use negative values.

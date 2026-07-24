@@ -1427,6 +1427,12 @@ Share this URL:
 https://www.catholicpolytechnic.org/magnifica-humanitas-panel
 
 ** Three questions: trust in algs / what to do with new data / AI writes to binary
+** Next assignments
+
+- *Next DataCamp lesson:* Discovering interpretable features
+- *Home assignment:* end-to-end ML on the Titanic dataset
+- *AI Quiz:* End-to-end ML project (all parts covered so far)
+
 ** End-to-end ML project
 
 *Done:*
@@ -1452,18 +1458,21 @@ https://www.catholicpolytechnic.org/magnifica-humanitas-panel
 - Code along with me
 - Full solution code in GitHub (3_pipeline.org)
 
-** Next assignments
-
-- *Next DataCamp lesson:* Discovering interpretable features
-- *Home assignment:* end-to-end ML on the Titanic dataset
-- *AI Quiz:* End-to-end ML project (all parts covered so far)
-
 ** Take aways
+
+- Use cross-validation (CV) on what looks like an overfitted model
+- Validate pipeline steps with ~.steps~ (lots of other viewing methods)
+- Use ~.iloc[]~ to slice pandas DataFrames by index
+- "Most frequent" is a strategy for categorical values
+- Goal of preprocessing: reduce complexity to make it easier for the
+  ML model to perform (= make good predictions).
+- Decisions about additional features: make a correlation matrix (to
+  reduce features that do not contribute to a good prediction)
+
 ** Closing prayer
 #+attr_html: :width 400px :float nil:
 [[../img/pray_hail_mary.png]]
   
-
 * Week 11 - Foundations for deep learning (gradient descent)
 * Week 12 - Unsupervised learning (k-means clustering)
 * Week 13 - Neural nets architecture
