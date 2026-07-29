@@ -2,12 +2,57 @@
 #+AUTHOR: Marcus Birkenkrahe
 #+PROPERTY: header-args:python :session *cm-review* :results output
 #+STARTUP: overview hideblocks indent entitiespretty:
+* Objectives
+
+- Explain why simple non-parametric models (lookup tables, kNN) break
+  down as input dimensionality grows - the *curse of dimensionality*.
+
+- Explain why *artificial neural networks* are not subject to this curse
+  in the same way: they learn a small set of features from the data
+  rather than comparing or binning raw input points.
+
+- Define what *"training a model"* means: parameters, inference, loss
+  function, training error vs. test error.
+
+- Implement a 1D linear regression model *from scratch* in Python (no ML
+  library) and compute its loss.
+
+- Distinguish *coordinate-wise parameter search* from true gradient
+  descent, and explain why the distinction matters once we reach
+  models with many parameters.
+
+- Read a *loss-surface heatmap:* identify the minimum, the descent path,
+  and what convexity means for the shape of that surface.
+
+- Extend the linear model to *polynomial* terms and to multiple inputs
+  and outputs, and represent each with the equivalent *vector notation*.
+
+- Recognize *underfitting* and *overfitting* as a function of model
+  complexity (order =m=) relative to the data.
+
 * Sources
 
 The images (and some of the code) were taken from Prince,
 "Understanding Deep Learning" (MIT Press 2023, see udlbook.github.io
 and iclimbtrees.com). The PDF of the book is freely available under a
 [[https://creativecommons.org/licenses/by-nc-nd/4.0/deed.en][CC-BY-NC-ND license]].
+
+The coordinate-descent code below automates an exercise Prince's
+Chapter 2 notebook asks the student to do by hand: fix one parameter,
+vary the other, and watch the loss change. The =line_search= "coordinate
+descent" implementation itself (generated with Claude Code) is not
+Prince's own optimization method - his own text goes straight to
+gradient descent with the analytic derivative in Chapter 6. The
+coordinate-wise version here is a calculus-free stand-in that makes
+"training = searching for parameters" concrete before derivatives
+arrive.
+
+This is an amazing book on deep learning by the way - hands down the
+best I've seen. It comes with a massive resource basis consisting of
+Python notebooks, videos, online exercises and a research blog.
+This is an amazing book on deep learning by the way - hands down the
+best I've seen. It comes with a massive resource basis consisting of
+Python notebooks, videos, online exercises and a research blog.
 
 * The case for deep learning
 
@@ -27,7 +72,7 @@ and iclimbtrees.com). The PDF of the book is freely available under a
      ends up about equally far from every other point (*curse of
      dimensionality*).
 
-  Neural networks are built to handle exactly these three problems -
+  *Neural networks* are built to handle exactly these three problems -
   that's the case for deep learning.
 
 * The curse of dimensionality
@@ -62,7 +107,7 @@ and iclimbtrees.com). The PDF of the book is freely available under a
   smarter?
   #+begin_quote
   We end up with 2^N bins an increasing number of whom remain empty.
-  This is the "curse of dimensionality": the input space will
+  This is the *"curse of dimensionality"*: the input space will
   exponentially outgrow the training data.
   #+end_quote
 
@@ -77,7 +122,7 @@ and iclimbtrees.com). The PDF of the book is freely available under a
   prices predicted for the car age values.
 
   The function that tells us for a given x what the value of y is, is
-  an indicator function that picks out the matching bin:
+  an *indicator function* that picks out the matching bin:
 
   [[../img/bin.png]]
 
@@ -144,8 +189,6 @@ and iclimbtrees.com). The PDF of the book is freely available under a
 
 * Linear regression example from scratch
 
-- [[https://udlbook.github.io/udlfigures/][See here for some interactive figures]].
-
 - For linear regression, y = f[x,\phi] = \phi_0 + \phi_1 x. The training data set
   consists of input/output pairs {x_i, y_i}. The parameters are
   intercept \phi_0 and slope \phi_1.
@@ -156,6 +199,9 @@ and iclimbtrees.com). The PDF of the book is freely available under a
   visualized as a 3D surface or a heat map:
   [[../img/loss2.png]]
 
+- [[https://udlbook.github.io/udlfigures/][See here for some interactive figures]] by Prince that you can play
+  with to cement your understanding.
+  
 * Plot prediction and compute loss
 
 - Load math and plotting libraries:
@@ -203,17 +249,16 @@ and iclimbtrees.com). The PDF of the book is freely available under a
         x_line = np.arange(0,2,0.01)
         y_line = linf(x_line, phi0, phi1)
         plt.plot(x_line, y_line, 'b-', lw=2)
-        plt.savefig("plot.png")
   #+end_src
 
 - Set the intercept and slope and plot data
-  #+begin_src python :file plot.png :results file graphics output :exports both :session *Python* :python python3
+  #+begin_src python :file ../img/phiplot1.png :results file graphics output :exports both :session *Python* :python python3
     phi0 = 0.4; phi1 = 0.2;
     plot(x,y,phi0,phi1)
   #+end_src
 
   #+RESULTS:
-  [[file:plot.png]]
+  [[file:../img/phiplot1.png]]
 
 - Function to calculate the loss: this is simply the sum of the
   squared *residuals* - the length of the vertical error lines between
@@ -236,13 +281,13 @@ and iclimbtrees.com). The PDF of the book is freely available under a
 
 - Set the intercept and slope to a different value, then plot and
   print loss:
-  #+begin_src python :file plot.png :results file graphics output :exports both :session *Python* :python python3
+  #+begin_src python :file ../img/phiplot2.png :results file graphics output :exports both :session *Python* :python python3
     phi0 = 1.60; phi1 = -0.8
     plot(x,y,phi0,phi1)
   #+end_src
 
   #+RESULTS:
-  [[file:plot.png]]
+  [[file:../img/phiplot2.png]]
 
   #+begin_src python :results output :exports both :session *Python* :python python3
     loss = compute_loss(x,y,phi0,phi1)
@@ -252,36 +297,83 @@ and iclimbtrees.com). The PDF of the book is freely available under a
   #+RESULTS:
   : Your loss = 10.28, ground truth = 10.28
 
-* Coordinate descent: find the minimum of the loss function
+* Coordinate-wise hill-climbing: find the minimum of the loss function
 
-- Coordinate descent: change the parameters to fit the model: start
-  changing the intercept until loss won't go lower, then fix intercept
-  and change slope until loss is at minimum.
+- Change the parameters to fit the model: start changing the intercept
+  until loss won't go lower, then fix intercept and change slope until
+  loss is at minimum.
 
-- The code as such is beginner-level Python:
-  #+begin_src python :results output :exports both :session *Python* :python python3
+- The code for this function as such is beginner-level Python:
+  #+begin_src python :results none :session *Python* :python python3
     def line_search(x, y, phi0, phi1, vary, step=0.5, min_step=1e-4):
         """Hill-climb one parameter ('phi0' or 'phi1'): try a small step up
         and down, keep whichever lowers the loss, and shrink the step
         whenever neither direction helps, until the step is tiny."""
+
+        # Loss at our current starting point - the number every candidate
+        # step has to beat before we accept it.
         best_loss = compute_loss(x, y, phi0, phi1)
+
+        # Keep shrinking the step size until it's too small to matter.
+        # This is what lets the search "zero in" on the minimum: big steps
+        # first, then finer and finer adjustments.
         while step > min_step:
+
+            # Assume this round of stepping fails until proven otherwise.
             improved = False
+
+            # Try stepping in both directions: +step (direction=1) and
+            # -step (direction=-1). We stop at the first one that helps
+            # (see 'break' below), so this isn't "try both and pick the
+            # best" - it's "try up, and only try down if up didn't work."
             for direction in (1, -1):
+
+                # Build a *candidate* (phi0, phi1) pair: nudge only the
+                # parameter named in 'vary', leave the other one fixed.
                 if vary == 'phi0':
                     candidate = (phi0 + direction * step, phi1)
                 else:
                     candidate = (phi0, phi1 + direction * step)
-                    candidate_loss = compute_loss(x, y, *candidate)
+
+                # 'candidate' is a 2-element tuple: (new_phi0, new_phi1).
+                # compute_loss(x, y, phi0, phi1) wants phi0 and phi1 as two
+                # SEPARATE arguments, not bundled in a tuple. The '*' here
+                # is Python's unpacking operator: it spreads the tuple's
+                # elements out into separate positional arguments.
+                #
+                #   compute_loss(x, y, *candidate)
+                #     is exactly the same call as
+                #   compute_loss(x, y, candidate[0], candidate[1])
+                #
+                # (Don't confuse this '*' with the '**' in compute_loss's
+                # own loss**2 - that '**' means "raised to the power of".
+                # Same symbol family, unrelated meaning.)
+                candidate_loss = compute_loss(x, y, *candidate)
+
+                # Did this nudge actually lower the loss?
                 if candidate_loss < best_loss:
+                    # Yes: accept the candidate as our new current point...
                     phi0, phi1 = candidate
                     best_loss = candidate_loss
                     improved = True
+                    # ...and stop checking directions this round - no need
+                    # to try the other direction once one has worked.
                     break
+
+            # Neither +step nor -step helped this round: our current point
+            # is a local minimum *at this step size*. Halve the step size
+            # and try again - a finer step might still find improvement
+            # even though a coarser one couldn't.
             if not improved:
                 step /= 2
-        return phi0, phi1, best_loss
 
+        # Return the best parameters found and the loss they achieve.
+        return phi0, phi1, best_loss
+  #+end_src
+
+- Test the code:
+  #+name: coordinate descent
+  #+begin_src python :results output :exports both :session *Python* :python python3 
     # One pass (tune phi0 once, then phi1 once) is not enough: the best
     # intercept depends on the slope, and vice versa, so we alternate
     # rounds until a full round no longer lowers the loss.
@@ -296,9 +388,9 @@ and iclimbtrees.com). The PDF of the book is freely available under a
         if abs(loss - new_loss) < 1e-6:
             break
         loss = new_loss
-  #+end_src
+  #+end_src  
 
-  #+RESULTS:
+  #+RESULTS: coordinate descent
   #+begin_example
   Round 1: phi0=1.132, phi1=0.289, loss=0.512
   Round 2: phi0=1.047, phi1=0.354, loss=0.363
@@ -344,7 +436,7 @@ and iclimbtrees.com). The PDF of the book is freely available under a
 
 - Now plot the loss function as a heatmap and the position of the best
   fitting line on the loss function:
-  #+begin_src python :file heatmap.png :results file graphics output :exports both :session *Python* :python python3
+  #+begin_src python :file ../img/heatmap.png :results file graphics output :exports both :session *Python* :python python3
     # plot loss function as heatmap
     fig = plt.figure()
     ax = plt.axes()
@@ -366,11 +458,18 @@ and iclimbtrees.com). The PDF of the book is freely available under a
     # plot position of best fitting line on the loss function
     # it should be close to the minimum
     ax.plot(phi0,phi1,'ro')
-    plt.savefig("heatmap.png")
+    plt.savefig("../img/heatmap.png")
   #+end_src
 
   #+RESULTS:
-  [[file:heatmap.png]]
+  [[file:../img/heatmap.png]]
+
+- The thin gray lines drawn by =ax.contour= are *contour lines* (also
+  called *isolines* or *level curves*): each one connects points where
+  the loss takes the same value. Where they bunch close together the
+  loss surface is steep; where they spread out it's flatter. The white
+  staircase is the coordinate-descent path threading across them
+  toward the minimum (the red dot).
 
 * Visualize the descent
 
@@ -383,7 +482,7 @@ and iclimbtrees.com). The PDF of the book is freely available under a
   fixed at its final, converged value) and place each round's =phi0= on
   that curve. This is a real 1D cross-section of the loss surface from
   the heatmap below:
-  #+begin_src python :file loss_descent.png :results file graphics output :exports both :session *Python* :python python3
+  #+begin_src python :file ../img/loss_descent.png :results file graphics output :exports both :session *Python* :python python3
     losses = [h[3] for h in history]
 
     # 1D slice of the loss surface: vary phi0, hold phi1 at its final value
@@ -431,11 +530,11 @@ and iclimbtrees.com). The PDF of the book is freely available under a
     ax.set_ylim(bottom=-0.3)
     fig.subplots_adjust(bottom=0.22)
     ax.set_title('Gradient descent: hopping down the loss curve')
-    plt.savefig("loss_descent.png")
+    plt.savefig("../img/loss_descent.png")
   #+end_src
 
   #+RESULTS:
-  [[file:loss_descent.png]]
+  [[file:../img/loss_descent.png]]
 
 - The last several rounds barely move (0.201 -> 0.200 -> 0.200 ...),
   so on the curve above those final hops bunch up right next to the
@@ -446,7 +545,7 @@ and iclimbtrees.com). The PDF of the book is freely available under a
   between the current loss and the final loss. Plotting that gap
   on a log scale turns the invisible tail into a clean, almost
   straight line spanning several orders of magnitude:
-  #+begin_src python :file loss_gap.png :results file graphics output :exports both :session *Python* :python python3
+  #+begin_src python :file ../img/loss_gap.png :results file graphics output :exports both :session *Python* :python python3
     rounds = [h[0] for h in history]
     loss_min = losses[-1]
     gaps = [max(l - loss_min, 1e-6) for l in losses]
@@ -458,15 +557,13 @@ and iclimbtrees.com). The PDF of the book is freely available under a
     ax.set_xlabel('Round')
     ax.set_ylabel('Loss - final loss (log scale)')
     ax.set_title('Distance to the minimum, log scale')
-    plt.savefig("loss_gap.png")
+    plt.savefig("../img/loss_gap.png")
   #+end_src
 
   #+RESULTS:
-  [[file:loss_gap.png]]
+  [[file:../img/loss_gap.png]]
 
-* Linear regression extensions
-
-** Polynomial models
+* Polynomial models
 
 To extend the model to describe polynomial functions, add a parameter
 \phi_2 for a quadratic term:
@@ -484,7 +581,7 @@ coordinate descent after 300 iterations ([[https://github.com/iclimbtrees/iclimb
 Due to the quadratic term, the loss is better than for the linear
 model.
 
-** More than one input
+* More than one input
 
 - This is the 2D linear regression model. Two inputs means that we
   have two input vectors:
@@ -493,19 +590,43 @@ model.
   The same as (in vector notation):
   [[../img/2dlinear.png]]
 
-- The output y can be visualized as the height of a 2D plane. The
-  diagonal lines are *contour* lines (also called *isolines* or *level
-  curves*): each line traces out all the points (x_1, x_2) where the
+- The output y can be visualized as the height of a 2D plane. As with
+  the loss heatmap earlier, the diagonal lines are the *contour lines*
+  (isolines): each one traces out all the points (x_1, x_2) where the
   model produces the same output y. For this model they are straight
-  and evenly spaced. Straight: you can see this by fixing a target
-  output value and solving for x_2). They are evenly spaced because the
-  plane has constant slope everywhere. The vector \phi_1/\phi_2 is the
-  gradient: it points in the direction the surface climbs fastest, and
-  the contour lines are always perpendicular to it.
+  and evenly spaced. *Straight:* you can see this by fixing a target
+  output value and solving for x_2. They are *evenly spaced* because the
+  plane has constant slope everywhere (the derivative of the quadratic
+  is the linear). The vector (\phi_1, \phi_2) is the *gradient*: it points in
+  the direction the surface climbs fastest, and the contour lines are
+  always perpendicular to it.
 
   [[../img/2dlinearSurface.png]]
 
 ** Exercises (more than one input)
+
++ How to read one of these heatmaps:
+
+  + \phi_0 only sets the overall brightness (a uniform shift) - by itself
+    it creates no pattern at all. If \phi_1 = \phi_2 = 0, the heatmap is a
+    single flat color with no isolines whatsoever.
+
+  + \phi_1 controls the left-right (x_1) trend, \phi_2 controls the top-bottom
+    (x_2) trend. Read each one's *sign* off the direction of the
+    change - e.g. does it get brighter or darker as x_1 increases -
+    not off which corner happens to look dark, since both parameters'
+    effects combine in the corners.
+
+  + The vector (\phi_1, \phi_2) is the *gradient*: it points toward the
+    steepest increase (the brightest direction), and its magnitude
+    \sqrt{\phi_1^2+\phi_2^2} sets how fast the color changes.
+
+  + The *isolines* (contour lines) are always perpendicular to the
+    gradient, with slope -\phi_1/\phi_2. Closely packed isolines mean a
+    large gradient magnitude (steep, fast-changing); widely spaced
+    isolines mean a small one (shallow, slow-changing).
+
+Use these insights to answer the following questions:
 
 1) What do you expect the heatmap representing the model to look like
    when the parameters \phi are \phi_0 = 1.0, \phi_1 = \phi_2 = 0?
@@ -625,7 +746,7 @@ model.
    True values: \phi_0 = 0.1, \phi_1 = -1.0, \phi_2 = 0.9
    #+end_quote
 
-** Training data and loss function
+* Training data and loss function
 
 The training data for this model consists of triples {x_i , x'_i, y_i}
 for i values of the vectors. The loss function represents the sum of
@@ -635,7 +756,7 @@ true outputs:
 
 [[../img/2dlinearloss.png]]
 
-** Multiple outputs
+* Multiple outputs
 
 - For this situation, we build several models in parallel. For example
   for one input, visualized as two lines, one for each output:
@@ -644,7 +765,40 @@ true outputs:
   And for two inputs, visualized as two planes, one for each output:
   [[../img/twoOutTwoIn.png]]
 
-** Exercises 
+** Exercises (vector equations)
+
+- How to build one of these vector-form equations:
+
+  1) The *vector form* is still just a dot product, as in the plain
+     linear model: stack every term's coefficient into \phi and every
+     matching power/product of the inputs into a second vector, then
+     f[x,\phi] = \phi^T \cdot [\text{terms}]. Going to higher order or more
+     inputs doesn't change this structure - it only makes the two
+     vectors longer.
+
+  2) To list the terms for order m, include *every* monomial in the
+     inputs with total degree from 0 up to m - don't skip any. Leaving
+     one out isn't just a bookkeeping shortcut: each term is what lets
+     the model bend a specific way, so dropping it removes a real
+     shape the model could otherwise fit (e.g. dropping x^2 stops it
+     being quadratic at all).
+
+  3) With *more than one input*, distinguish pure-power terms (x^2,
+     x'^2) from *interaction* terms (x x'). Without the interaction
+     term(s), the model is *separable* - just a sum of independent
+     curves, one per input - which restricts it to an axis-aligned
+     bowl or saddle. Interaction terms are what let the isolines tilt
+     off-axis, the same role the ratio \phi_1{:}\phi_2 played for the
+     plain linear model.
+
+  4) The parameter *count* for order m with D_i inputs is the number of
+     monomials of total degree \le m in D_i variables - a binomial
+     coefficient (choosing with replacement), not a simple product
+     like m \times D_i.
+
+  5) *Multiple outputs* need no new equation form: stack independent
+     copies of the same model, one full \phi vector per output, all
+     sharing the same input vector.
 
 1) What is the equation for a quadratic model with one input x and one
    output in vector form?
@@ -697,3 +851,56 @@ true outputs:
   fits the data well, and c) a polynomial model of order m=11 (one for
   each output point) that exhibits overfitting.
   [[../img/testing.png]]
+
+* Summary and outlook
+
+This chapter covered *supervised learning* in its simplest form -
+linear regression - stripped down to what a model, a parameter, and a
+loss function actually are, with no neural network in sight yet.
+
+Why this matters for what comes next:
+
+- *The vocabulary carries over unchanged.* When shallow neural
+  networks appear in the next chapter, the model f[x,\phi] is still a
+  parametrized function, still trained by minimizing a loss L[\phi],
+  still evaluated by comparing training and test error. Nothing about
+  that framework changes - only the shape of f gets more expressive.
+
+- *The curse of dimensionality is the reason neural networks exist.*
+  Lookup-table and nearest-neighbor models fail because they compare
+  or bin raw input points, and the number of bins/comparisons explodes
+  with dimensionality. Neural networks sidestep this by learning a
+  compact internal representation - a low-dimensional "surface" - of
+  the input, rather than operating directly in the raw, high-
+  dimensional space. Every future chapter on network architecture is,
+  in one sense, an answer to "how do we learn that surface?"
+
+- *Coordinate descent is a stepping stone, not the destination.*
+  Searching for the minimum by hand, one parameter at a time, is what
+  training "is" at the most intuitive level - decrease the loss by
+  changing the parameters. Real gradient descent replaces the "guess
+  and check" with a direction computed from calculus, and
+  backpropagation is simply gradient descent's bookkeeping method for
+  a network with millions of parameters instead of two. The heatmap
+  and descent path we drew for \phi_0, \phi_1 is the same picture, just
+  impossible to draw when the network has thousands of dimensions
+  instead of two.
+
+- *Convexity here is the exception, not the rule.* Linear regression's
+  loss surface is a single smooth bowl - there is one minimum and
+  gradient descent always finds it. Once we move to neural networks,
+  the loss surface is no longer convex: it has local minima, saddle
+  points, and flat regions. Keep this simple, well-behaved case in mind
+  as a baseline - it's what makes the more complicated landscapes
+  ahead worth calling out as a genuinely different (and harder)
+  problem.
+
+- *Overfitting and underfitting don't go away.* The same =m=1= vs. =m=2=
+  vs. =m=11= story - not enough flexibility vs. too much - reappears for
+  neural networks in the form of network depth/width vs. training data
+  size, and will come back explicitly when we discuss regularization.
+
+In short: nothing in this chapter is deep learning yet, but everything
+in it is the scaffolding deep learning is built on. The next chapter
+swaps the straight line for a network - the rest of the machinery
+stays the same.

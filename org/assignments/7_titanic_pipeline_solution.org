@@ -1,0 +1,327 @@
+#+TITLE: CS 540 — Assignment 7: Titanic Survival Pipeline
+#+AUTHOR: Marcus Birkenkrahe
+#+PROPERTY: header-args:python :session *titanic-pipeline-sol* :results output
+#+STARTUP: overview hideblocks indent entitiespretty:
+* The Scenario
+
+You already know how to impute missing values and one-hot encode a
+categorical column from scratch (the parish assignment). Titanic asks a
+different question: a passenger's chance of survival, predicted from age,
+fare, sex, embarkation port, and class. This assignment reuses those same
+tools, but the focus is on what comes *next* — chaining them into a single
+~Pipeline~, scaling numeric features, comparing models with
+cross-validation, and tuning hyperparameters with grid search, exactly the
+sequence you followed in class on the housing data.
+
+This assignment does not depend on the class notebook or its session
+state. You'll get a link to a Colab starter notebook with this same
+content — work directly in that notebook, no copy/paste, and keep all
+answers (code and Discuss/Reflection text) in that one notebook. This
+Org file is the instructor-side answer key mirroring that notebook.
+
+#+BEGIN_SRC python
+  import pandas as pd
+  import numpy as np
+  from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+  from sklearn.pipeline import Pipeline
+  from sklearn.compose import ColumnTransformer
+  from sklearn.impute import SimpleImputer
+  from sklearn.preprocessing import OneHotEncoder, StandardScaler
+  from sklearn.linear_model import LogisticRegression
+  from sklearn.tree import DecisionTreeClassifier
+
+  import seaborn as sns
+  titanic = sns.load_dataset("titanic")
+  titanic.head()
+#+END_SRC
+
+#+RESULTS:
+
+Note: if there's no internet access in the room, swap the load line for a
+local CSV: ~titanic = pd.read_csv("titanic.csv")~ (any standard Kaggle-style
+Titanic CSV with the same column names works).
+
+* Challenge 1 — Train/Test Split
+
+We predict ~survived~ (0 or 1) from a handful of features. Split before
+touching anything else — same discipline as housing.
+
+#+BEGIN_SRC python
+  X = titanic[["age", "fare", "sibsp", "parch", "sex", "embarked", "pclass"]]
+  y = titanic["survived"]
+
+  X_train, X_test, y_train, y_test = train_test_split(
+      X, y, test_size=0.2, stratify=y, random_state=42
+  )
+
+  print(X_train.shape, X_test.shape)
+#+END_SRC
+
+#+RESULTS:
+: (712, 7) (179, 7)
+
+*Discuss:* In the housing notebook, you stratified the split on
+~income_cat~, a category you built specifically for that purpose, not on
+~median_house_value~ itself (a continuous number can't be stratified
+directly). Here you can stratify directly on ~survived~. Why does that
+work for this problem but not for the housing price?
+
+#+begin_quote
+~survived~ is already categorical — it only takes two values, 0 or 1 —
+so ~train_test_split~ can directly compute "what fraction of rows are 1"
+and preserve that fraction in both splits. ~median_house_value~ is
+continuous — effectively every row has its own distinct value, so there
+is no meaningful "category" to balance; stratifying on it directly isn't
+even defined. That's exactly why the housing notebook built ~income_cat~
+first: it bucketed a continuous feature into a small number of bins
+*specifically so it could be stratified on*, as a stand-in for the target.
+Here that extra step is unnecessary because the target itself is already
+a small set of discrete categories.
+#+end_quote
+
+* Challenge 2 — The Numeric Pipeline: Impute *and* Scale
+
+You've already built an imputer on its own. Now chain it with a
+~StandardScaler~ into one ~Pipeline~ — the same two-step pattern from the
+~Pipeline~ toy example in class.
+
+#+BEGIN_SRC python
+  num_cols = ["age", "fare"]
+
+  num_pipeline = Pipeline([
+      ("impute", SimpleImputer(strategy="median")),
+      ("scale", StandardScaler()),
+  ])
+#+END_SRC
+
+#+RESULTS:
+
+*Discuss:* ~age~ and ~fare~ are on very different scales (roughly 0-80
+years vs. 0-512 dollars). Why does that difference matter for a model
+like ~LogisticRegression~, and what step in this pipeline fixes it?
+
+#+begin_quote
+~LogisticRegression~ (like linear regression) fits one coefficient per
+feature, and many of its solvers work by gradient descent — a numeric
+optimization process that's sensitive to the *scale* of each feature. If
+~fare~ ranges into the hundreds while ~age~ tops out under 100, the loss
+surface becomes stretched out unevenly across dimensions, so the solver
+converges more slowly and the resulting coefficients are harder to
+compare (a coefficient on ~fare~ looks artificially small next to one on
+~age~, purely because of units, not real importance). The ~"scale"~ step
+(~StandardScaler~) fixes this by putting every numeric feature on the
+same footing — mean 0, standard deviation 1 — so no feature dominates
+just because its raw numbers happen to be bigger.
+#+end_quote
+
+* Challenge 3 — The Categorical Pipeline
+
+Same imputer-then-transform pattern, just with ~most_frequent~ and a
+~OneHotEncoder~ instead of a scaler — this part you've already practiced,
+so it's mostly recall.
+
+#+BEGIN_SRC python
+  cat_cols = ["sex", "embarked", "pclass"]
+
+  cat_pipeline = Pipeline([
+      ("impute", SimpleImputer(strategy="most_frequent")),
+      ("encode", OneHotEncoder(handle_unknown="ignore")),
+  ])
+#+END_SRC
+
+#+RESULTS:
+
+* Challenge 4 — Combine Both with a ColumnTransformer
+
+This is the same move as the housing ~preprocessing~ step in class:
+one ~ColumnTransformer~ routes each group of columns to its own pipeline.
+
+#+BEGIN_SRC python
+  preprocessing = ColumnTransformer([
+      ("num", num_pipeline, num_cols),
+      ("cat", cat_pipeline, cat_cols),
+  ])
+#+END_SRC
+
+#+RESULTS:
+
+* Challenge 5 — Two Full Pipelines, Compared by Cross-Validation
+
+Wrap ~preprocessing~ together with a model into one final ~Pipeline~ —
+just like ~full_pipeline~ in class. Build two: one with
+~LogisticRegression~, one with ~DecisionTreeClassifier~.
+
+#+BEGIN_SRC python
+  log_reg_pipe = Pipeline([
+      ("preprocessing", preprocessing),
+      ("model", LogisticRegression(max_iter=1000)),
+  ])
+
+  tree_pipe = Pipeline([
+      ("preprocessing", preprocessing),
+      ("model", DecisionTreeClassifier(random_state=42)),
+  ])
+
+  for name, pipe in [("LogisticRegression", log_reg_pipe), ("DecisionTree", tree_pipe)]:
+      scores = cross_val_score(pipe, X_train, y_train, cv=5, scoring="accuracy")
+      print(f"{name}: mean={scores.mean():.3f}  std={scores.std():.3f}")
+#+END_SRC
+
+#+RESULTS:
+: LogisticRegression: mean=0.798  std=0.023
+: DecisionTree: mean=0.780  std=0.053
+
+*Discuss:* Compare the two mean scores and their std. If the two means
+differ by less than about one std, that gap is likely noise, not a real
+difference. Based on your numbers, is one model clearly better here, or
+too close to call?
+
+#+begin_quote
+The means differ by about 0.018 (0.798 vs. 0.780), which is smaller than
+either model's std (0.023 and 0.053) — so this gap is well within what
+you'd expect from fold-to-fold noise alone, not a real difference in
+model quality. Notice too that the untuned tree's std (0.053) is more
+than double the logistic regression's (0.023) — its scores swing much
+more across folds (from 0.685 up to 0.838), which is itself a sign of
+higher variance/overfitting risk, even before looking at the mean.
+Conclusion: too close to call from this alone, and the tree looks less
+stable — grid search (Challenge 6) is exactly the next step to see
+whether tuning the tree's constraints narrows that gap or that variance.
+#+end_quote
+
+* Challenge 6 — Grid Search on the Decision Tree
+
+Same idea as the housing fine-tuning step: search over a small grid of
+hyperparameters instead of guessing.
+
+#+BEGIN_SRC python
+  param_grid = {
+      "model__max_depth": [2, 4, 6, 8, None],
+      "model__min_samples_leaf": [1, 5, 10],
+  }
+
+  grid_search = GridSearchCV(tree_pipe, param_grid, cv=5, scoring="accuracy")
+  grid_search.fit(X_train, y_train)
+
+  print(grid_search.best_params_)
+  print(grid_search.best_score_)
+#+END_SRC
+
+#+RESULTS:
+: {'model__max_depth': 8, 'model__min_samples_leaf': 5}
+: 0.8203683640303356
+
+*Discuss:* Why does the grid use ~"model__max_depth"~ (with a double
+underscore) instead of just ~"max_depth"~?
+
+#+begin_quote
+~GridSearchCV~ only ever sees the outer ~tree_pipe~ object, which has no
+~max_depth~ attribute of its own — that parameter actually lives several
+layers down, inside the step named ~"model"~. The double underscore is
+scikit-learn's syntax for "reach inside the step named X and set its
+parameter Y": ~"model__max_depth"~ means "go to the step called
+~model~, and set *its* ~max_depth~." Without that prefix, ~GridSearchCV~
+would look for a top-level ~max_depth~ parameter on the pipeline itself,
+find nothing, and raise an error.
+#+end_quote
+
+Grid search improved the best cross-validated accuracy from 0.780
+(untuned tree, Challenge 5) to 0.820 — confirming the untuned tree
+really was overfitting, exactly as its high std already hinted at.
+
+* Challenge 7 — Evaluate Once on the Test Set
+
+This is the only time ~X_test~ gets touched. Pick the best model found
+by grid search and score it.
+
+#+BEGIN_SRC python
+  best_tree = grid_search.best_estimator_
+  test_accuracy = best_tree.score(X_test, y_test)
+
+  print(f"Test accuracy: {test_accuracy:.3f}")
+#+END_SRC
+
+#+RESULTS:
+: Test accuracy: 0.793
+
+Test accuracy (0.793) lands close to the cross-validated best score from
+Challenge 6 (0.820) — a couple of points lower, which is normal sampling
+variation on a 179-row test set, not a red flag.
+
+* Challenge 8 — Reflection Questions
+
+1. Where exactly could data leakage sneak into this pipeline if you
+   weren't careful (e.g. if you'd fit the imputer or scaler on all of
+   ~X~ before splitting)? Point to the specific structural choice in
+   Challenges 5-7 that prevents it.
+
+   #+begin_quote
+   If ~SimpleImputer~, ~StandardScaler~, or ~OneHotEncoder~ were fit on
+   the full ~X~ before ~train_test_split~, the learned median ~age~, the
+   scaling parameters for ~fare~, and the known categories would all be
+   computed using information from rows that are supposed to be unseen
+   test data — the preprocessing would already "know" something about
+   the test set's distribution before evaluation, quietly inflating test
+   performance. The protection here is structural: ~preprocessing~ (and
+   everything inside it) is only ever fit inside ~cross_val_score~ or
+   ~grid_search.fit(X_train, y_train)~ in Challenges 5 and 6 — both
+   correctly refit the imputer/scaler/encoder on each training fold
+   separately — and ~X_test~ is never touched until the single
+   ~best_tree.score(X_test, y_test)~ call in Challenge 7.
+   #+end_quote
+
+2. In class, some housing features got special treatment beyond plain
+   impute + scale — a *ratio* feature (bedrooms per room) and a
+   *log transform* for a heavily skewed feature (population). Titanic
+   has ~sibsp~ (siblings/spouses aboard) and ~parch~ (parents/children
+   aboard) sitting unused in ~X~ right now. Would combining them into a
+   single ~family_size = sibsp + parch + 1~ feature, or log-transforming
+   ~fare~ (which is heavily skewed — a few tickets cost far more than
+   most), plausibly help this model? You don't need to write code —
+   just reason about it the way you reasoned about the housing features.
+
+   #+begin_quote
+   ~family_size~ is a plausible candidate for the same reason the
+   housing ratios were: ~sibsp~ and ~parch~ separately are raw counts
+   that don't obviously matter on their own, but combined they capture
+   something more meaningful — whether a passenger was traveling alone
+   or with a family, which historically affected survival (families
+   with young children were prioritized for lifeboats; solo travelers
+   were not). That's the same logic as bedrooms-per-room being more
+   informative than the raw bedroom count. A log transform on ~fare~ is
+   also plausible for the same reason it helped ~population~: ~fare~ is
+   heavily right-skewed (most tickets are cheap, a handful are very
+   expensive), and squeezing that long tail closer to a normal-ish shape
+   tends to help models like logistic regression that are sensitive to
+   extreme values. Whether either actually improves cross-validated
+   accuracy here is an empirical question — the reasoning only tells you
+   they're worth *trying*, not that they're guaranteed to help.
+   #+end_quote
+
+3. The untuned ~DecisionTreeClassifier~ in Challenge 5 and the
+   grid-searched one in Challenge 6 both get evaluated with
+   cross-validation, never with the training accuracy alone. Why would
+   training accuracy be a misleading way to compare these two trees to
+   each other?
+
+   #+begin_quote
+   An untuned ~DecisionTreeClassifier~ has no depth limit, so it can
+   grow until it perfectly separates the training data — its training
+   accuracy would sit near 1.0 regardless of whether it's actually
+   learned anything generalizable, the same way the housing tree hit an
+   RMSE of exactly 0.0 on its training set. Comparing two trees by
+   training accuracy alone would make the *more overfit* tree look
+   better every time, since a deeper, less-constrained tree can always
+   memorize more of the training set than a shallower one — even if the
+   shallower, grid-searched tree generalizes better to new data.
+   Cross-validation is what actually distinguishes "fits training data
+   well" from "generalizes well," which is the only comparison that
+   matters when picking a model.
+   #+end_quote
+
+* Submission
+
+You submit a Colab share link (Anyone with the link, Viewer) to your
+completed notebook, with every code cell run and every
+Discuss/Reflection answer filled in directly in the notebook — no
+separate Teams reply.
