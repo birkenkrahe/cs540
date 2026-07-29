@@ -1,0 +1,699 @@
+#+TITLE: CS 540 — Deep learning
+#+AUTHOR: Marcus Birkenkrahe
+#+PROPERTY: header-args:python :session *cm-review* :results output
+#+STARTUP: overview hideblocks indent entitiespretty:
+* Sources
+
+The images (and some of the code) were taken from Prince,
+"Understanding Deep Learning" (MIT Press 2023, see udlbook.github.io
+and iclimbtrees.com). The PDF of the book is freely available under a
+[[https://creativecommons.org/licenses/by-nc-nd/4.0/deed.en][CC-BY-NC-ND license]].
+
+* The case for deep learning
+
+- Machine learning means building a mapping (model) from one vector of
+  numbers (input) to another vector of numbers (output).
+
+- Plain ML models (like kNN) struggle with real-world input:
+
+  1) *Order matters* - e.g. "I am well" vs. "Am I well"; shuffled
+     pixels don't look like the original image anymore.
+
+  2) *Variable length* - e.g. a review can be 5 words or 500 words.
+
+  3) *Too many dimensions* - e.g. 10 sec of audio at 44.1 kHz is
+     441,000 numbers for just one clip. With that many dimensions,
+     "nearest neighbor" stops meaning anything: almost every point
+     ends up about equally far from every other point (*curse of
+     dimensionality*).
+
+  Neural networks are built to handle exactly these three problems -
+  that's the case for deep learning.
+
+* The curse of dimensionality
+
+- This "curse" makes the mapping of input to output vectors
+  challenging for large number of features (high dimensional features
+  spaces).
+
+- Example: a non-parametric model to predict car prices: we sort the
+  training data (20 cars by age) into the *age* bins and average the
+  price for each.
+
+  [[../img/car_prices.png]]
+
+- We can use this model to predict the price for an unseen car by
+  finding the right bin for it.
+
+- What changes if we want to use two inputs - car age and car mileage?
+  #+begin_quote
+  We now need 8 bins for age and 8 bins for mileage, each associated
+  with each other, so we have 64 = 8^2 bins in total to sort through.
+
+  But now most bins are empty (64-20=44), and many contain only one
+  sample - the training data are insufficient. We could collect eight
+  times more data but many combinations remain rare (like: one year
+  old, 110k miles -> empty bin).
+  #+end_quote
+
+  [[../img/car_prices2.png]]
+
+- What if we collect N > 2 features for the cars to make our model
+  smarter?
+  #+begin_quote
+  We end up with 2^N bins an increasing number of whom remain empty.
+  This is the "curse of dimensionality": the input space will
+  exponentially outgrow the training data.
+  #+end_quote
+
+- Question: what equation would describe the non-parametric ("lookup
+  table") model of eight bins?
+
+  #+begin_quote
+  The equation is always y = f(x) where y and x are vectors and f is a
+  function that maps the input x to the output y.
+
+  Here, x is a vector of car age values, and y is a vector of car
+  prices predicted for the car age values.
+
+  The function that tells us for a given x what the value of y is, is
+  an indicator function that picks out the matching bin:
+
+  [[../img/bin.png]]
+
+  The coefficients are calculated as the arithmetic mean of the data
+  that fall in each bin.
+
+  In this equation, if a car per its age falls into the k-th bin, its
+  coefficient \phi_k is activated, and all the others are not.
+  #+end_quote
+
+* Why artificial neural networks (ANNs) escape the curse
+
+- ANNs don't *compare* raw points at all - a lookup-table / nearest-
+  neighbor model measures distance (or sorts into bins) in the raw
+  input space, which is exactly where the curse hits hardest.
+
+- Instead, a neural network *learns* its own small set of features from
+  the raw input and predicts from those - not from the original
+  441,000 numbers or the 8^N bins.
+
+- This works because real data (audio, images, car prices) doesn't
+  spread evenly through all those dimensions - it lives on a much
+  smaller feature *"surface"* inside the huge space. The network only
+  has to learn that surface, not the whole space.
+
+- The network also *reuses* the same small set of weights across the
+  input (e.g. the same rule applied to every patch of an image or
+  every moment of audio), so the number of things it has to learn
+  doesn't explode the way the number of bins did.
+
+* What does "training the model" really mean?
+
+- The model is a mapping from one or more *inputs* to one or more
+  *outputs* - a mathematical function or *equation*.
+
+- When the input values pass through the function, the output is
+  computed: this is an *inference.*
+
+- The equation can contain *parameters*. For different parameters, the
+  model equation describes a family of possible relationships between
+  inputs and outputs.
+
+- *Training* a model means finding those parameters that describe the
+  relationship between inputs and outputs best.
+
+- To measure the quality of our approximation to the perfect set of
+  parameters, you need to pick a metric, also called a *loss function*.
+
+- For f[x,\phi] where x is an input vector and \phi is a vector of
+  parameters, the loss function compares the computed output f[x,\phi] to
+  the ground truth output y. In the example: least-squares loss.
+
+  [[../img/loss.png]]
+
+- The *loss*, or *training error* is a *scalar* value. High loss means poor
+  mapping, low loss means accurate mapping of input to output using
+  our parametrized model.
+
+- After training the model, we run it on a separate *test dataset* to
+  see how well it *generalizes* on data that it has not seen during
+  training.
+
+- If performance is adequate, we can deploy the model.
+
+* Linear regression example from scratch
+
+- [[https://udlbook.github.io/udlfigures/][See here for some interactive figures]].
+
+- For linear regression, y = f[x,\phi] = \phi_0 + \phi_1 x. The training data set
+  consists of input/output pairs {x_i, y_i}. The parameters are
+  intercept \phi_0 and slope \phi_1.
+  [[../img/linear_loss.png]]
+
+
+- For the linear regression model, loss, slope and intercept can be
+  visualized as a 3D surface or a heat map:
+  [[../img/loss2.png]]
+
+* Plot prediction and compute loss
+
+- Load math and plotting libraries:
+  #+begin_src python :results none :session *Python* :python python3
+    import numpy as np
+    import matplotlib.pyplot as plt
+  #+end_src
+
+- Code example: Create some input/output data ([[https://colab.research.google.com/drive/1_vNmAbriGj3eP41x3lM5o4Pcx7m5igbg?usp=sharing][see Colab]])
+  #+begin_src python :results none :session *Python* :python python3
+    x = np.array([0.03, 0.19, 0.34, 0.46, 0.78, 0.81, 1.08, 1.18, 1.39, 1.60, 1.65, 1.90])
+    y = np.array([0.67, 0.85, 1.05, 1.0, 1.40, 1.5, 1.3, 1.54, 1.55, 1.68, 1.73, 1.6 ])
+
+    print(x)
+    print(y)
+  #+end_src
+
+- Define a 1D linear regression model
+  #+begin_src python :results none :session *Python* :python python3
+    def linf(x, phi0, phi1):
+        """Linear function y = f(x) = phi0 + phi1 * x
+        x: input vector
+        phi0: intercept
+        phi1: slope
+        y: output vector
+        """
+        y = phi0 + phi1 * x
+        return y
+  #+end_src
+
+- Plotting function
+  #+begin_src python :results none :session *Python* :python python3
+    def plot(x, y, phi0, phi1):
+        """Plot vectors x,y and line f(x)=phi0+phi*x
+        x: x-axis vector (input)
+        y: y-axis vector (output)
+        """
+        plt.clf()
+        fig,ax = plt.subplots()
+        ax.scatter(x,y)
+        plt.xlim([0,2.0])
+        plt.ylim([0,2.0])
+        ax.set_xlabel('Input, $x$')
+        ax.set_ylabel('Output, $y$')
+        x_line = np.arange(0,2,0.01)
+        y_line = linf(x_line, phi0, phi1)
+        plt.plot(x_line, y_line, 'b-', lw=2)
+        plt.savefig("plot.png")
+  #+end_src
+
+- Set the intercept and slope and plot data
+  #+begin_src python :file plot.png :results file graphics output :exports both :session *Python* :python python3
+    phi0 = 0.4; phi1 = 0.2;
+    plot(x,y,phi0,phi1)
+  #+end_src
+
+  #+RESULTS:
+  [[file:plot.png]]
+
+- Function to calculate the loss: this is simply the sum of the
+  squared *residuals* - the length of the vertical error lines between
+  each of the true points {x_{i},y_{i}} and the line.
+  #+begin_src python :results none :session *Python* :python python3
+    def compute_loss(x,y,phi0,phi1):
+        loss = phi0 + phi1 * x - y
+        loss_scalar = np.sum(loss**2)
+        return loss_scalar
+  #+end_src
+
+- Compute loss:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    loss = compute_loss(x,y,phi0,phi1)
+    print(f'Your loss = {loss:3.2f}, ground truth = 7.07')
+  #+end_src
+
+  #+RESULTS:
+  : Your loss = 7.07, ground truth = 7.07
+
+- Set the intercept and slope to a different value, then plot and
+  print loss:
+  #+begin_src python :file plot.png :results file graphics output :exports both :session *Python* :python python3
+    phi0 = 1.60; phi1 = -0.8
+    plot(x,y,phi0,phi1)
+  #+end_src
+
+  #+RESULTS:
+  [[file:plot.png]]
+
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    loss = compute_loss(x,y,phi0,phi1)
+    print(f'Your loss = {loss:3.2f}, ground truth = 10.28')
+  #+end_src
+
+  #+RESULTS:
+  : Your loss = 10.28, ground truth = 10.28
+
+* Coordinate descent: find the minimum of the loss function
+
+- Coordinate descent: change the parameters to fit the model: start
+  changing the intercept until loss won't go lower, then fix intercept
+  and change slope until loss is at minimum.
+
+- The code as such is beginner-level Python:
+  #+begin_src python :results output :exports both :session *Python* :python python3
+    def line_search(x, y, phi0, phi1, vary, step=0.5, min_step=1e-4):
+        """Hill-climb one parameter ('phi0' or 'phi1'): try a small step up
+        and down, keep whichever lowers the loss, and shrink the step
+        whenever neither direction helps, until the step is tiny."""
+        best_loss = compute_loss(x, y, phi0, phi1)
+        while step > min_step:
+            improved = False
+            for direction in (1, -1):
+                if vary == 'phi0':
+                    candidate = (phi0 + direction * step, phi1)
+                else:
+                    candidate = (phi0, phi1 + direction * step)
+                    candidate_loss = compute_loss(x, y, *candidate)
+                if candidate_loss < best_loss:
+                    phi0, phi1 = candidate
+                    best_loss = candidate_loss
+                    improved = True
+                    break
+            if not improved:
+                step /= 2
+        return phi0, phi1, best_loss
+
+    # One pass (tune phi0 once, then phi1 once) is not enough: the best
+    # intercept depends on the slope, and vice versa, so we alternate
+    # rounds until a full round no longer lowers the loss.
+    phi0, phi1 = 0.4, 0.2
+    loss = compute_loss(x, y, phi0, phi1)
+    history = [(0, phi0, phi1, loss)]  # keep every round for the descent plot below
+    for round_num in range(50):
+        phi0, phi1, loss = line_search(x, y, phi0, phi1, vary='phi0')
+        phi0, phi1, new_loss = line_search(x, y, phi0, phi1, vary='phi1')
+        print(f'Round {round_num + 1}: phi0={phi0:.3f}, phi1={phi1:.3f}, loss={new_loss:.3f}')
+        history.append((round_num + 1, phi0, phi1, new_loss))
+        if abs(loss - new_loss) < 1e-6:
+            break
+        loss = new_loss
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  Round 1: phi0=1.132, phi1=0.289, loss=0.512
+  Round 2: phi0=1.047, phi1=0.354, loss=0.363
+  Round 3: phi0=0.986, phi1=0.401, loss=0.285
+  Round 4: phi0=0.942, phi1=0.434, loss=0.244
+  Round 5: phi0=0.910, phi1=0.459, loss=0.223
+  Round 6: phi0=0.886, phi1=0.476, loss=0.212
+  Round 7: phi0=0.870, phi1=0.489, loss=0.206
+  Round 8: phi0=0.858, phi1=0.498, loss=0.203
+  Round 9: phi0=0.849, phi1=0.505, loss=0.202
+  Round 10: phi0=0.842, phi1=0.510, loss=0.201
+  Round 11: phi0=0.838, phi1=0.513, loss=0.200
+  Round 12: phi0=0.835, phi1=0.516, loss=0.200
+  Round 13: phi0=0.832, phi1=0.518, loss=0.200
+  Round 14: phi0=0.830, phi1=0.519, loss=0.200
+  Round 15: phi0=0.829, phi1=0.520, loss=0.200
+  Round 16: phi0=0.828, phi1=0.520, loss=0.200
+  Round 17: phi0=0.828, phi1=0.521, loss=0.200
+  Round 18: phi0=0.827, phi1=0.521, loss=0.200
+  Round 19: phi0=0.827, phi1=0.522, loss=0.200
+  #+end_example
+
+* Visualize the loss function in 3D and as a heatmap
+
+- The *coordinate descent* process is equivalent to descending
+  coordinate-wise on the loss function. This is an older,
+  calculus-free method that is distinct from *gradient* descent.
+
+- To visualize this, build a pair of 2D coordinate grids from two 1D
+  ranges:
+  #+begin_src python :results none :session *Python* :python python3
+    # make a 2D grid of possible phi0 and phi1 values
+    phi0_mesh, phi1_mesh = np.meshgrid(np.arange(0.0,2.0,0.02),
+                                       np.arange(-1.0,1.0,0.02))
+    # make a 2D array for the losses
+    all_losses = np.zeros_like(phi1_mesh)
+    # run through each 2D combination of phi0, phi1, and compute loss
+    for indices, temp in np.ndenumerate(phi1_mesh):
+        all_losses[indices] = compute_loss(x,y,phi0_mesh[indices],phi1_mesh[indices])
+  #+end_src
+
+  #+RESULTS:
+
+- Now plot the loss function as a heatmap and the position of the best
+  fitting line on the loss function:
+  #+begin_src python :file heatmap.png :results file graphics output :exports both :session *Python* :python python3
+    # plot loss function as heatmap
+    fig = plt.figure()
+    ax = plt.axes()
+    fig.set_size_inches(7,7)
+    levels = 256
+    ax.contourf(phi0_mesh,phi1_mesh,all_losses,levels)
+    levels=40
+    ax.contour(phi0_mesh,phi1_mesh,all_losses,levels,colors=['#80808080'])
+    ax.set_ylim([-1,1])
+    ax.set_xlabel(r'Intercept, $\phi_0$')
+    ax.set_ylabel(r'Slope, $\phi_1$')
+
+    # plot the coordinate-descent path: alternating phi0/phi1 steps
+    # trace out a staircase, since each round only moves along one axis
+    path_phi0 = [h[1] for h in history]
+    path_phi1 = [h[2] for h in history]
+    ax.plot(path_phi0, path_phi1, '-', color='white', linewidth=1)
+
+    # plot position of best fitting line on the loss function
+    # it should be close to the minimum
+    ax.plot(phi0,phi1,'ro')
+    plt.savefig("heatmap.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:heatmap.png]]
+
+* Visualize the descent
+
+- Notice in the round-by-round printout that the loss doesn't glide
+  smoothly downhill — it drops in uneven steps, because each round
+  only adjusts /one/ parameter at a time (first =phi0=, then =phi1=) before
+  the loss is checked again. To see those hops the way textbooks
+  usually draw gradient descent — dots hopping down a cost curve
+  toward the minimum — slice the loss surface along =phi0= (holding =phi1=
+  fixed at its final, converged value) and place each round's =phi0= on
+  that curve. This is a real 1D cross-section of the loss surface from
+  the heatmap below:
+  #+begin_src python :file loss_descent.png :results file graphics output :exports both :session *Python* :python python3
+    losses = [h[3] for h in history]
+
+    # 1D slice of the loss surface: vary phi0, hold phi1 at its final value
+    phi1_final = history[-1][2]
+    phi0_range = np.arange(0.2, 1.6, 0.005)
+    loss_curve = [compute_loss(x, y, p0, phi1_final) for p0 in phi0_range]
+
+    # where each round's phi0 lands on that curve
+    phi0_steps = [h[1] for h in history]
+    loss_steps = [compute_loss(x, y, p0, phi1_final) for p0 in phi0_steps]
+
+    fig, ax = plt.subplots()
+    fig.set_size_inches(8, 5.5)
+    ax.plot(phi0_range, loss_curve, 'k-', lw=2, zorder=1)
+    ax.plot(phi0_steps, loss_steps, 'o', color='tab:blue', markersize=7, zorder=3)
+
+    # curved arrows showing each hop
+    for i in range(len(phi0_steps) - 1):
+        ax.annotate('', xy=(phi0_steps[i+1], loss_steps[i+1]),
+                    xytext=(phi0_steps[i], loss_steps[i]),
+                    arrowprops=dict(arrowstyle='->', color='dimgray', lw=1.2,
+                                    connectionstyle="arc3,rad=-0.35"), zorder=2)
+        mx = (phi0_steps[0] + phi0_steps[1]) / 2
+        my = max(loss_steps[0], loss_steps[1]) + 0.5
+        ax.annotate('Learning step', xy=(mx, my), fontstyle='italic', ha='center')
+
+    # random initial value
+    ax.axvline(phi0_steps[0], color='gray', linestyle='--', linewidth=1, ymax=0.83)
+    ax.text(phi0_steps[0], -0.10, 'Random initial value', transform=ax.get_xaxis_transform(),
+            ha='center', va='top', fontstyle='italic')
+
+    # minimum
+    ax.plot(phi0_steps[-1], loss_steps[-1], 'o', color='navajowhite', markeredgecolor='k',
+            markersize=9, zorder=4)
+    ax.text(phi0_steps[-1], loss_steps[-1] + 0.4, 'Minimum', fontweight='bold', ha='center')
+
+    major_ticks = [0.2, 0.6, 1.0, 1.4]
+    all_ticks = sorted(major_ticks + [phi0_steps[-1]])
+    tick_labels = [r'$\hat{\phi}_0$' if abs(t - phi0_steps[-1]) < 1e-9 else f'{t:.1f}' for t in all_ticks]
+    ax.set_xticks(all_ticks)
+    ax.set_xticklabels(tick_labels)
+
+    ax.set_xlabel(r'Intercept, $\phi_0$', labelpad=25)
+    ax.set_ylabel('Loss')
+    ax.set_ylim(bottom=-0.3)
+    fig.subplots_adjust(bottom=0.22)
+    ax.set_title('Gradient descent: hopping down the loss curve')
+    plt.savefig("loss_descent.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:loss_descent.png]]
+
+- The last several rounds barely move (0.201 -> 0.200 -> 0.200 ...),
+  so on the curve above those final hops bunch up right next to the
+  minimum, almost indistinguishable from one another. A plain log
+  y-axis wouldn't fix this, because the loss is flattening out near
+  ~0.2, not near 0 — log scale only spreads values out near zero.
+  What actually shrinks toward zero, round after round, is the /gap/
+  between the current loss and the final loss. Plotting that gap
+  on a log scale turns the invisible tail into a clean, almost
+  straight line spanning several orders of magnitude:
+  #+begin_src python :file loss_gap.png :results file graphics output :exports both :session *Python* :python python3
+    rounds = [h[0] for h in history]
+    loss_min = losses[-1]
+    gaps = [max(l - loss_min, 1e-6) for l in losses]
+
+    fig, ax = plt.subplots()
+    fig.set_size_inches(7, 5)
+    ax.plot(rounds, gaps, 'o-', color='tab:orange')
+    ax.set_yscale('log')
+    ax.set_xlabel('Round')
+    ax.set_ylabel('Loss - final loss (log scale)')
+    ax.set_title('Distance to the minimum, log scale')
+    plt.savefig("loss_gap.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:loss_gap.png]]
+
+* Linear regression extensions
+
+** Polynomial models
+
+To extend the model to describe polynomial functions, add a parameter
+\phi_2 for a quadratic term:
+[[../img/quadratic.png]]
+
+The loss is still the sum of the squared deviations (residuals) between the model
+prediction f[x_{i},\phi] and the true outputs y:
+[[../img/quadratic_loss.png]]
+
+Here is a visualization of training the quadratic model with
+coordinate descent after 300 iterations ([[https://github.com/iclimbtrees/iclimbtrees/blob/main/notebooks/SupervisedLearning/LinearRegression_FitModel_Quadratic.ipynb][source code here]]).
+
+[[../img/loss_quadratic.png]]
+
+Due to the quadratic term, the loss is better than for the linear
+model.
+
+** More than one input
+
+- This is the 2D linear regression model. Two inputs means that we
+  have two input vectors:
+  [[../img/2dlinear2.png]]
+
+  The same as (in vector notation):
+  [[../img/2dlinear.png]]
+
+- The output y can be visualized as the height of a 2D plane. The
+  diagonal lines are *contour* lines (also called *isolines* or *level
+  curves*): each line traces out all the points (x_1, x_2) where the
+  model produces the same output y. For this model they are straight
+  and evenly spaced. Straight: you can see this by fixing a target
+  output value and solving for x_2). They are evenly spaced because the
+  plane has constant slope everywhere. The vector \phi_1/\phi_2 is the
+  gradient: it points in the direction the surface climbs fastest, and
+  the contour lines are always perpendicular to it.
+
+  [[../img/2dlinearSurface.png]]
+
+** Exercises (more than one input)
+
+1) What do you expect the heatmap representing the model to look like
+   when the parameters \phi are \phi_0 = 1.0, \phi_1 = \phi_2 = 0?
+   #+begin_quote
+   A single, uniform color across the whole (x_{1}, x_{2}) plane - no
+   gradient, no contour lines at all. \phi_0 only sets which color (i.e.,
+   the constant height); it can't create any spatial pattern by
+   itself - that requires at least one nonzero slope, \phi_1 or \phi_2.
+   #+end_quote
+   [[../img/2dlinear_ex1.png]]
+
+2) What do you expect the heatmap to look like for \phi_0 = 1.0, \phi_1
+   = 0, \phi_2 = -0.5?
+   #+begin_quote
+   The model only slopes in the direction of x_2. The gradient is
+   (0,-0.5), a non-zero vector of magnitude 0.5 pointing straight along
+   the x_2 axis in the negative direction.
+
+   Since the contour lines are always perpendicular to the gradient,
+   they run *horizontally* here - straight lines parallel to the x_1
+   axis. Moving left-right (changing x_1 with x_2 fixed) stays on the
+   same contour line, so the color doesn't change at all in that
+   direction; it only changes as you move up or down. And because
+   \phi_2 is negative rather than positive, the output *decreases* as
+   x_2 increases - the opposite trend from the \phi_2 > 0 case, so
+   whichever color represents the lowest value sits at the top of the
+   heatmap (high x_2) instead of the bottom.
+   #+end_quote
+
+3) Which of these 2D linear models has parameters \phi_0 = -0.33,
+   \phi_1 = -0.11, \phi_2 = 0.35?  [[../img/2dlinear_ex3.png]]
+
+   #+begin_quote
+   The model on the right has these parameters. The offset is negative,
+   so the center of the plot is darker than typical. The first slope
+   parameter is negative, so as we move from left to right, the heatmap
+   gets darker at a slow rate. The second slope parameter is positive,
+   so as we move from top to bottom, the heatmap gets brighter at a
+   faster rate.
+
+   The isolines confirm this without even having to reason about
+   brightness. Differentiating the level set \phi_0+\phi_1 x_1+\phi_2
+   x_2=c gives dx_2/dx_1 = -\phi_1/\phi_2 = -(-0.11)/0.35 \approx +1/3:
+   the isolines should be close to horizontal, tilted gently *upward*
+   from left to right. (Note \phi_1/\phi_2 \approx -1/3 on its own is
+   the gradient's own tilt, not the isoline slope - it's the negative
+   of it, since isolines run perpendicular to the gradient.) Checking
+   the three panels: the left one has near-vertical lines (gradient
+   mostly horizontal - wrong shape), the middle one has steep, tightly
+   packed diagonal lines (gradient magnitude too large), and only the
+   right one has the shallow, widely-spaced, near-horizontal lines this
+   \phi_1,\phi_2 pair predicts. The spacing agrees too: |\nabla y| =
+   \sqrt{0.11^2+0.35^2} \approx 0.37 is a moderate gradient magnitude,
+   not the large one implied by the middle panel's tight spacing.
+   #+end_quote
+
+4) Which of these 2D linear models has parameters \phi_0 = -0.0, \phi_1 =
+   0.75, \phi_2 = -0.82?
+   [[../img/2dlinear_ex4.png]]
+   #+begin_quote
+   The model on the left has these parameters. The offset \phi_0=0.0 is
+   exactly zero - neither positive nor negative - so it contributes no
+   shift at all; the center of the heatmap has plain average
+   brightness. The first slope parameter \phi_1=0.75 is large and
+   positive, so moving left to right the heatmap gets brighter at a
+   fast rate.
+
+   The second slope parameter \phi_2=-0.82 is large and negative. At
+   the top (x_2=+1) the term \phi_2 x_2 = -0.82 (low); at the bottom
+   (x_2=-1) it's +0.82 (high). So the *top* is the dark side and the
+   *bottom* is the bright side - moving from top to bottom, the heatmap
+   gets *brighter* at a fast rate, not darker.
+
+   Putting both slopes together, the darkest corner is top-left (both
+   terms negative: -0.75-0.82=-1.57) and the brightest is bottom-right
+   (both terms positive: +0.75+0.82=+1.57), with the other two corners
+   near-neutral. That diagonal - dark top-left fading to bright
+   bottom-right - is exactly the left panel. (The right panel is the
+   mirror image: bright top-left, dark bottom-right, which is what you'd
+   get from \phi_1=-0.75, \phi_2=+0.82 instead.)
+   #+end_quote
+
+5) Guess the rough values of the parameters for the model shown here:
+   [[../img/2dlinear_ex5.png]]
+
+   #+begin_quote
+   Roughly the same brightness overall (\phi_0 is small - the plot isn't
+   uniformly light or dark). The heatmap gets darker toward the top
+   right and brighter toward the bottom left.
+
+   That direction is the giveaway for the *sign*: darker means lower y,
+   so if y gets lower as x_1 and x_2 both increase, the coefficients
+   multiplying them must be *negative*, not positive - \phi_1 < 0 and
+   \phi_2 < 0. (Positive slopes would brighten toward the top right,
+   the opposite of what's shown.) The isolines aren't too far apart,
+   so both magnitudes are similar and moderate - perhaps \phi_1
+   \approx \phi_2 \approx -0.3.
+
+   True values: \phi_0 = 0.31, \phi_1 = -0.35, \phi_2 = -0.32.
+   #+end_quote
+
+6) Guess the rough values of the parameters for the model shown here:
+   [[../img/2dlinear_ex6.png]]
+
+   #+begin_quote
+   Lines are fairly closely spaced, values for \phi_1 and \phi_2 are large,
+   perhaps 0.7 each (magnitude \sqrt{0.7^2+0.7^2}\approx1.0 - about as steep
+   as exercise 4).
+
+   Image is brightest at top-left and darkest at bottom-right. Moving
+   left to right (increasing x_1), it gets darker - a *negative* \phi_1.
+   Moving bottom to top (increasing x_2), it gets brighter - a *positive*
+   \phi_2. So \phi_1 is negative, \phi_2 is positive - not the other way around:
+   it's the *sign of the change*, not just which corner looks dark, that
+   tells you the sign of each parameter.
+
+   True values: \phi_0 = 0.1, \phi_1 = -1.0, \phi_2 = 0.9
+   #+end_quote
+
+** Training data and loss function
+
+The training data for this model consists of triples {x_i , x'_i, y_i}
+for i values of the vectors. The loss function represents the sum of
+the squared deviations between the model predictions for inputs and
+true outputs:
+[[../img/2dlinearlossequation.png]]
+
+[[../img/2dlinearloss.png]]
+
+** Multiple outputs
+
+- For this situation, we build several models in parallel. For example
+  for one input, visualized as two lines, one for each output:
+  [[../img/twoOut.png]]
+
+  And for two inputs, visualized as two planes, one for each output:
+  [[../img/twoOutTwoIn.png]]
+
+** Exercises 
+
+1) What is the equation for a quadratic model with one input x and one
+   output in vector form?
+   [[../img/oneInOneOut.png]]
+   
+2) What is the equation for a cubic model with a single input x in
+   vector form?
+   [[../img/oneInOneOutCubic.png]]
+
+3) What is the equation for a quadratic model with two inputs x and x'?
+   [[../img/quadraticTwoInputs.png]]
+
+   Why?
+   #+begin_quote
+   f[x,x',\phi] = \phi_0 + \phi_1 x + \phi_2 x' + \phi_3 x^2 + \phi_4 x'^2 + \phi_5 \cdot x x'
+
+   A general degree-2 polynomial in two variables must include every
+   monomial up to degree 2: degree 0 gives 1 term (1), degree 1 gives
+   2 terms (x, x'), and degree 2 gives 3 terms (x^2, x'^2, x x') - six
+   terms total, matching \phi_0 through \phi_5. \phi_5 x x' is simply the third
+   degree-2 monomial; leaving it out would be like dropping x^2 from
+   the one-input quadratic and no longer calling the result quadratic.
+
+   It also isn't just bookkeeping. Without the \phi_5 term, the model is
+   *separable* - the sum of a quadratic in x alone plus a quadratic in
+   x' alone - so the effect of x on y never depends on the value of
+   x'. That restricts the shape to an axis-aligned bowl (or an
+   axis-aligned saddle if \phi_3,\phi_4 have opposite signs). \phi_5 is what lets
+   the quadratic isolines (ellipses, or hyperbolas for a saddle) tilt
+   off-axis, the same way the ratio \phi_1:\phi_2 tilted the straight isolines
+   back in the linear model. y=xx' by itself is the textbook saddle
+   surface, and that shape is only reachable with a nonzero
+   interaction term.
+   #+end_quote
+
+4) Consider a polynomial model of order m with D_i inputs and one
+   output. How many parameters will this model have? Give the answer
+   in terms of m and D_i.
+   [[../img/poly.png]]
+
+   There will be one offset parameter and D_i slopes (one per
+   input). The formula is a binomial coefficient, equivalent to
+   choosing n variables with replacement but without repetition from m
+   objects - the number of slops which multiply pairs of inputs.
+
+* Testing
+
+- The figure illustrates underfitting and overfitting with a) a linear
+  model (m=1) that underfits the data, b) a quadratic model (m=2) that
+  fits the data well, and c) a polynomial model of order m=11 (one for
+  each output point) that exhibits overfitting.
+  [[../img/testing.png]]
