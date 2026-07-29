@@ -1493,6 +1493,7 @@ Any questions?
 - What makes neural networks superior?
 - Lecture with all the stuff in GitHub (6_lin_reg.org)
 - Code along notebook: [[https://tinyurl.com/lin-reg-from-scratch][tinyurl.com/lin-reg-from-scratch]]
+- Additional (ungraded) exercises available
 
 ** Closing prayer
 
