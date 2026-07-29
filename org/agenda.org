@@ -1415,7 +1415,7 @@ run all cells up to the end.
 
 ** Closing prayer
 
-* Week 10 - End-to-end ML model part 4
+* DONE Week 10 - End-to-end ML model part 4
 
 ** Opening prayer
 #+attr_html: :width 400px :float nil:
@@ -1473,10 +1473,33 @@ https://www.catholicpolytechnic.org/magnifica-humanitas-panel
 #+attr_html: :width 400px :float nil:
 [[../img/pray_hail_mary.png]]
   
-* Week 11 - Foundations for deep learning (gradient descent)
-* Week 12 - Unsupervised learning (k-means clustering)
-* Week 13 - Neural nets architecture
-* Week 14 - Neural nets with PyTorch
+* Week 11 - Linear regression from scratch
+#+attr_html: :width 400px :float nil: 
+[[../img/loss2.png]]
+
+** Opening prayer
+** Home assignment: Titanic pipeline
+
+Sample solution available in GitHub.
+
+** Unsupervised learning: KMeans and Dimensionality Reduction
+
+Any questions?
+
+** The case for deep learning
+
+- Why do ML models actually work?
+- What is the curse of dimensionality?
+- What makes neural networks superior?
+- Lecture with all the stuff in GitHub (6_lin_reg.org)
+- Code along notebook: [[https://tinyurl.com/lin-reg-from-scratch][tinyurl.com/lin-reg-from-scratch]]
+
+** Closing prayer
+
+
+* Week 12 - Shallow neural networks and deep learning
+* Week 13 - Training a neural network with PyTorch
+* Week 14 - Evaluating and improving deep learning models
 * Week 15 - Final project presentations
 * Footnotes
 
