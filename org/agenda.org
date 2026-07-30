@@ -1499,6 +1499,9 @@ Any questions?
 
 
 * Week 12 - Shallow neural networks and deep learning
+#+attr_html: :width 300px :float nil:
+[[../img/shallow.png]]
+
 * Week 13 - Training a neural network with PyTorch
 * Week 14 - Evaluating and improving deep learning models
 * Week 15 - Final project presentations
