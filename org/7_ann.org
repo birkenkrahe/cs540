@@ -1,0 +1,229 @@
+#+TITLE: CS 540 — 
+#+AUTHOR: Marcus Birkenkrahe
+#+PROPERTY: header-args:python :session *Python* :results output
+#+STARTUP: overview hideblocks indent entitiespretty:
+* Objectives
+
+Shallow neural networks (NN) describe piecewise linear functions that
+can approximate arbitrarily complex relationships between
+multi-dimensional inputs and outputs.
+
+Topics:
+- Neural network (NN) example
+- ReLU activation function
+- Supervised learning with NNs
+- Visualizing NNs
+- One-dimensional neural networks
+- Multivariate inputs and outputs
+- Universal approximation theorem
+
+* Sources
+
+Images (and some of the code) were taken from Prince, *"Understanding
+Deep Learning"* (MIT Press 2023, see udlbook.github.io and
+iclimbtrees.com). The PDF of the book is freely available under a
+[[https://creativecommons.org/licenses/by-nc-nd/4.0/deed.en][CC-BY-NC-ND license]]. Link: https://udlbook.github.io
+
+* Neural network example
+
+- What is a neural network?[fn:1]
+  #+begin_quote
+  An [artificial] neural network (ANN) is a function y = f[x,\phi] that
+  maps multivariate inputs x = {x_1, x_2,....} to multivariate outputs y
+  = {y_1, y_2,...} with parameters \phi = {\phi_1, \phi_2,...}. y = f[x,\phi] is a
+  vector equation.
+  #+end_quote
+
+- How is this different from linear regression?
+  #+begin_quote
+  It is not - at first. But we're doing something different with the
+  parameters to introduce more flexibility. 
+  #+end_quote
+
+- Example network:
+  1) scalar input x (that's where data come in)
+  2) scalar output y (that's our prediction)
+  3) parameters \phi = {\phi_0, \phi_1, \phi_2, \phi_3, \theta_10, \theta_11, \theta_20, \theta_21, \theta_30, \theta_31}
+     (that's the knobs we can tune)
+  4) dependencies in the form of a function:
+     #+name: NN
+     #+begin_quote
+     y = f[x,\phi] = \phi_0 + \phi_1 a[\theta_10 + \theta_11 x]
+                     + \phi_2 a[\theta_20 + \theta_21 x]
+                     + \phi_3 a[\theta_30 + \theta_31 x]
+     #+end_quote
+
+- Break it down by terms:
+  #+begin_quote  
+  1. f[x,\phi] is a function in one variable; it sums up three *linear*
+     functions of the input data, each of the form \theta_i0 + \theta_i1 x.
+  2. The three linear functions are passed through a filter in the
+     form of an *activation* function a[]. This function can switch a
+     term on (activated) or off (deactivated).
+  3. The three resulting activations have *weights* \phi_i. They are summed
+     and added to an offset \phi_0.
+  #+end_quote     
+ 
+- How is this a network?
+  #+begin_quote
+  Because it is not a pipeline (sequential flow) but a computational
+  graph with branches to three parallel processes and a merge back:
+
+  1. One input x *fans out* into three parallel, independent
+     linear computations.
+  2. Each computation goes through its own *activation*
+  3. All three *fan back in* to a single output via a weighted sum.
+
+  A network is a *directed acyclic graph* (DAG) of nodes connected by
+  edges where edges correspond to parameters.[fn:2]
+  #+end_quote
+
+- Do you have to have at least 10 parameters?
+  #+begin_quote
+  No, that's a design choice - in this case, D = 3 *hidden units* (the
+  linear functions \theta_i0 + \theta_i1 x). For D = 2 you get 7 parameters, and
+  D=1 is the case of linear regression.
+  #+end_quote
+
+* ReLU activation function
+
+- To switch a term on and off, the activation function must be a step
+  function: a[z], also called ReLU (rectified linear unit) is zero for
+  all negative values, and z for all positive values of z:
+  #+attr_html: :width 300px :float nil: 
+  [[../img/relu.png]]
+
+  [[../img/relu2.png]]
+
+- ReLU is the most commonly used activation function.
+  #+begin_quote
+  The original functions used were sigmoid functions (like for
+  logistic regression, sinc 1969). ReLUs came back in the 2010s.
+
+  *Pro:* quick to implement, derivative is one for all z \ge 0, which
+  contributes to the stability of training in neural networks
+  ("vanishing gradient problem").
+
+  *Con:* derivative is zero for all z \lt 0, which switches nodes off for
+  good during training ("dying ReLU problem").
+  #+end_quote
+
+* PRACTICE ReLU for the linear model
+
+- Write the model equation for the D=1 case (one hidden unit)
+  #+begin_quote
+  y = f[x,\phi] = \phi_0 + \phi_1 a[\theta_10 + \theta_11 x]
+
+  Four parameters: \phi_0, \phi_1, \theta_10, \theta_11.
+  #+end_quote
+
+- What happens with the model when you use the activation function?
+  #+begin_quote
+  Without activation (a[z]=z always): y = \phi_0 + \phi_1(\theta_10+\theta_11 x)
+  = (\phi_0+\phi_1 \theta_10) + (\phi_1 \theta_11)x - just a straight line.
+
+  With ReLU, the unit switches off/on depending on the sign of the
+  pre-activation, so the model becomes *piecewise linear* with one
+  kink at x* = -\theta_10/\theta_11 (where 0_10 + \theta_11 x = 0):
+
+  - Off (\theta_10+\theta_11 x < 0): a[.]=0, so y = \phi_0 (flat, slope 0)
+    
+  - On (\theta_10+\theta_11 x >= 0): a[.]=identity, so
+    y = (\phi_0+\phi_1\theta \theta_10) + (\phi_1\theta \theta_11)x (sloped)
+
+  Continuous at the kink (no jump), but the slope changes abruptly
+  there - one hidden unit buys exactly one bend.
+  #+end_quote
+
+- Compute this for a simple dataset and visualize it: \phi_0=0, \phi_1=2,
+  \theta_10=-1, \theta_11=1 -> kink at x*=1.
+  #+begin_quote
+
+
+  | x | -1 | 0 | 0.5 | 1 | 1.5 | 2 | 3 |
+  | y |  0 | 0 |   0 | 0 |   1 | 2 | 4 |
+
+  Flat at 0 up to x=1, then rises with slope 2 (intercept -2).
+  #+end_quote
+
+- To visualize, open a Jupyter notebook to code along:
+  #+begin_src python :file ../img/reluplot.png :results file graphics output :exports both :session *Python* :python python3 
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    def relu(z):
+        return np.maximum(0, z)
+
+    def y(x, phi0, phi1, theta10, theta11):
+        return phi0 + phi1 * relu(theta10 + theta11 * x)
+
+    x = np.linspace(-2, 4, 100)
+    plt.plot(x, y(x, phi0=0, phi1=2, theta10=-1, theta11=1))
+    plt.xlabel('x'); plt.ylabel('y')
+    plt.title('D=1 shallow network: one ReLU')
+    plt.savefig("reluplot.png")
+  #+end_src
+
+  #+RESULTS:
+  [[file:../img/reluplot.png]]
+
+* Supervised learning with NNs
+
+- The ideas from supervised learning (training, inference) carry over:
+
+  1) If we know the function parameters \phi, we can perform inference
+     (predict y) by evaluating the equation for a given input x.
+
+  2) Given a training dataset (x_i, y_i), we can define a least squares
+     loss function L[\phi] and use it to measure how effectively the
+     model approaches the dataset for a given parameter set.
+
+  3) To train the model, we search for the parameter values that
+     minimize the loss.
+
+* Neural network intuition
+
+An NN represents a family of continuous piecewise linear functions
+with up to D+1 linear regions:
+
+- *piecewise*: the function is built from separate formulas, each valid
+  only on its own interval. Our D=1 example has two (D+1) pieces.
+
+- *linear*: within each piece, the formula is a straight line. Both the
+  flat ("off") and the rising ("on") branch are straight lines.
+
+- *continuous*: the pieces meet exactly at the seam, without jumps. At
+  the kink x = x*, both formulas evaluate to the same y (example: \phi_0).
+
+In the D=3 example, we have four (D+1) linear regions/pieces - here
+shown for three different sets of \phi, all defined by equation [[NN]].
+
+[[../img/piecewise.png]]
+
+The intermediate quantities in the formula are called *hidden units*:
+\begin{align*}
+h_{1} &= \mbox{a}[\theta_{10} + \theta_{11}x] \nonumber \\
+h_{2} &= \mbox{a}[\theta_{20} + \theta_{21}x] \nonumber \\
+h_{3} &= \mbox{a}[\theta_{30} + \theta_{31}x],\tag{1.3.1}
+\end{align*}
+
+The input to a hidden unit is called a *preactivation*, and the output
+is called an *activation*. Our output function becomes:
+#+attr_html: :width 300px :float nil: 
+\begin{equation}
+y = \phi_{0}+\phi_{1}h_{1}+\phi_{2}h_{2}+\phi_{3}h_{3}.
+\end{equation}
+
+* 1D NN example
+* Multivariate inputs and outputs
+* General formulation
+* Universal approximation theorem
+
+* Footnotes
+
+[fn:1]Any neural network with at least one hidden layer is also called
+a *multi-layer perceptron* (MLP) - layer 1 is the input layer, layer 2
+is the hidden layer, layer 3 is the output layer.
+
+[fn:2]A DAG describes a *feedforward* network, not a *recurrent* network
+(RNN).
