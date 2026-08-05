@@ -1,4 +1,4 @@
-#+TITLE: CS 540 — Deep learning
+#+TITLE: CS 540 — Deep learning - Curse of dimensionality - loss functions
 #+AUTHOR: Marcus Birkenkrahe
 #+PROPERTY: header-args:python :session *cm-review* :results output
 #+STARTUP: overview hideblocks indent entitiespretty:
@@ -33,7 +33,7 @@
 * Sources
 
 The images (and some of the code) were taken from Prince,
-"Understanding Deep Learning" (MIT Press 2023, see udlbook.github.io
+*"Understanding Deep Learning"* (MIT Press 2023, see udlbook.github.io
 and iclimbtrees.com). The PDF of the book is freely available under a
 [[https://creativecommons.org/licenses/by-nc-nd/4.0/deed.en][CC-BY-NC-ND license]].
 
@@ -54,17 +54,19 @@ This is an amazing book on deep learning by the way - hands down the
 best I've seen. It comes with a massive resource basis consisting of
 Python notebooks, videos, online exercises and a research blog.
 
+Link: https://udlbook.github.io
 * The case for deep learning
 
-- Machine learning means building a mapping (model) from one vector of
-  numbers (input) to another vector of numbers (output).
+- Machine learning means building a mapping (model, function) from one
+  vector of numbers (input) to another vector of numbers (output).
 
-- Plain ML models (like kNN) struggle with real-world input:
+- Most classical ML models (like kNN) struggle with real-world input:
 
-  1) *Order matters* - e.g. "I am well" vs. "Am I well"; shuffled
-     pixels don't look like the original image anymore.
+  1) *Order matters* - e.g. "I am well" vs. "Am I well"; shuffled pixels
+     don't look like the original image anymore (spatial independence).
 
-  2) *Variable length* - e.g. a review can be 5 words or 500 words.
+  2) *Variable length* - e.g. a review can be 5 words or 500 words. And if
+     you deal with real-time data, you don't know what's coming at you.
 
   3) *Too many dimensions* - e.g. 10 sec of audio at 44.1 kHz is
      441,000 numbers for just one clip. With that many dimensions,
@@ -544,6 +546,7 @@ Python notebooks, videos, online exercises and a research blog.
   What actually shrinks toward zero, round after round, is the /gap/
   between the current loss and the final loss. Plotting that gap
   on a log scale turns the invisible tail into a clean, almost
+
   straight line spanning several orders of magnitude:
   #+begin_src python :file ../img/loss_gap.png :results file graphics output :exports both :session *Python* :python python3
     rounds = [h[0] for h in history]
@@ -569,8 +572,8 @@ To extend the model to describe polynomial functions, add a parameter
 \phi_2 for a quadratic term:
 [[../img/quadratic.png]]
 
-The loss is still the sum of the squared deviations (residuals) between the model
-prediction f[x_{i},\phi] and the true outputs y:
+The loss is still the sum of the squared deviations (residuals)
+between the model prediction f[x_{i},\phi] and the true outputs y:
 [[../img/quadratic_loss.png]]
 
 Here is a visualization of training the quadratic model with
