@@ -1473,7 +1473,7 @@ https://www.catholicpolytechnic.org/magnifica-humanitas-panel
 #+attr_html: :width 400px :float nil:
 [[../img/pray_hail_mary.png]]
   
-* Week 11 - Linear regression from scratch
+* DONE Week 11 - Linear regression from scratch
 #+attr_html: :width 400px :float nil: 
 [[../img/loss2.png]]
 
@@ -1486,6 +1486,12 @@ Sample solution available in GitHub.
 
 Any questions?
 
+** Next assignments
+
+- Quiz on today's show (the case for deep learning)
+- DataCamp: Introduction to Deep Learning with PyTorch
+- Ungraded exercise on interpreting heat maps and vector equations
+
 ** The case for deep learning
 
 - Why do ML models actually work?
@@ -1495,12 +1501,64 @@ Any questions?
 - Code along notebook: [[https://tinyurl.com/lin-reg-from-scratch][tinyurl.com/lin-reg-from-scratch]]
 - Additional (ungraded) exercises available
 
-** Closing prayer
 
+** Take away
+
+- Heatmaps as a way of illustrating the loss function minimum (and
+  parameter surface)
+- Overfitting and underfitting carries over 100% to deep learning
+- Coordinate-wise hill-climbing visualization
+- Challenge of real data: many local minima (ANN don't need to go global)
+
+** Closing prayer
 
 * Week 12 - Shallow neural networks and deep learning
 #+attr_html: :width 300px :float nil:
 [[../img/shallow.png]]
+
+** Opening prayer
+[[../img/hail_holy_queen.png]]
+
+** Review
+
+- Last week's theme: "the case for deep learning."
+- ML models map an input vector to an output vector.
+- Classical models struggle with order, variable length, high
+  dimensions.
+- Curse of dimensionality: feature space grows exponentially.
+- Car price example: 1 feature = 8 bins; 2 features = 64 bins, mostly
+  empty.
+- Neural networks escape the curse: they work on the data surface, not
+  the full space.
+- Training means finding parameters that minimize a loss function.
+- Loss surface: 3D bowl (intercept, slope, loss).
+- Heat map: 2D projection of the loss surface.
+- Iso-lines connect points of equal loss.
+- Coordinate-wise descent: calculus-free stand-in for gradient
+  descent.
+- Real gradient descent uses partial derivatives, not one axis at a
+  time.
+- Extended the model to a quadratic term, and to two inputs.
+- Under/overfitting still applies in higher dimensions.
+- Local minima are good enough; neural nets don't need the global one.
+- Linear equations are the language of neural networks.
+
+** Shallow neural networks
+
+- Follow the lecture
+
+- For the code along, open: [[https://tinyurl.com/shallow-network-ipynb][tinyurl.com/shallow-network-ipynb]]
+
+** Next assignments
+
+- Quiz based on today's class session only
+- Challenge based on the code along (find the right parameters)
+- Answer a few questions on the D=3 sample network
+
+** Closing prayer
+#+attr_html: :width 700px :float nil: 
+[[../img/memorare.png]]
+
 
 * Week 13 - Training a neural network with PyTorch
 * Week 14 - Evaluating and improving deep learning models
