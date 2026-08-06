@@ -1512,9 +1512,9 @@ Any questions?
 
 ** Closing prayer
 
-* Week 12 - Shallow neural networks and deep learning
+* DONE Week 12 - Shallow neural networks
 #+attr_html: :width 300px :float nil:
-[[../img/shallow.png]]
+[[../img/shallowNNplot_all.png]]
 
 ** Opening prayer
 [[../img/hail_holy_queen.png]]
@@ -1551,9 +1551,19 @@ Any questions?
 
 ** Next assignments
 
-- Quiz based on today's class session only
+- Quiz based on today's class session only (see 7_ann.org in GitHub)
 - Challenge based on the code along (find the right parameters)
-- Answer a few questions on the D=3 sample network
+- DataCamp lesson: Neural Network Architecture and Hyperparameters
+
+** Take aways
+
+- Changing activation functions from sigmoids to ReLU was a total
+  game changer.
+- ~np.maximum~ to implement ReLU in Python's NumPy
+- Neural networks as systems of linear equations (M,N,D,L)
+- Intercept is a form of bias to the network
+- Nested (recursive) linear architecure leads to approximations
+- Visualization of how a feedforward NN works (DAG)
 
 ** Closing prayer
 #+attr_html: :width 700px :float nil: 
