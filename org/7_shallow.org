@@ -1,4 +1,4 @@
-#+TITLE: CS 540 — 
+#+TITLE: CS 540 — Shallow neural networks
 #+AUTHOR: Marcus Birkenkrahe
 #+PROPERTY: header-args:python :session *Python* :results output
 #+STARTUP: overview hideblocks indent entitiespretty:
@@ -12,8 +12,8 @@ Topics:
 - Neural network (NN) example
 - ReLU activation function
 - Supervised learning with NNs
-- Visualizing NNs
 - One-dimensional neural networks
+- Visualizing NNs
 - Multivariate inputs and outputs
 - Universal approximation theorem
 
@@ -31,7 +31,8 @@ iclimbtrees.com). The PDF of the book is freely available under a
   An [artificial] neural network (ANN) is a function y = f[x,\phi] that
   maps multivariate inputs x = {x_1, x_2,....} to multivariate outputs y
   = {y_1, y_2,...} with parameters \phi = {\phi_1, \phi_2,...}. y = f[x,\phi] is a
-  vector equation.
+  vector equation which (via the parameters) involves matrix
+  multiplication.
   #+end_quote
 
 - How is this different from linear regression?
@@ -44,11 +45,11 @@ iclimbtrees.com). The PDF of the book is freely available under a
   1) scalar input x (that's where data come in)
   2) scalar output y (that's our prediction)
   3) parameters \phi = {\phi_0, \phi_1, \phi_2, \phi_3, \theta_10, \theta_11, \theta_20, \theta_21, \theta_30, \theta_31}
-     (that's the knobs we can tune)
+     (that's the knobs we can tune in advance = hyperparameters)
   4) dependencies in the form of a function:
      #+name: NN
      #+begin_quote
-     y = f[x,\phi] = \phi_0 + \phi_1 a[\theta_10 + \theta_11 x]
+     y = f[x,\phi] = \phi_0 + \phi_1 a[\theta_10 + \theta_11 x] // \phi_1 * h_1
                      + \phi_2 a[\theta_20 + \theta_21 x]
                      + \phi_3 a[\theta_30 + \theta_31 x]
      #+end_quote
@@ -98,11 +99,11 @@ iclimbtrees.com). The PDF of the book is freely available under a
 - ReLU is the most commonly used activation function.
   #+begin_quote
   The original functions used were sigmoid functions (like for
-  logistic regression, sinc 1969). ReLUs came back in the 2010s.
+  logistic regression, since 1969). ReLUs came back in the 2010s.
 
   *Pro:* quick to implement, derivative is one for all z \ge 0, which
   contributes to the stability of training in neural networks
-  ("vanishing gradient problem").
+  ("vanishing gradient feature").
 
   *Con:* derivative is zero for all z \lt 0, which switches nodes off for
   good during training ("dying ReLU problem").
@@ -181,7 +182,7 @@ iclimbtrees.com). The PDF of the book is freely available under a
   3) To train the model, we search for the parameter values that
      minimize the loss.
 
-* Neural network intuition
+* Neural network intuition = Why does this work?
 
 An NN represents a family of continuous piecewise linear functions
 with up to D+1 linear regions:
@@ -204,8 +205,8 @@ The intermediate quantities in the formula are called *hidden units*:
 #+attr_html: :width 200px :float nil: 
 [[../img/hidden.png]]
 
-The input to a hidden unit is called a *preactivation*, and the output
-is called an *activation*. Our output function becomes:
+The input to a hidden unit is called a *preactivation* (z), and the
+output is called an *activation* (a[z]). Our output function becomes:
 #+attr_html: :width 300px :float nil: 
 [[../img/function.png]]
 

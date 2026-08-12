@@ -1,0 +1,96 @@
+#+TITLE: ReLU for the linear model (D=1)
+#+AUTHOR: Marcus Birkenkrahe
+#+STARTUP: overview hideblocks indent entitiespretty:
+#+OPTIONS: toc:nil num:nil ^:nil: 
+Live-derivation script for the D=1 case (see 7_ann.org, "PRACTICE ReLU
+for the linear model"). Build this step by step on the board/notepad -
+don't show the finished answer first.
+
+* Step 1 - Write the model equation
+
+y = f[x,\phi] = \phi_0 + \phi_1 a[\theta_10 + \theta_11 x]
+
+Four parameters: \phi_0, \phi_1, \theta_10, \theta_11.
+
+* Step 2 - Ask: what if a[] were just the identity?
+
+If a[z] = z always (no activation), distribute directly:
+
+y = \phi_0 + \phi_1(\theta_10 + \theta_11 x)
+  = (\phi_0 + \phi_1 \theta_10) + (\phi_1 \theta_11) x
+
+Just an intercept and a slope - a straight line. This is the "why
+would you even bother with an activation function" baseline.
+
+* Step 3 - Introduce ReLU as a definition, not a formula to plug in
+
+a[z] = 0   if z < 0
+     = z   if z >= 0
+
+Name z explicitly: it's the *pre-activation* - whatever value is
+about to be fed into a[]. Here z = \theta_10 + \theta_11 x. Emphasize:
+z is a placeholder, reused for every hidden unit with its own linear
+combination substituted in.
+
+* Step 4 - Find the kink
+
+Ask: where does the unit switch from off to on? Set z = 0:
+
+\theta_10 + \theta_11 x = 0  =>  x* = -\theta_10 / \theta_11
+
+This is the one point where the behavior changes - work it out live,
+don't just state it.
+
+* Step 5 - Derive the "off" branch
+
+For x where \theta_10 + \theta_11 x < 0: a[.] = 0, so
+
+y = \phi_0
+
+Flat line, slope 0.
+
+* Step 6 - Derive the "on" branch
+
+For x where \theta_10 + \theta_11 x >= 0: a[.] = identity, so
+
+y = \phi_0 + \phi_1(\theta_10 + \theta_11 x)
+  = (\phi_0 + \phi_1 \theta_10) + (\phi_1 \theta_11) x
+
+Same algebra as step 2, but now it only applies on one side of x*.
+
+* Step 7 - Point out: continuous, but not smooth
+
+At x = x*, both branches give the same y (no jump) - but the slope
+jumps from 0 to \phi_1 \theta_11 right there. That's the kink: one
+hidden unit buys exactly one bend.
+
+* Step 8 - Plug in numbers
+
+\phi_0 = 0, \phi_1 = 2, \theta_10 = -1, \theta_11 = 1
+
+x* = -(-1)/1 = 1
+
+| x   | -1 | 0 | 0.5 | 1 | 1.5 | 2 | 3 |
+| y   |  0 | 0 |   0 | 0 |   1 | 2 | 4 |
+
+Flat at 0 up to x=1, then rises with slope 2. Sketch it: flat segment,
+then a line bending upward at x=1.
+
+* Step 9 - Code check (after the board work, not before)
+
+#+begin_src python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def relu(z):
+    return np.maximum(0, z)
+
+def y(x, phi0, phi1, theta10, theta11):
+    return phi0 + phi1 * relu(theta10 + theta11 * x)
+
+x = np.linspace(-2, 4, 100)
+plt.plot(x, y(x, phi0=0, phi1=2, theta10=-1, theta11=1))
+plt.axvline(1, linestyle='--', color='gray')  # the kink
+plt.xlabel('x'); plt.ylabel('y')
+plt.show()
+#+end_src
