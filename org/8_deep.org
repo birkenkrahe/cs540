@@ -1,0 +1,311 @@
+#+TITLE: CS 540 — Deep Neural Networks
+#+AUTHOR: Marcus Birkenkrahe
+#+PROPERTY: header-args:python :session *Python* :results output
+#+STARTUP: overview hideblocks indent entitiespretty:
+* Objectives
+
+Deep [neural] networks have a series of hidden layers. They are still
+just mathematical functions that represent a mapping from input to
+output.
+
+*Topics:*
+- Why deep networks at all?
+- Composing neural networks
+- From composing to deep networks
+- Deep neural networks
+- Matrix notation
+- Shallow vs deep neural networks
+
+* Why deep networks at all?
+
+In principle, a *shallow neural network* with high enough D should be
+able to approximate any continuous function (by way of the universal
+approximation theorem).
+
+Three empirical answers:
+1) deep networks are more *expressive* - they can carve up the input
+   space into many more linear regions than a shallow network with the
+   same number of hidden units.
+2) deep networks are more *tractable* - they are easier to train than
+   shallow networks of the same capacity.
+3) Depth (more layers) gives better *inductive bias*: every layer adds
+   constraints that allow us to progressively build in more real-world
+   structure (example: image identification).
+
+However, this is an empirical answer - we don't have the complete
+story yet.
+
+* Composing neural networks
+
+- We build up the deep network from two connected shallow networks.
+
+- The first network maps x onto y, and then y onto y'
+  #+attr_html: :width 600px :float nil:
+  [[../img/udl_fig_4_1.png]]
+
+  So unlike the two independent equations of the shallow neural
+  network with two outputs, this are two nested equations. The hidden
+  units of the second network have the output of the first as input.
+
+- What are the implications?
+  #+begin_quote
+  If the first network produces three regions (b), then the mapping
+  from y to y' is duplicated three times to create nine linear
+  regions - the first network folds the input space onto itself, and
+  the second network's shape gets applied once to the folded stack,
+  and when you unfold, that shape appears multiple times (see diagram)
+  #+end_quote  
+
+* PRACTICE Input space folding
+
+Manipulate the functions in [[https://udlbook.github.io/udlfigures/][udlbook.github.io/udlfigures/]]
+to see the effect of composing the functions: gray is mapped to
+blue, which is mapped to red.
+
+1) In Network 1, drag the middle left-point down so all points form
+   a straight, monotonically *rising* line (no zigzags, one slope)
+   from y=-1 to y=1: the network is now one-to-one: every x gives a
+   unique y. The effect is that network 1 is just an identity
+   filter.
+   #+attr_html: :width 400px :float nil:
+   [[../img/folding_step_1.png]]
+
+2) Now turn the line in network 1 into a horizontal line somewhere
+   at y not equal zero: the output now is flat, too - only the bias
+   of network 1 is carried over. Network 2 is only evaluated at one
+   height and its information is lost.
+   #+attr_html: :width 400px :float nil:
+   [[../img/folding_step_2.png]]
+
+   The same happens when you reverse the situation and turn network
+   2 into a bias-only mapping.
+
+3) Return network 2 to the original state and *invert* the monotonic
+   line in network 1 to go from y=1 to y=-1 so that it is
+   *falling*. The network is again one-to-one (no folding) and it
+   leads to a horizontal mirroring of network 2 (left becomes
+   right, curve is flipped around x = 0).
+   #+attr_html: :width 400px :float nil:
+   [[../img/folding_step_3.png]]
+
+4) The monotone functions still don't show any folding effect. Go
+   back to the original situation and drag the blue point at x=1
+   down to y=-1 so that there is only one peak:
+   #+attr_html: :width 400px :float nil:
+   [[../img/folding_step_4.png]]
+
+   At y=0: there are two x's for one y value. The range y \in [-1,1]
+   is swept through *twice* by the first two segments. In the
+   composite graph y', as x goes from -1 to 0, you see a full pass
+   through network 2's pattern. And as x goes from 0 to 1, you see
+   another pass (horizontally mirrored - falling line in network 1),
+   followed by a flat line (network 2 is ignored there).
+
+5) Add the second fold - go back to the original image:
+   #+attr_html: :width 400px :float nil:
+   [[../img/folding_step_5.png]]
+
+   The point is not to get it exactly right but to see:
+   - Network 1 shows *up*, *down*, *up*: three segments with alternating
+     slope, crossing back and forth across y \in [-1,1] thrice.
+   - In the output network 1 + 2 = y',
+     1) Segment 1 (rising) shows network 2's shape forward
+     2) Segment 2 (falling) shows network 2's shape mirrored
+     3) Segment 3 (rising) shows network 2's shape forward
+   - The total number of linear segments in network 1 + 2 is 3 x 3 =
+     9: three folds in network 1 times three segments in network 2.
+
+6) The first network can be said to (a) fold the input space back on
+   top of itself. (b) The second network applies its function to the
+   folded space. (c) The final output is revealed by unfolding again.
+   #+attr_html: :width 600px :float nil:
+   [[../img/udl_fig_1_5_course.png]]
+
+* Example with 2D input
+
+- The illustration shows composing neural networks with a 2-dim input:
+  the first network has D=3, the second network has D=2. The first
+  network produces a function consisting of 7 linear regions one of
+  whom (no contours) is flat. The second network defines a function of
+  3 linear regions (none flat): when they are composed, each of the
+  six non-flat regions is folded into two new regions by the second
+  network leading to a total of 13 linear regions: 6 * 2 + 1 = 13.
+  #+attr_html: :width 600px :float nil:
+  [[../img/udl_fig_4_2.png]]
+  
+* PRACTICE Coding example
+
+- Open [[https://tinyurl.com/compose-networks][tinyurl.com/compose-networks]] in Colab
+
+- Make a copy to your GDrive
+
+- Code along with me
+
+* From composing to deep networks
+
+- Passing the output of one shallow network into a second network is a
+  special case of a deep network with two hidden layers.
+  #+attr_html: :width 500px :float nil:
+  [[../img/udl_fig_4_4.png]]
+
+* Deep neural networks
+
+- Composing two shallow networks (previous section) is really just the
+  K=2 special case of a much more general idea: chain together *K*
+  hidden layers, each one feeding the next.
+  #+attr_html: :width 650px :float nil:
+  [[../img/udl_fig_4_6.png]]
+
+- Read the picture layer by layer:
+  #+begin_quote
+  - Input *x* has D_i = 3 elements.
+  - Hidden layer h_1 has D_1 = 4 hidden units.
+  - Hidden layer h_2 has D_2 = 2 hidden units.
+  - Hidden layer h_3 has D_3 = 3 hidden units.
+  - Output *y* has D_o = 2 elements.
+  #+end_quote
+  Every layer is *fully connected* to the next: every unit in one
+  layer feeds every unit in the next (all those crossing black lines),
+  plus a bias term (orange, from the constant "1" nodes).
+
+- Same building blocks as before, just repeated:
+  #+begin_quote
+  1) Take the previous layer's output (or *x*, for the first layer).
+  2) Apply a *linear* transform (weights + bias) - this is the
+     pre-activation.
+  3) Pass it through ReLU - this is the activation, i.e. the new
+     hidden layer.
+  4) Feed that into the next layer, and repeat.
+  #+end_quote
+
+- Vocabulary check: *depth* (K, how many hidden layers) is not the
+  same as *width* (D_k, how many hidden units in layer k). A network
+  can be deep-and-narrow, shallow-and-wide, or both. "Deep learning"
+  specifically means K > 1 - stacking layers, not just adding hidden
+  units to one layer. This kind of fully-connected, layer-by-layer
+  network is also called a *multi-layer perceptron* (MLP), though as
+  we discussed, the name is a historical leftover and has nothing to
+  do with real perceptrons or brains.
+
+- The whole network, however deep, is still just one big *piecewise
+  linear function* of *x* - composing piecewise linear functions
+  always gives you back a piecewise linear function. Depth doesn't
+  change *what kind* of function you get, only *how many pieces* it
+  can have, and how cheaply (in parameters) you can get them - that's
+  the folding effect from the composing-networks section, now applied
+  K times in a row instead of just once.
+
+* Matrix notation
+
+- Back in the shallow network example, we already promised that
+  y = f[x,\phi] is a vector equation that, via the parameters,
+  involves matrix multiplication. Time to cash that in.
+
+- Take one layer's worth of hidden units, written out the long way for
+  D = 3 hidden units and a scalar input, exactly as we did by hand:
+  #+begin_quote
+  h_1 = a[\theta_10 + \theta_11 x]
+
+  h_2 = a[\theta_20 + \theta_21 x]
+
+  h_3 = a[\theta_30 + \theta_31 x]
+  #+end_quote
+  Notice that the right-hand sides only differ in which row of
+  \theta's gets used. That's exactly what a matrix does: it stores one
+  row of weights per output. So we can write the same three lines as
+  *one* line:
+  #+begin_quote
+  h = a[\beta_0 + \Omega_0 x]
+  #+end_quote
+  where \beta_0 stacks the offsets (\theta_10, \theta_20, \theta_30)
+  into a bias *vector*, and \Omega_0 stacks the slopes (\theta_11,
+  \theta_21, \theta_31) into a weight *matrix* - one row per hidden
+  unit. The activation function a[.] is applied *elementwise* - each
+  hidden unit still gets switched on/off independently.
+
+- Chaining layers is just repeating this pattern, feeding each layer's
+  h into the next as the new "x":
+  #+begin_quote
+  h_1 = a[\beta_0 + \Omega_0 x]
+
+  h_2 = a[\beta_1 + \Omega_1 h_1]
+
+  h_3 = a[\beta_2 + \Omega_2 h_2]
+
+  y = \beta_3 + \Omega_3 h_3
+  #+end_quote
+  (No activation on the very last line - the output layer is just a
+  weighted sum, same as it was in the shallow case.)
+
+- Dimensions have to line up, and the picture above tells you exactly
+  how: \Omega_0 \in \mathbb{R}^{4\times3} (4 hidden units out, 3 inputs in),
+  \Omega_1 \in \mathbb{R}^{2\times4}, \Omega_2 \in \mathbb{R}^{3\times2}, \Omega_3 \in
+  \mathbb{R}^{2\times3}. Each \Omega_k has one row per unit in the *next*
+  layer and one column per unit in the *current* layer - that's why
+  the shapes look "reversed" the first time you see them.
+
+- *PRACTICE*: using the D_i=3, D_1=4, D_2=2, D_3=3, D_o=2 network
+  above, how many total parameters (weights + biases, all four
+  layers) does it have? (Count each \Omega_k's entries plus each
+  \beta_k's entries, and add them up.)
+
+* Shallow vs deep neural networks
+
+- We can now make the "why deep networks at all?" answer from the
+  start of this chapter concrete, using the folding math from the
+  composing-networks section.
+
+- Recall: a *shallow* network with D hidden units and a scalar input
+  gives you at most D+1 linear regions - one hidden unit buys you one
+  kink, full stop. Growing D+1 regions means growing D, which means
+  growing the parameter count roughly linearly.
+
+- A *deep* network folds instead of just adding. Composing two shallow
+  networks of D=3 each didn't give us 3+3=6 regions - it gave us 3x3=9,
+  because the second network's shape gets replayed once for every fold
+  the first network made. Stack K layers of D hidden units each, and
+  you can get up to (D+1)^K regions - *multiplicative* in depth,
+  instead of merely additive in width.
+
+- That's the concrete version of "deep networks are more expressive":
+  #+begin_quote
+  |                    | Shallow (1 layer, width D) | Deep (K layers, width D) |
+  |--------------------+----------------------------+--------------------------|
+  | Max linear regions | D+1                        | up to (D+1)^K             |
+  | Regions per param  | grows slowly               | grows fast               |
+  | Growth pattern     | additive                   | multiplicative (folding) |
+  #+end_quote
+
+- The catch: those (D+1)^K regions are not *independent* - they're copies
+  of each other, folded into place. A deep network can't represent
+  just *any* assignment of values to that many regions the way an
+  equally-sized shallow network's regions are free to vary
+  independently. Depth buys you many *more* regions per parameter, at
+  the cost of those regions being more *constrained*, more entangled
+  with each other. Whether that trade-off helps depends on whether the
+  function you're approximating actually has the kind of repeating,
+  self-similar structure that folding is good at capturing - which,
+  empirically, real-world data (images, language, ...) often does.
+
+- So, to recap the three empirical answers from the start of this
+  chapter, now with the mechanism behind each:
+  #+begin_quote
+  1) *Expressive*: (D+1)^K vs D+1 - folding beats adding.
+  2) *Tractable*: fewer total parameters for the same number of
+     regions tends to make optimization landscapes easier to search.
+  3) *Inductive bias*: because deep regions are entangled copies, not
+     independent, depth forces the model toward solutions with
+     repeating structure - which happens to match a lot of real data.
+  #+end_quote
+  None of this is a proof that deep beats shallow in general - it's
+  still an empirical, architecture-dependent story. But it's no longer
+  just a vibe: we can point at exactly where the extra expressiveness
+  comes from.
+
+* Sources
+
+Images (and some of the code) were taken from the wonderful book by
+Simon Prince, *"Understanding Deep Learning"* (MIT Press 2023, see
+*udlbook.github.io* and *iclimbtrees.com* for extra images and for stills
+of some interactive animations). The PDF of the book is freely
+available under a [[https://creativecommons.org/licenses/by-nc-nd/4.0/deed.en][CC-BY-NC-ND license]]. Link: https://udlbook.github.io

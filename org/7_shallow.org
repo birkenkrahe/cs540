@@ -45,7 +45,9 @@ iclimbtrees.com). The PDF of the book is freely available under a
   1) scalar input x (that's where data come in)
   2) scalar output y (that's our prediction)
   3) parameters \phi = {\phi_0, \phi_1, \phi_2, \phi_3, \theta_10, \theta_11, \theta_20, \theta_21, \theta_30, \theta_31}
-     (that's the knobs we can tune in advance = hyperparameters)
+     (these are the knobs training tunes; not to be confused with
+     hyperparameters like D, the number of hidden units, which are
+     fixed in advance)
   4) dependencies in the form of a function:
      #+name: NN
      #+begin_quote
@@ -130,7 +132,7 @@ iclimbtrees.com). The PDF of the book is freely available under a
   - Off (\theta_10+\theta_11 x < 0): a[.]=0, so y = \phi_0 (flat, slope 0)
     
   - On (\theta_10+\theta_11 x >= 0): a[.]=identity, so
-    y = (\phi_0+\phi_1\theta \theta_10) + (\phi_1\theta \theta_11)x (sloped)
+    y = (\phi_0+\phi_1 \theta_10) + (\phi_1 \theta_11)x (sloped)
 
   Continuous at the kink (no jump), but the slope changes abruptly
   there - one hidden unit buys exactly one bend.
@@ -472,14 +474,165 @@ The *input-side activation* function moves the joint/kink, while the
 - The offsets, ReLU functions, and parameter names are often
   omitted. Image (b) represents this simpler network.
 
-* TODO Multivariate inputs and outputs
-* TODO General formulation
-* TODO Universal approximation theorem
+* Universal approximation theorem
+
+- Our example shallow neural network has 1 input, 1 output, ReLU
+  activation functions, and D=3 hidden units.
+  [[../img/udl_fig_3_4_b.png]]
+
+- The number of hidden units in a shallow network is a measure of the
+  *network capacity*. With ReLU (*Rectified Linear Unit*) activation
+  functions, the output of a network with D hidden units has at most D
+  joints (every kink comes from the step in the ReLU), and is a
+  *piecewise linear function* with at most D + 1 linear regions.
+  #+attr_html: :width 200px :float nil:
+  [[../img/udl_eq_3_6.png]] where [[../img/udl_eq_3_5.png]]
+
+- With enough capacity (hidden units), a shallow network can describe
+  any continuous 1-dimensional function defined on a *compact* subset of
+  ℝ (closed and bounded).
+
+- The universal approximation theorem proves that for any continous
+  function there exists a shallow network that can approximate this
+  function to any specified precision:
+  #+attr_html: :width 600px :float nil:
+  [[../img/udl_fig_3_5.png]]
+
+* Multivariate inputs and outputs
+
+- The universal approximation theorem holds for a more general case
+  than 1D where the network maps multivariate inputs *x* to multivariate
+  outputs *y*.
+
+** Multivariate outputs
+
+- To extend the network to multivariate outputs *y*, we use
+  a different linear function of the hidden units for each output.
+
+- Example: scalar input x, D=4 hidden units, 2d output *y* = [y_1, y_2]^T
+
+- Hidden units:
+  #+attr_html: :width 020px :float nil:
+  [[../img/udl_eq_3_7.png]]
+
+- The network produces two piecewise linear functions y_1 and y_2. 
+  #+attr_html: :width 400px :float nil:
+  [[../img/udl_eq_3_8.png]]
+
+- There are D=4 joints which are in the same place (same hidden
+  units) but slopes and offsets (weights) can differ.
+  #+attr_html: :width 600px :float nil:
+  [[../img/udl_fig_3_6.png]]
+
+** Multivariate inputs
+
+- When there are two inputs and one output, the network function can
+  be viewed as a 2d surface (one dimension per input value).
+
+- Instead of connected linear segments, this creates a function of
+  connected planar regions whose creases are the new joints.
+  #+attr_html: :width 400px :float nil:
+  [[../img/udl_fig_22_course.png]]
+
+- An example network with 2 inputs *x* = [x_1, x_2]^T , scalar output y and
+  D=3 hidden units:
+  #+attr_html: :width 300px :float nil:
+  [[../img/udl_eq_3_9.png]]
+
+- The hidden units are combined to form the output in the usual way
+  (only one function in two variables):
+  #+attr_html: :width 250px :float nil:
+  [[../img/udl_eq_3_10.png]]
+
+- The figure illustrates the processing in this network:
+  #+attr_html: :width 600px :float nil:
+  [[../img/udl_fig_3_8.png]]
+
+  The input to each hidden unit is a linear function in 2 variables -
+  a plane. Brightness indicates pre-activation terms. Thin lines are
+  contours (constant output value y), varied parameters. Each plan
+  gets clipped in the second row by the ReLU function. The blue lines
+  correspond to the joints. The clipped planes are weighted (shifted)
+  and added up with an offset. This gives you a continuous surface
+  made up of convex piecewise linear polgonal regions.
+
+- For higher dimensional inputs, each hidden unit defines a hyperplane
+  in the input space separating the part of the space where the unit
+  is active from the part where it is not. The output is still a
+  continous piecewise linear function of the input. The linear regions
+  are now convex polytopes in a multi-dimensional space:
+  #+attr_html: :width 300px :float nil:
+  [[../img/udl_fig_2_5.png]]
+
+- Check out the interactive figures from the book:
+  https://udlbook.github.io/udlfigures/
+
+- How many linear regions are created by a model with D hidden units
+  and D_i inputs?
+
+  For D=D_i: a) D=1, b) D=2, c) D=3 - in general: 2^{D} linear regions.
+  #+attr_html: :width 600px :float nil:
+  [[../img/udl_fig_3_10.png]]
+
+- In general, the number of regions created by D hyperplaines in a D_i
+  < D dimensional space is[fn:3]
+  #+attr_html: :width 600px :float nil:
+  [[../img/udl_fig_2_4_1_course.png]]
+
+  The number of regions increases rapidly in high dimensions: a) with
+  D=500 hidden units and input size D_i=100, there can be more than
+  10^{107} regions. b) This network has 51,001 parameters and is still
+  very small.[fn:4]
+
+** The general case
+
+For a general shallow neural network y=f[x,\phi] that maps a
+multi-dimensional input x (every vector has D_i elements) to a
+multi-dimensional output y (every vector has D_o elements) using h
+hidden units (vector of D elements):
+#+attr_html: :width 250px :float nil:
+[[../img/udl_eq_3_11.png]]
+
+They are combined linearly to create the output:
+#+attr_html: :width 250px :float nil:
+[[../img/udl_eq_3_12.png]]
+
+This is where the "tensor" language becomes relevant: \phi_{jd} is the set
+of weights connecting *every hidden unit* to *every output* j - that's a
+matrix \Phi in a D_o x D-dimensional space of real numbers.
+
+In the equation:
+- y_j is a single output (scalar)
+- output y is a vector of all of these 1..D_0 outputs
+- \phi_ij is an element of a D_0 x D matrix
+- A *tensor* generalizes this to N indices in a D_1 x D_2 x ... x D_N
+  dimensional array of numbers.
+
+* Terminology
+
+- It's confusing because grown historically:
+  #+attr_html: :width 400px :float nil:
+  [[../img/udl_fig_3_12.png]]
+
+  With at least one hidden layer, a neural net is also called a
+  *multi-layer perceptron* (MLP). Networks with multiple hidden layers
+  are *deep neural networks*. If every element in one layer connects to
+  every element in the next, the network is *fully connected*. The
+  connections are *slope* parameters in the equations, or *weights*. the
+  offset parameters (not shown) are called *biases*.
+
 * Footnotes
 
-[fn:1]Any neural network with at least one hidden layer is also called
+[fn:1] Any neural network with at least one hidden layer is also called
 a *multi-layer perceptron* (MLP) - layer 1 is the input layer, layer 2
 is the hidden layer, layer 3 is the output layer.
 
-[fn:2]A DAG describes a *feedforward* network, not a *recurrent* network
+[fn:2] A DAG describes a *feedforward* network, not a *recurrent* network
 (RNN).
+
+[fn:3] The binomial coefficient is defined as D!/(j!(D-j)! where n! is
+the factorial of n (n*(n-1)*(n-2)*...*1).
+
+[fn:4] E.g. GPT-4 (2023) has an estimated 1.76 trillion parameters,
+with an input space of a billion numbers. But these transformer models
+add "attention", which is not piecewise-linear anymore.

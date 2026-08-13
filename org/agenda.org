@@ -1237,7 +1237,7 @@ Messages.
 
 - *Training models:* Gradient descent, logistic regression, sigmoid,
   log-loss functions.
-  
+
 - *Unsupervised* machine learning: clustering/PCA
 
 - *Neural nets and PyTorch*
@@ -1354,7 +1354,7 @@ You can see the completed notebook (part 2) here:
 |   | Closing prayer               | x |
 
 ** Opening prayer
-** "Magnificat Humanitas" Panel 
+** "Magnificat Humanitas" Panel
 
 - The panel is set for Monday, July 27 at 5 PM PST
 - With professors Reidy & Sonnier and guest speakers
@@ -1472,9 +1472,9 @@ https://www.catholicpolytechnic.org/magnifica-humanitas-panel
 ** Closing prayer
 #+attr_html: :width 400px :float nil:
 [[../img/pray_hail_mary.png]]
-  
+
 * DONE Week 11 - Linear regression from scratch
-#+attr_html: :width 400px :float nil: 
+#+attr_html: :width 400px :float nil:
 [[../img/loss2.png]]
 
 ** Opening prayer
@@ -1513,8 +1513,11 @@ Any questions?
 ** Closing prayer
 
 * DONE Week 12 - Shallow neural networks
-#+attr_html: :width 300px :float nil:
-[[../img/shallowNNplot_all.png]]
+#+attr_html: :width 400px :float nil:
+[[../img/udl_fig_3_3.png]]
+
+Image: pre-activation, activation, weighted activation for a shallow
+network (dimension D=3) with one input and one output.
 
 ** Opening prayer
 [[../img/hail_holy_queen.png]]
@@ -1551,7 +1554,7 @@ Any questions?
 
 ** Next assignments
 
-- Quiz based on today's class session only (see 7_ann.org in GitHub)
+- Quiz based on today's class session only (see 7_shallow.org in GitHub)
 - Challenge based on the code along (find the right parameters)
 - DataCamp lesson: Neural Network Architecture and Hyperparameters
 
@@ -1566,12 +1569,100 @@ Any questions?
 - Visualization of how a feedforward NN works (DAG)
 
 ** Closing prayer
-#+attr_html: :width 700px :float nil: 
+#+attr_html: :width 700px :float nil:
 [[../img/memorare.png]]
 
+* Week 13 - Deep neural networks
+#+attr_html: :width 400px :float nil:
+[[../img/udl_fig_4_1.png]]
 
-* Week 13 - Training a neural network with PyTorch
-* Week 14 - Evaluating and improving deep learning models
+Image: Pre-activation, activation, and weight activation for a deep
+network w/K=2 hidden layers (depth) of D=3 hidden neurons each
+(width), and with one input and one output.
+
+** Opening prayer
+[[../img/hail_holy_queen.png]]
+
+** Review
+
+- What do you remember?
+
+- Short summary:
+  #+begin_quote
+  Shallow neural networks can predict = approximate functions using
+  piecewise linear functions. These functions are created by activating
+  linear functions (pre-activation) with an activation function (ReLU),
+  and then weighing each function with a weight parameter.
+
+  A shallow neural network is a directed acyclic graph f[x,\phi]. As a
+  prediction model, the input fans out through the hidden units and
+  then fans back in as output.
+  #+end_quote
+
+- Long summary:
+  #+begin_quote
+  - Last week's theme: "shallow neural networks" — not deep yet, but the
+    D=3 example already shows the qualities of a deep network.
+
+  - We built the network from scratch both mathematically and with code
+    instead of via ML libraries, since those tools hide the underlying
+    equations. The biological-neuron story is unreliable history.
+
+  - f(x,\phi): same basic form as linear regression, but many more params
+    for flexibility: Parameter count scales with D (hidden units): D=1
+    reduces to plain linear regression, D=2 gives 7 params, D=3
+    gives 10.
+
+  - A neural network is a computational graph: the input fans out into
+    parallel linear computations (hidden units), each filtered by an
+    activation function, then fans back in to the output.
+
+  - Feedforward = directed acyclic graph; going backward needs
+    backpropagation (also called recurrent networks).
+
+  - ReLU: A(z) = max(0, z) — switches a term on or off depending on the
+    sign of its pre-activation.
+
+  - Piecewise linear and continuous: straight-line segments joined at
+    kinks/joints, no gaps.
+
+  - Swapping sigmoid for ReLU (~2009-2010) was the breakthrough that
+    made neural networks actually work.
+
+  - Built ~relu()~ and a from-scratch shallow-network function
+    (pre-activation -> activation -> weighted sum) in Colab.
+
+  - D=3 example: each hidden unit contributes its own kink; weighting
+    and summing the three activations builds a piecewise-linear
+    approximator — the core mechanism of a neural network.
+
+  - Supervised learning: inference = evaluate f(X, phi); training =
+    search for phi that minimizes a least-squares loss on (X, Y) data.
+
+  - Challenge (home assignment): manually tune the D=3 parameters to
+    approximate a target function by hand.
+  #+end_quote
+
+** Deep neural networks
+
+- Follow the lecture (GitHub: =8_deep.org=).
+
+- For the code along, open: [[https://tinyurl.com/compose-networks][tinyurl.com/compose-networks]].
+
+** Next assignments
+
+- *Quiz* based on this class session: Deep neural nets (see GitHub) and
+  on the last DataCamp session.
+- *Optional challenge* at the end of today's coding notebook.
+- *DataCamp lesson:* evaluating and improving models.
+- *Projects:* remember you need to present in the last week (Aug 26).
+
+** Take aways
+** Closing prayer
+#+attr_html: :width 700px :float nil:
+[[../img/memorare.png]]
+
+* Week 14 - Deep learning with PyTorch
 * Week 15 - Final project presentations
 * Footnotes
 
