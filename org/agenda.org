@@ -1572,7 +1572,7 @@ network (dimension D=3) with one input and one output.
 #+attr_html: :width 700px :float nil:
 [[../img/memorare.png]]
 
-* Week 13 - Deep neural networks
+* DONE Week 13 - Deep neural networks
 #+attr_html: :width 400px :float nil:
 [[../img/udl_fig_4_1.png]]
 
@@ -1587,12 +1587,19 @@ network w/K=2 hidden layers (depth) of D=3 hidden neurons each
 
 - What do you remember?
 
+  1) ReLU (Rectified Linear Unit) nonlinear continues piecewise linear
+     *activation* function that actives the hidden units
+
+  2) Loss functions: used to fit the model to the data (always), for
+     neural networks specifically, the loss function is used to find
+     the global minimum of a convex surface
+
 - Short summary:
   #+begin_quote
-  Shallow neural networks can predict = approximate functions using
-  piecewise linear functions. These functions are created by activating
+  *Shallow neural networks* can predict = approximate functions using
+  *piecewise linear functions*. These functions are created by activating
   linear functions (pre-activation) with an activation function (ReLU),
-  and then weighing each function with a weight parameter.
+  and then weighing each function with a *weight parameter*.
 
   A shallow neural network is a directed acyclic graph f[x,\phi]. As a
   prediction model, the input fans out through the hidden units and
@@ -1648,21 +1655,177 @@ network w/K=2 hidden layers (depth) of D=3 hidden neurons each
 - Follow the lecture (GitHub: =8_deep.org=).
 
 - For the code along, open: [[https://tinyurl.com/compose-networks][tinyurl.com/compose-networks]].
-
+  
 ** Next assignments
 
 - *Quiz* based on this class session: Deep neural nets (see GitHub) and
   on the last DataCamp session.
-- *Optional challenge* at the end of today's coding notebook.
 - *DataCamp lesson:* evaluating and improving models.
 - *Projects:* remember you need to present in the last week (Aug 26).
+- *Optional challenge* at the end of today's coding notebook.
 
 ** Take aways
+
+- Tensors (generalization of very high dimensional spaces): the only
+  point is to be able to code these linear equations.
+
+- Setting one or the other of the composite networks to pure bias
+  (constant function) eliminates all pattern recognition (of the 2nd
+  network).
+
+- Universal approximation theorem: in principle, a huge-D shallow
+  neural net is enough to approximate any function.
+
+- Transformers (as in LLM) work with attention (to reduce the number
+  of linear regions that have to be optimized).
+
+- How the neural network keeps its pattern memory!
+
+- Trillions of parameters? How do they do this in practice?
+
 ** Closing prayer
 #+attr_html: :width 700px :float nil:
 [[../img/memorare.png]]
 
-* Week 14 - Deep learning with PyTorch
+* Week 14 - Course wrap-up
+
+** Opening Prayer
+** Questions on the project presentations?
+
+- *Justina:* Diabetes dataset ("Pima Indians") & issues with the dataset
+
+- *James*: Using the Apollo application to get a faster sales cycle
+
+- *Stephen*: Environmental and energetic impact of recent data centers
+
+- *Justin*: Using containers on a commmercial IT infrastructure
+
+- *Torie*: Building a hiking recommender (think about scale)
+
+- *Sam:* Challenges with spam detection (think about scale)
+
+*Recommendation:*
+1) Very short setup (assume audience is awake, smart, informed)
+2) Results (what did you find out)
+3) Discussion (why is it [not] interesting? Or failed?)
+4) Limitations (what limits the meaning/impact of your research?)
+
+   
+   
+** DataCamp wrap-up & course material content
+
+- *DataCamp:* Any question? What were your impressions of the DataCamp
+  content (13 lessons in 4 courses)? Should I keep it?
+  + Hard to learn from it ("robotic" copy + paste)
+  + Complete examples are better ("guided projects")
+  + Too bitty - more useful to rebuild their examples in Colab
+  + Understanding ML was good (easy overview)
+  + Breaking things down was useful
+  + Useful as a precursor to a book like Geron
+
+- Claude estimated that the total material presented to you comes to
+  about 330-370 printed pages (100,000 words across 50 files).
+
+- 80% of that was prose, 20% code.
+
+- Burkov "The 100 page Machine Learning book"
+
+** Course wrap-up (CS/DS in the age of AI)
+
+*** Some older questions (on the encyclical):
+
+- In Rerum Novarum (1891), Leo XIII argued that the industrial
+  revolution posed a new kind of social challenge that the Church
+  could not ignore. Leo XIV makes the same claim about AI. Is that a
+  convincing comparison — or is AI so different in nature that the
+  parallel breaks down?
+
+- The Pope argues that AI can imitate human intelligence but cannot
+  truly understand, feel, or bear moral responsibility — and that this
+  distinction matters enormously for how we use and govern these
+  systems. Do you find that distinction convincing? And does it
+  actually change anything in practice?
+
+- When Leo XIII first developed Catholic Social Doctrine, critics told
+  him the Church should focus on saving souls, not on labor conditions
+  and economic justice. He disagreed. Was he right — and if so, how
+  far does that logic extend into the age of AI?
+
+*** *Some questions to think about:*
+
+1. Has this class *changed* your sense of what AI can/can't do changed at
+   all?
+
+   - Complexity of the topic is high and it takes a longer time to
+     learn that you would think ("Become a ML engineer in 3 months")
+
+   - Demystified parts of ML
+
+2. Where do you think the *gap* is biggest between what the public thinks
+   AI is and can do and what you (now) know it actually does (and
+   perhaps can do)?
+
+   - Data dependency and everything that follows (cleaning) because
+     the models are very, very sensitive to what they are fed with.
+
+3. Which jobs or tasks do you think AI will genuinely *displace*, and
+   which will resist *automation* longer than people assume?
+
+4. What competitive advantage (terrible word but it is what it is) do
+   you think is worth *developing* over the next five years?
+
+   - Supervised learning, esp. linear/logistic regression (key to deep
+     learning/neural nets)
+     
+   - Which AI skills? Agentic systems, optimizing your own workflows
+     with agents.
+
+5. What problem in your field of expertise or experience do you think
+   is (more) *tractable* (doable) now with AI?
+
+   - Help center articles wouldn't be written without AI (more
+     information for consumers). At a draft level.
+
+   - In math, physics, very much software engineering same thing: lots
+     of stored up projects, proofs, etc. are being worked on by AI.
+
+   - Perhaps our time scale is not adapted to AI.
+
+   - Stupid people give smart people AI slop and steal their time.
+
+   - Accelerated content creation in IT infrastructure: now simpler to
+     generate architecture plans - but causes a lot of followup work...
+
+6. Which *claim* that you hear in the media do you think is actually
+   wrong? And which one is true?
+
+7. Which part of AI is actually *never talked about* but should be?
+
+   - Leo: "Put the stupid phone down, go to your Church, sit down with
+     other people and talk to them." - Loosing sense of community.
+
+   - Danger of disembodiment doubly (community & communion). Leo could
+     have been more explicit (transhumanism and transgenderism).
+
+   - Is AI from the devil? Can it harm our sanctification (if only
+     because it makes everything "too easy", takes away the pain of
+     making and learning things ourselves)?
+
+   - How should Catholics (employers and employees) deal with it? Tip:
+     Daughters of Saint Paul ("media mindfulness").
+
+   - AI is not bad by nature but a tool to be used (Whiskeyman). Not
+     neutral in practice because of its system character.
+
+8. What are you *personally* going to do with the knowledge shared
+   through this course?
+
+9. [your question here]
+ 
+10. [your question here]
+
+** Closing prayer
+
 * Week 15 - Final project presentations
 * Footnotes
 
