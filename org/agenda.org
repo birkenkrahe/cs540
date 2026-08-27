@@ -1687,7 +1687,7 @@ network w/K=2 hidden layers (depth) of D=3 hidden neurons each
 #+attr_html: :width 700px :float nil:
 [[../img/memorare.png]]
 
-* Week 14 - Course wrap-up
+* DONE Week 14 - Course wrap-up
 
 ** Opening Prayer
 ** Questions on the project presentations?
@@ -1826,7 +1826,10 @@ network w/K=2 hidden layers (depth) of D=3 hidden neurons each
 
 ** Closing prayer
 
-* Week 15 - Final project presentations
+* DONE Week 15 - Final project presentations
+
+That's it: Presentations.
+
 * Footnotes
 
 [fn:1] Alfred Korzybski, Science and Sanity: An Introduction to
